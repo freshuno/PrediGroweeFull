@@ -22,13 +22,14 @@ import {
   TextField,
 } from '@mui/material';
 import React from 'react';
-import axios from 'axios';
 import Link from 'next/link';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useAuthContext } from '@/components/contexts/AuthContext';
 import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import ButtonTooltipWrapper from '@/components/ui/ButtonTooltipWrapper';
+import AdminClient from '@/Clients/AdminClient';
+import { ADMIN_SERVICE_URL } from '@/Envs';
 
 type CaseReport = {
   id: number;
@@ -57,20 +58,22 @@ const ReportsPage = () => {
   const [noteSaving, setNoteSaving] = React.useState(false);
 
   const canEdit = useAuthContext().userData.role === 'admin';
+  const adminClient = React.useMemo(() => new AdminClient(ADMIN_SERVICE_URL), []);
+  
 
   const load = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const resp = await axios.get<CaseReport[]>('/api/quiz/reports');
-      setRows(resp.data);
-    } catch (e) {
-      console.error(e);
-      setError('Failed to load reports');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await adminClient.getReports();
+      setRows(resp);
+    } catch (e) {
+      console.error(e);
+      setError('Failed to load reports');
+    } finally {
+      setLoading(false);
+    }
+  }, [adminClient]);
 
   React.useEffect(() => {
     load();
@@ -78,7 +81,7 @@ const ReportsPage = () => {
 
   const deleteReport = async (id: number) => {
     try {
-      await axios.delete(`/api/quiz/reports/${id}`);
+      await adminClient.deleteReport(id);
       setRows((prev) => prev.filter((r) => r.id !== id));
     } catch (e) {
       console.error(e);
@@ -96,7 +99,7 @@ const ReportsPage = () => {
     if (noteTargetId == null) return;
     try {
       setNoteSaving(true);
-      await axios.put(`/api/quiz/reports/${noteTargetId}/note`, { note: noteDraft });
+      await adminClient.setReportNote(noteTargetId, noteDraft);
       setRows((prev) =>
         prev.map((r) =>
           r.id === noteTargetId

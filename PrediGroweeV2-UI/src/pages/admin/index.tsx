@@ -55,27 +55,45 @@ const AdminPage = () => {
     };
 
     const loadSecuritySettings = async () => {
-      try {
-        const resp = await axios.get('/api/quiz/settings');
-        const settings = resp.data as Array<{ Name: string; Value: string }>;
+  try {
+    const res = await adminClient.getSettings();
 
-        const mode =
-          (settings.find((s) => s.Name === 'quiz_security_mode')?.Value as SecurityMode) ||
-          'cooldown';
-        const hoursRaw = settings.find((s) => s.Name === 'quiz_cooldown_hours')?.Value ?? '24';
-        const hours = Number.parseInt(hoursRaw, 10);
+    // 1) rozpakuj ewentualne `data`
+    const raw = (res as any)?.data ?? res;
 
-        setSecurityMode(mode === 'manual' ? 'manual' : 'cooldown');
-        setCooldownHours(Number.isFinite(hours) && hours >= 0 ? hours : 24);
-      } catch {
-        console.log('Failed to load quiz settings');
-      }
+    // 2) upewnij się, że mamy tablicę
+    const settingsArr: Array<any> = Array.isArray(raw) ? raw : [];
+
+    // 3) helper do czytania wartości po kluczu (obsługuje Name/name i Value/value + trim)
+    const getVal = (key: string): string => {
+      const item =
+        settingsArr.find(
+          (s) => (s.Name ?? s.name)?.toString().trim() === key
+        ) ?? null;
+      return (item?.Value ?? item?.value ?? '').toString().trim();
     };
+
+    // 4) mode
+    const modeStr = getVal('quiz_security_mode').toLowerCase();
+    const parsedMode: SecurityMode = modeStr === 'manual' ? 'manual' : 'cooldown';
+
+    // 5) cooldown
+    const hoursStr = getVal('quiz_cooldown_hours');
+    const hoursNum = Number.parseInt(hoursStr, 10);
+    const parsedHours = Number.isFinite(hoursNum) && hoursNum >= 0 ? hoursNum : 24;
+
+    setSecurityMode(parsedMode);
+    setCooldownHours(parsedHours);
+  } catch (e) {
+    console.log('Failed to load quiz settings', e);
+  }
+};
+
 
     const loadPendingReports = async () => {
       try {
-        const resp = await axios.get('/api/quiz/reports/pendingCount');
-        setReportsPending(Number(resp.data?.count ?? 0));
+        const resp = await adminClient.getPendingReportsCount();
+        setReportsPending(Number((resp as any)?.count ?? 0));
       } catch {
         setReportsPending(0);
       }
@@ -91,10 +109,10 @@ const AdminPage = () => {
     if (!canManageSecurity) return;
     const clamped = Math.max(0, Number(cooldownHours));
     try {
-      await axios.post('/api/quiz/settings', [
-        { Name: 'quiz_security_mode', Value: securityMode },
-        { Name: 'quiz_cooldown_hours', Value: String(clamped) },
-      ]);
+      await adminClient.updateSettings([
+        { Name: 'quiz_security_mode', Value: securityMode },
+        { Name: 'quiz_cooldown_hours', Value: String(clamped) },
+      ]);
       setCooldownHours(clamped);
       alert('Security settings saved');
     } catch {

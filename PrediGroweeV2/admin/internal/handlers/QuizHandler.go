@@ -327,3 +327,60 @@ func (h *QuizHandler) ListActiveSessions(w http.ResponseWriter, r *http.Request)
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(sessions)
 }
+
+// ... (przed ostatnim nawiasem '}')
+
+type approveRequest struct {
+    UserID int `json:"user_id"`
+}
+
+func (h *QuizHandler) Approve(w http.ResponseWriter, r *http.Request) {
+    var req approveRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        h.logger.Error("failed to decode body", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Użyj poprawnej, istniejącej metody klienta
+    if err := h.quizClient.ApproveUser(req.UserID); err != nil { 
+        h.logger.Error("failed to approve user via quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *QuizHandler) Unapprove(w http.ResponseWriter, r *http.Request) {
+    var req approveRequest
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        h.logger.Error("failed to decode body", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusBadRequest)
+        return
+    }
+
+    // Użyj poprawnej, istniejącej metody klienta
+    if err := h.quizClient.UnapproveUser(req.UserID); err != nil {
+        h.logger.Error("failed to unapprove user via quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *QuizHandler) GetPendingReportsCount(w http.ResponseWriter, r *http.Request) {
+    countPayload, err := h.quizClient.GetPendingReportsCount()
+    if err != nil {
+        h.logger.Error("Failed to get pending reports count from quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(countPayload); err != nil {
+        h.logger.Error("Failed to encode reports count", zap.Error(err))
+    }
+}
+

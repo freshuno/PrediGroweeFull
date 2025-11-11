@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import InfoIcon from '@mui/icons-material/Info';
 
 import AdminClient, { UserSurveyListItem } from '@/Clients/AdminClient';
-import { ADMIN_SERVICE_URL } from '@/Envs';
+import { ADMIN_SERVICE_URL, QUIZ_SERVICE_URL } from '@/Envs';
 import { UserData, UserDetails, UserRole } from '@/types';
 import TopNavBar from '@/components/ui/TopNavBar/TopNavBar';
 import UserDetailsModal from '@/components/ui/UserDetailsModal/UserDetailsModal';
@@ -29,6 +29,7 @@ import ConfirmationModal from '@/components/ui/ConfirmationModal';
 import ButtonTooltipWrapper from '@/components/ui/ButtonTooltipWrapper';
 import { useAuthContext } from '@/components/contexts/AuthContext';
 import axios from 'axios';
+import QuizClient from '@/Clients/QuizClient';
 
 const AdminUsersPanel = () => {
   const [users, setUsers] = React.useState<UserData[]>([]);
@@ -50,39 +51,66 @@ const AdminUsersPanel = () => {
   >(new Map());
 
   const adminClient = React.useMemo(() => new AdminClient(ADMIN_SERVICE_URL), []);
+  const quizClient = React.useMemo(() => new QuizClient(QUIZ_SERVICE_URL), []); // <-- DODAJ TĘ LINIĘ
 
   React.useEffect(() => {
-    const load = async () => {
-      try {
-        const [usersData, approvedRes, surveys] = await Promise.all([
-          adminClient.getAllUsers(),
-          axios.get('/api/quiz/approved'),
-          adminClient.getAllUsersSurveys(),
-        ]);
+  const load = async () => {
+    console.log('--- URUCHAMIAM useEffect (Wersja 7 - z woluminem) ---');
+    try {
+      const [usersData, approvedRes, surveys] = await Promise.all([
+        adminClient.getAllUsers(),
+        quizClient.getApprovedUsers(),
+        adminClient.getAllUsersSurveys(),
+      ]);
 
-        setUsers(usersData);
+      setUsers(usersData);
+      console.log('Pobrano użytkowników:', usersData);
+      console.log('Surowa odpowiedź z approvedRes:', JSON.stringify(approvedRes));
 
-        const ids: number[] = approvedRes.data?.approved_user_ids || [];
-        setApprovedIds(new Set(ids));
+      // --- Parsowanie odpowiedzi z getApprovedUsers (obsługa camelCase i snake_case) ---
+      let ids: number[] = [];
+      const raw = (approvedRes as any)?.data ?? approvedRes;
 
-        const m = new Map<number, { name: string; surname: string }>();
-        (surveys as UserSurveyListItem[]).forEach((s) => {
-          const uid = s.user_id;
-          const name = (s.name ?? '').trim();
-          const surname = (s.surname ?? '').trim();
-          if (uid && (name || surname)) {
-            m.set(uid, { name, surname });
-          }
-        });
-        setSurveyNames(m);
-      } catch {
-        setError('Failed to load users, approvals or surveys');
-      } finally {
-        setIsLoading(false);
+      if (Array.isArray(raw)) {
+  // gdy endpoint zwróci po prostu tablicę ID
+      ids = raw.map((x) => Number(x)).filter((n) => !Number.isNaN(n));
+      } else if (raw && typeof raw === 'object') {
+  // spróbuj znaleźć tablicę ID pod różnymi kluczami
+        const maybeIds =
+        (raw as any).approved_user_ids ??
+        (raw as any).approvedUserIds ??
+        (raw as any).approvedIds ??
+        (raw as any).ids;
+
+      if (Array.isArray(maybeIds)) {
+         ids = maybeIds.map((x: any) => Number(x)).filter((n: number) => !Number.isNaN(n));
       }
-    };
-    load();
-  }, [adminClient]);
+      }
+
+      console.log('Finalna lista IDków (numery):', ids);
+      setApprovedIds(new Set(ids));
+// --- koniec parsowania ---
+
+
+      const m = new Map<number, { name: string; surname: string }>();
+      (surveys as UserSurveyListItem[]).forEach((s) => {
+        const uid = s.user_id;
+        const name = (s.name ?? '').trim();
+        const surname = (s.surname ?? '').trim();
+        if (uid && (name || surname)) {
+          m.set(uid, { name, surname });
+        }
+      });
+      setSurveyNames(m);
+    } catch (e: any) {
+      console.error('Błąd w load():', e.message);
+      setError('Failed to load users, approvals or surveys');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  load();
+}, [adminClient, quizClient]); // Dodaj quizClient do dependency array!
 
   const handleViewDetails = async (userId: string) => {
     try {
@@ -111,7 +139,7 @@ const AdminUsersPanel = () => {
     });
 
     try {
-      await axios.post('/api/quiz/unapprove', { user_id: userId });
+      await adminClient.unapproveUser(userId);
     } catch {
       setApprovedIds((prev) => {
         const next = new Set(prev);
@@ -169,7 +197,7 @@ const AdminUsersPanel = () => {
     });
 
     try {
-      await axios.post('/api/quiz/approve', { user_id: userId });
+      await adminClient.approveUser(userId);
     } catch {
       setApprovedIds((prev) => {
         const next = new Set(prev);

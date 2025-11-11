@@ -1,0 +1,10361 @@
+--
+-- PostgreSQL database dump
+--
+
+\restrict rxhr6VcC8SzLzdMURPhgQRILNOTsnj8dma1UJPz39GdjVS78gQymwc6hDGrRSTZ
+
+-- Dumped from database version 13.22 (Debian 13.22-1.pgdg13+1)
+-- Dumped by pg_dump version 13.22 (Debian 13.22-1.pgdg13+1)
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: difficulty_level; Type: TYPE; Schema: public; Owner: quiz_user
+--
+
+CREATE TYPE public.difficulty_level AS ENUM (
+    'easy',
+    'hard'
+);
+
+
+ALTER TYPE public.difficulty_level OWNER TO quiz_user;
+
+--
+-- Name: quiz_mode; Type: TYPE; Schema: public; Owner: quiz_user
+--
+
+CREATE TYPE public.quiz_mode AS ENUM (
+    'educational',
+    'time_limited',
+    'classic'
+);
+
+
+ALTER TYPE public.quiz_mode OWNER TO quiz_user;
+
+--
+-- Name: quiz_status; Type: TYPE; Schema: public; Owner: quiz_user
+--
+
+CREATE TYPE public.quiz_status AS ENUM (
+    'in_progress',
+    'finished',
+    'not_started'
+);
+
+
+ALTER TYPE public.quiz_status OWNER TO quiz_user;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: auth_users_import; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.auth_users_import (
+    user_id integer NOT NULL,
+    registered_at timestamp with time zone NOT NULL,
+    source text NOT NULL
+);
+
+
+ALTER TABLE public.auth_users_import OWNER TO quiz_user;
+
+--
+-- Name: case_parameters; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.case_parameters (
+    id integer NOT NULL,
+    case_id integer NOT NULL,
+    value_1 double precision NOT NULL,
+    parameter_id integer NOT NULL,
+    value_2 double precision NOT NULL,
+    value_3 double precision
+);
+
+
+ALTER TABLE public.case_parameters OWNER TO quiz_user;
+
+--
+-- Name: case_reports; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.case_reports (
+    id integer NOT NULL,
+    case_id integer NOT NULL,
+    user_id integer NOT NULL,
+    description text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    admin_note text,
+    admin_note_updated_at timestamp with time zone,
+    admin_note_updated_by integer
+);
+
+
+ALTER TABLE public.case_reports OWNER TO quiz_user;
+
+--
+-- Name: case_reports_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.case_reports_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.case_reports_id_seq OWNER TO quiz_user;
+
+--
+-- Name: case_reports_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.case_reports_id_seq OWNED BY public.case_reports.id;
+
+
+--
+-- Name: cases; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.cases (
+    id integer NOT NULL,
+    code text NOT NULL,
+    patient_gender text NOT NULL,
+    age1 integer NOT NULL,
+    age2 integer NOT NULL,
+    age3 integer NOT NULL
+);
+
+
+ALTER TABLE public.cases OWNER TO quiz_user;
+
+--
+-- Name: options; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.options (
+    id integer NOT NULL,
+    option text NOT NULL
+);
+
+
+ALTER TABLE public.options OWNER TO quiz_user;
+
+--
+-- Name: options_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.options_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.options_id_seq OWNER TO quiz_user;
+
+--
+-- Name: options_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.options_id_seq OWNED BY public.options.id;
+
+
+--
+-- Name: parameters; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.parameters (
+    id integer NOT NULL,
+    name text NOT NULL,
+    description text NOT NULL,
+    reference_value text,
+    display_order integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE public.parameters OWNER TO quiz_user;
+
+--
+-- Name: parameters_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.parameters_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.parameters_id_seq OWNER TO quiz_user;
+
+--
+-- Name: parameters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.parameters_id_seq OWNED BY public.parameters.id;
+
+
+--
+-- Name: patient_parameters_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.patient_parameters_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.patient_parameters_id_seq OWNER TO quiz_user;
+
+--
+-- Name: patient_parameters_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.patient_parameters_id_seq OWNED BY public.case_parameters.id;
+
+
+--
+-- Name: patients_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.patients_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.patients_id_seq OWNER TO quiz_user;
+
+--
+-- Name: patients_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.patients_id_seq OWNED BY public.cases.id;
+
+
+--
+-- Name: question_difficulty_votes; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.question_difficulty_votes (
+    question_id integer NOT NULL,
+    user_id integer NOT NULL,
+    difficulty public.difficulty_level NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT question_difficulty_votes_user_ck CHECK ((user_id > 0))
+);
+
+
+ALTER TABLE public.question_difficulty_votes OWNER TO quiz_user;
+
+--
+-- Name: questions; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.questions (
+    id integer NOT NULL,
+    question text NOT NULL,
+    case_id integer NOT NULL,
+    prediction_age integer,
+    group_number integer DEFAULT 1 NOT NULL
+);
+
+
+ALTER TABLE public.questions OWNER TO quiz_user;
+
+--
+-- Name: question_difficulty_summary; Type: VIEW; Schema: public; Owner: quiz_user
+--
+
+CREATE VIEW public.question_difficulty_summary AS
+ SELECT q.id AS question_id,
+    count(v.*) AS total_votes,
+    COALESCE(sum(((v.difficulty = 'hard'::public.difficulty_level))::integer), (0)::bigint) AS hard_votes,
+    COALESCE(sum(((v.difficulty = 'easy'::public.difficulty_level))::integer), (0)::bigint) AS easy_votes,
+        CASE
+            WHEN (count(v.*) = 0) THEN (0)::numeric
+            ELSE round(((100.0 * (COALESCE(sum(((v.difficulty = 'hard'::public.difficulty_level))::integer), (0)::bigint))::numeric) / (count(v.*))::numeric), 2)
+        END AS hard_pct
+   FROM (public.questions q
+     LEFT JOIN public.question_difficulty_votes v ON ((v.question_id = q.id)))
+  GROUP BY q.id;
+
+
+ALTER TABLE public.question_difficulty_summary OWNER TO quiz_user;
+
+--
+-- Name: question_options; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.question_options (
+    id integer NOT NULL,
+    question_id integer,
+    option_id integer,
+    is_correct boolean DEFAULT false NOT NULL
+);
+
+
+ALTER TABLE public.question_options OWNER TO quiz_user;
+
+--
+-- Name: question_options_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.question_options_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.question_options_id_seq OWNER TO quiz_user;
+
+--
+-- Name: question_options_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.question_options_id_seq OWNED BY public.question_options.id;
+
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.questions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.questions_id_seq OWNER TO quiz_user;
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.questions_id_seq OWNED BY public.questions.id;
+
+
+--
+-- Name: quiz_sessions; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.quiz_sessions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    status public.quiz_status DEFAULT 'not_started'::public.quiz_status NOT NULL,
+    mode public.quiz_mode NOT NULL,
+    current_question integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now(),
+    updated_at timestamp without time zone DEFAULT now(),
+    finished_at timestamp without time zone,
+    group_order integer[] DEFAULT '{1,2,3,4,5,6,7,8,9,10}'::integer[] NOT NULL,
+    current_group integer DEFAULT 1,
+    screen_size character varying(255) DEFAULT NULL::character varying,
+    question_requested_time timestamp without time zone DEFAULT now(),
+    test_id integer,
+    test_code text
+);
+
+
+ALTER TABLE public.quiz_sessions OWNER TO quiz_user;
+
+--
+-- Name: quiz_sessions_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.quiz_sessions_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.quiz_sessions_id_seq OWNER TO quiz_user;
+
+--
+-- Name: quiz_sessions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.quiz_sessions_id_seq OWNED BY public.quiz_sessions.id;
+
+
+--
+-- Name: quiz_user_access; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.quiz_user_access (
+    user_id integer NOT NULL,
+    approved boolean DEFAULT false NOT NULL,
+    approved_by integer,
+    approved_at timestamp with time zone,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.quiz_user_access OWNER TO quiz_user;
+
+--
+-- Name: quiz_user_registry; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.quiz_user_registry (
+    user_id integer NOT NULL,
+    registered_at timestamp with time zone NOT NULL,
+    source text NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.quiz_user_registry OWNER TO quiz_user;
+
+--
+-- Name: settings; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.settings (
+    id integer NOT NULL,
+    name character varying(255) NOT NULL,
+    value text NOT NULL
+);
+
+
+ALTER TABLE public.settings OWNER TO quiz_user;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.settings_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.settings_id_seq OWNER TO quiz_user;
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.settings_id_seq OWNED BY public.settings.id;
+
+
+--
+-- Name: test_questions; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.test_questions (
+    test_id integer NOT NULL,
+    question_id integer NOT NULL,
+    sort_order integer NOT NULL
+);
+
+
+ALTER TABLE public.test_questions OWNER TO quiz_user;
+
+--
+-- Name: tests; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.tests (
+    id integer NOT NULL,
+    code text NOT NULL,
+    name text NOT NULL,
+    created_by integer NOT NULL,
+    created_at timestamp without time zone DEFAULT now() NOT NULL
+);
+
+
+ALTER TABLE public.tests OWNER TO quiz_user;
+
+--
+-- Name: tests_id_seq; Type: SEQUENCE; Schema: public; Owner: quiz_user
+--
+
+CREATE SEQUENCE public.tests_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tests_id_seq OWNER TO quiz_user;
+
+--
+-- Name: tests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: quiz_user
+--
+
+ALTER SEQUENCE public.tests_id_seq OWNED BY public.tests.id;
+
+
+--
+-- Name: user_favorites; Type: TABLE; Schema: public; Owner: quiz_user
+--
+
+CREATE TABLE public.user_favorites (
+    user_id integer NOT NULL,
+    case_id integer NOT NULL,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    note text,
+    note_updated_at timestamp with time zone
+);
+
+
+ALTER TABLE public.user_favorites OWNER TO quiz_user;
+
+--
+-- Name: case_parameters id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_parameters ALTER COLUMN id SET DEFAULT nextval('public.patient_parameters_id_seq'::regclass);
+
+
+--
+-- Name: case_reports id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_reports ALTER COLUMN id SET DEFAULT nextval('public.case_reports_id_seq'::regclass);
+
+
+--
+-- Name: cases id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.cases ALTER COLUMN id SET DEFAULT nextval('public.patients_id_seq'::regclass);
+
+
+--
+-- Name: options id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.options ALTER COLUMN id SET DEFAULT nextval('public.options_id_seq'::regclass);
+
+
+--
+-- Name: parameters id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.parameters ALTER COLUMN id SET DEFAULT nextval('public.parameters_id_seq'::regclass);
+
+
+--
+-- Name: question_options id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_options ALTER COLUMN id SET DEFAULT nextval('public.question_options_id_seq'::regclass);
+
+
+--
+-- Name: questions id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.questions ALTER COLUMN id SET DEFAULT nextval('public.questions_id_seq'::regclass);
+
+
+--
+-- Name: quiz_sessions id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.quiz_sessions ALTER COLUMN id SET DEFAULT nextval('public.quiz_sessions_id_seq'::regclass);
+
+
+--
+-- Name: settings id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.settings ALTER COLUMN id SET DEFAULT nextval('public.settings_id_seq'::regclass);
+
+
+--
+-- Name: tests id; Type: DEFAULT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.tests ALTER COLUMN id SET DEFAULT nextval('public.tests_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_users_import; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.auth_users_import (user_id, registered_at, source) FROM stdin;
+92	2025-01-19 19:43:40.582567+00	auth
+75	2024-11-25 10:02:37.556477+00	auth
+98	2025-03-22 14:32:29.683974+00	auth
+74	2024-11-25 10:00:19.471608+00	auth
+110	2025-06-23 18:44:53.017965+00	auth
+121	2025-07-23 15:57:47.483336+00	auth
+104	2025-04-14 09:24:19.874047+00	auth
+111	2025-06-23 18:45:58.894318+00	auth
+112	2025-06-23 19:42:49.148679+00	auth
+54	2024-11-24 21:10:33.296971+00	auth
+42	2024-11-10 12:04:19.054451+00	auth
+43	2024-11-10 17:07:34.548793+00	auth
+44	2024-11-10 17:14:35.888228+00	auth
+45	2024-11-17 22:38:54.673073+00	auth
+17	2024-11-08 16:31:36.764156+00	auth
+107	2025-04-14 09:25:01.318562+00	auth
+67	2024-11-25 09:56:34.198101+00	auth
+95	2025-02-03 09:30:30.999915+00	auth
+68	2024-11-25 09:56:41.52939+00	auth
+99	2025-03-24 19:45:21.729821+00	auth
+69	2024-11-25 09:57:03.321346+00	auth
+106	2025-04-14 09:24:56.954853+00	auth
+71	2024-11-25 09:57:30.587437+00	auth
+70	2024-11-25 09:57:19.081958+00	auth
+73	2024-11-25 09:57:50.559567+00	auth
+82	2025-01-13 21:11:52.435046+00	auth
+102	2025-04-14 09:22:31.06747+00	auth
+113	2025-06-23 20:40:33.517316+00	auth
+72	2024-11-25 09:57:37.107212+00	auth
+114	2025-06-24 05:52:40.563228+00	auth
+90	2025-01-16 18:49:01.234089+00	auth
+94	2025-02-03 09:24:00.408885+00	auth
+115	2025-06-24 07:29:29.275198+00	auth
+96	2025-02-17 14:25:49.83469+00	auth
+100	2025-03-24 21:15:51.872085+00	auth
+97	2025-03-08 10:10:44.600087+00	auth
+108	2025-06-23 10:32:06.044059+00	auth
+27	2024-11-10 08:06:21.353634+00	auth
+103	2025-04-14 09:23:37.717541+00	auth
+105	2025-04-14 09:24:30.895177+00	auth
+83	2025-01-14 09:14:34.381668+00	auth
+117	2025-07-10 17:35:23.359036+00	auth
+116	2025-07-10 14:13:03.16462+00	auth
+19	2024-11-09 16:30:13.960422+00	auth
+139	2025-08-20 19:56:48.085049+00	auth
+140	2025-08-20 19:57:20.806905+00	auth
+141	2025-08-21 13:28:06.572898+00	auth
+142	2025-08-21 16:55:24.598139+00	auth
+101	2025-03-25 09:36:12.199007+00	auth
+\.
+
+
+--
+-- Data for Name: case_parameters; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.case_parameters (id, case_id, value_1, parameter_id, value_2, value_3) FROM stdin;
+7940	2	5.98	26	4.6	3.23
+7753	454	7.06	26	6.18	3.34
+7754	454	83.21	14	83.62	82.87
+7755	454	76.14	22	77.44	79.54
+7756	454	75.01	25	77.22	79.76
+7757	454	17.7	30	19	23.5
+7758	454	-1.13	29	-0.23	0.23
+7759	454	40.52	24	38.34	33.09
+7760	454	3.94	23	4.96	5.8
+7761	454	98.21	15	98.32	95.29
+7762	454	71.47	16	71.13	69.44
+7763	454	0.12	20	1.47	1.59
+7764	454	125.32	21	124.56	120.9
+7765	454	1.53	27	1.47	1.39
+7766	89	1.73	26	1.32	0.29
+7767	89	76.64	14	76.84	77.83
+7768	89	74.91	22	75.52	77.54
+7769	89	75.95	25	76.86	78.76
+7770	89	14.4	30	15.7	15.3
+7771	89	1.04	29	1.34	1.22
+7772	89	41.31	24	39.96	40.18
+7773	89	14.82	23	12.91	14.3
+7774	89	91.06	15	89.22	87.71
+7775	89	66.83	16	66.65	66.46
+7776	89	3.41	20	3.54	3.4
+7777	89	136.89	21	133.21	137.85
+7778	89	1.54	27	1.54	1.54
+7898	4	4.26	26	2.89	3.51
+7899	4	81.8	14	81.13	83.61
+7900	4	77.55	22	78.24	80.1
+7901	4	78.91	25	80.13	82.66
+7902	4	21.8	30	22.2	26.3
+7903	4	1.36	29	1.89	2.57
+7904	4	27.95	24	27.66	23.59
+7905	4	4.4	23	4.23	4.14
+7906	4	90.83	15	89.64	89.17
+7907	4	65.43	16	65.09	65.71
+7908	4	2.28	20	3.49	3.44
+7909	4	119.96	21	117.98	109.84
+7910	4	1.34	27	1.34	1.27
+7941	2	80.12	14	80.65	83.28
+7942	2	74.14	22	76.04	80.05
+7943	2	75.59	25	77.23	81.46
+7944	2	22.5	30	22.2	24.5
+7945	2	1.44	29	1.19	1.42
+7946	2	28.88	24	27.91	22.89
+7947	2	13.6	23	10.22	9.96
+7948	2	87.41	15	86.58	83.69
+7949	2	66.91	16	65.7	63.81
+7950	2	0.42	20	1.69	2.01
+7951	2	111.11	21	116.59	113.06
+7952	2	1.41	27	1.42	1.32
+7792	29	3.41	26	0.34	-0.5
+7793	29	77.77	14	75.37	76.34
+7794	29	74.36	22	75.03	76.84
+7795	29	74.92	25	75.55	77.62
+7796	29	16.5	30	17.3	17.8
+7797	29	0.56	29	0.53	0.78
+7798	29	41.86	24	41.16	39.27
+7799	29	5.58	23	11.99	7.14
+7800	29	94.48	15	92.87	91.72
+7801	29	71.64	16	71.48	69.6
+7802	29	4.62	20	4.25	4.23
+7803	29	128.12	21	127.67	126.81
+7804	29	1.62	27	1.59	1.52
+7805	73	5	26	2.86	1.78
+7806	73	82.99	14	84.94	84.22
+7807	73	77.99	22	82.08	82.44
+7808	73	79.06	25	83.48	83.5
+7809	73	15.1	30	15.8	16.6
+7810	73	1.08	29	1.39	1.06
+7811	73	39.16	24	36.97	38.38
+7812	73	7.09	23	9.45	8.8
+7813	73	89.5	15	88.92	91.14
+7814	73	65.55	16	64.84	66.44
+7815	73	2.3	20	2.75	4.47
+7816	73	135.18	21	134.75	133.8
+7817	73	1.53	27	1.47	1.48
+7818	99	0.4	26	-0.2	-2
+7819	99	77.4	14	78.3	78.3
+7820	99	77	22	78.6	80.3
+7821	99	77.9	25	79.6	81.3
+7822	99	17.5	30	18.3	18.1
+7823	99	0.8	29	1.1	1
+7824	99	40.5	24	38.5	39.4
+7825	99	7	23	5.3	5.4
+7826	99	95.1	15	93.8	93.1
+7827	99	68.3	16	67	67.5
+7828	99	2.5	20	2.8	3.7
+7829	99	130	21	132	132.8
+7830	99	1.5	27	1.5	1.5
+7831	215	5.06	26	3.99	5.05
+7832	215	72.83	14	76.55	82.02
+7833	215	67.77	22	72.56	76.98
+7834	215	68.09	25	73.24	77.64
+7835	215	14.5	30	15.7	16.3
+7836	215	0.32	29	0.69	0.66
+7837	215	49.29	24	45.96	42.96
+7838	215	18.75	23	12.67	7.73
+7839	215	93.35	15	94.95	93.52
+7840	215	75.12	16	72.34	69.45
+7841	215	1.83	20	2.41	5.22
+7842	215	135.66	21	132.28	138.51
+7843	215	1.7	27	1.65	1.55
+450	30	4.06	26	1.69	3.73
+473	31	5.43	26	4.75	4.15
+451	30	16.2	30	16.9	17.7
+452	30	38.03	24	36.91	37.2
+455	30	75	22	75.78	75.48
+456	30	76.02	25	76.86	76.61
+457	30	1.03	29	1.08	1.13
+458	30	90.7	15	89.33	89.73
+460	30	129.15	21	130.97	130.32
+461	30	79.06	14	77.47	79.21
+462	30	68.66	16	68.62	69.59
+463	30	1.72	20	2.18	3.43
+464	30	8.82	23	9.22	9.34
+465	30	1.57	27	1.55	1.56
+466	31	1.73	20	1.8	2.86
+467	31	8.93	23	6.83	7.9
+468	31	1.49	27	1.46	1.42
+469	31	69.29	16	67.99	68.64
+472	31	72.35	22	74.24	75.1
+474	31	20.9	30	20.7	22.6
+475	31	35.67	24	33.39	34.01
+476	31	73.4	25	75.48	76.51
+478	31	124.92	21	121.69	123.15
+479	31	77.78	14	78.98	79.24
+480	31	1.05	29	1.24	1.42
+481	31	92.23	15	90.58	90.73
+482	32	71.59	25	71.69	72.99
+483	32	94.45	15	92.46	93.09
+496	32	3.87	26	4.88	4.89
+485	32	123.69	21	117.21	116.5
+486	32	74.99	14	75.59	76.57
+487	32	0.47	29	0.98	1.32
+488	32	72.05	16	71.52	71.37
+489	32	3.05	20	3	3.15
+490	32	12.92	23	12.9	12.08
+491	32	1.47	27	1.45	1.43
+492	32	34.8	24	32.7	31.52
+507	33	3.27	26	2.27	2.55
+527	34	3.46	26	3.98	1.45
+495	32	71.12	22	70.71	71.68
+497	32	23	30	24.9	25.8
+498	33	60.25	16	58.73	60.93
+499	33	2.88	20	3.46	3.76
+500	33	0.15	23	-0.02	-0.07
+501	33	1.34	27	1.32	1.31
+502	33	21.4	30	21.6	23.5
+503	33	24.4	24	22.43	23.65
+542	35	9.25	26	10.29	9.27
+553	36	5.05	26	4.78	2.85
+506	33	82.03	22	84.52	83.69
+508	33	84.12	25	86.7	85.7
+509	33	81.65	15	80.09	82.71
+576	37	5.43	26	3.96	3.7
+511	33	122.27	21	121.24	120.26
+512	33	85.3	14	86.79	86.24
+513	33	2.09	29	2.18	2
+514	34	82.95	15	83.29	83.63
+586	38	4.44	26	3.44	2.35
+516	34	129.38	21	129.83	128.36
+517	34	78.67	14	79.83	78.14
+518	34	1.98	29	1.98	2.09
+519	34	63.91	16	63.8	63.87
+520	34	4.46	20	4.99	5.27
+521	34	5.59	23	5.45	5.51
+522	34	1.51	27	1.46	1.46
+523	34	31.43	24	30.43	30.32
+595	39	5.25	26	5.21	3.89
+526	34	75.21	22	75.85	76.69
+528	34	16.6	30	17.7	18.5
+529	34	77.2	25	77.83	78.78
+530	35	73.48	25	75.24	74.87
+531	35	126.74	21	123.5	120.7
+532	35	81.71	14	84.32	82.91
+533	35	1.01	29	1.21	1.24
+534	35	88.99	15	87.71	88.86
+536	35	11.16	23	11.76	11.27
+537	35	1.5	27	1.48	1.47
+538	35	68.01	16	67.62	68.39
+539	35	1.72	20	3.67	4.06
+541	35	72.46	22	74.03	73.64
+543	35	20.7	30	21.3	22.4
+544	35	34.49	24	33.67	33.42
+546	36	4.17	20	5.57	5.64
+547	36	11.66	23	10.27	11.83
+548	36	1.42	27	1.42	1.31
+549	36	66.88	16	67.54	67.94
+552	36	76.54	22	77.45	78.13
+554	36	25.2	30	24.9	29.2
+555	36	28.78	24	29.37	25.04
+556	36	77.77	25	79.61	80.35
+558	36	110.02	21	111.89	108.39
+559	36	81.59	14	82.23	80.98
+560	36	1.23	29	2.16	2.22
+561	36	86.69	15	86.5	86.75
+562	37	76.14	25	76.75	78.46
+563	37	88.43	15	87.81	87.45
+565	37	121.34	21	117.7	118.9
+566	37	80.69	14	79.42	80.71
+567	37	0.88	29	1.29	1.45
+568	37	67.92	16	68.4	67.72
+569	37	3.47	20	3.98	3.93
+570	37	9.65	23	8.92	7.11
+571	37	1.51	27	1.48	1.41
+572	37	34.86	24	34.36	31.57
+575	37	75.26	22	75.46	77.01
+577	37	20.4	30	22.1	23.9
+578	38	69.31	16	71.05	69.63
+579	38	4.41	20	3.51	3.98
+580	38	8.22	23	9.76	10.61
+581	38	1.45	27	1.45	1.37
+582	38	30.32	24	31.76	28.43
+585	38	73.62	22	73.47	75.22
+587	38	22.1	30	22.1	24
+588	38	75.06	25	74.68	76.99
+589	38	88.02	15	89.73	88.34
+591	38	116.44	21	117.63	116.97
+592	38	78.06	14	76.91	77.58
+593	38	1.44	29	1.21	1.76
+594	39	78.11	22	78.2	81.62
+596	39	23.7	30	24.8	27.6
+597	39	24.18	24	25.33	20.63
+600	39	79.34	25	79.34	82.79
+601	39	83.36	14	83.41	85.51
+602	39	1.24	29	1.14	1.16
+603	39	87.77	15	85.93	84.45
+614	40	2.93	26	4.19	2.68
+605	39	119.72	21	116.06	114.39
+606	39	1.31	27	1.35	1.25
+607	39	61.74	16	62.85	62.05
+608	39	2.48	20	2.95	4.26
+609	39	9.91	23	9.43	9.45
+610	40	29.61	24	26.46	24.98
+635	41	5.6	26	3.69	1.94
+652	42	5.08	26	4.45	3.94
+613	40	79.45	22	81.78	83.1
+615	40	19.8	30	21.5	23.6
+616	40	80.72	25	83.48	84.51
+617	40	85.7	15	83.61	84.33
+672	43	2.21	26	1.04	-0.81
+619	40	123.99	21	117.34	113.09
+620	40	82.38	14	85.97	85.78
+621	40	1.27	29	1.7	1.41
+622	40	63.93	16	62.27	62.74
+623	40	2.39	20	3.13	4.02
+624	40	3.39	23	3.23	0.74
+625	40	1.39	27	1.36	1.31
+626	41	64.92	16	65.75	64.07
+627	41	2.11	20	1.85	0.62
+628	41	6.17	23	7.26	3.2
+629	41	1.47	27	1.45	1.42
+630	41	20.3	30	20.7	21.5
+631	41	31.8	24	30.62	29.03
+678	44	6.55	26	4.68	1.19
+703	45	9.73	26	9.08	8.7
+634	41	73	22	73.83	75.76
+636	41	73.98	25	75.02	77.14
+637	41	85.36	15	87.91	85.85
+719	46	6.13	26	6.74	5.51
+639	41	125.28	21	120.54	118.03
+640	41	78.61	14	77.52	77.7
+641	41	0.97	29	1.19	1.38
+642	42	82.52	14	82.75	83.56
+643	42	1.06	29	1.08	1.82
+644	42	83.59	15	83.51	83.35
+646	42	125.07	21	123.2	121.58
+647	42	1.49	27	1.49	1.44
+648	42	63.48	16	63.39	63.94
+649	42	3.16	20	3.42	3.91
+650	42	4.96	23	6.86	7.75
+651	42	77.44	22	78.3	79.63
+653	42	18.5	30	18.6	20.7
+654	42	31.41	24	31.3	29.76
+657	42	78.5	25	79.38	81.45
+658	43	89.57	15	86.85	84.54
+660	43	122.72	21	120.09	114.75
+661	43	79.53	14	79.97	81.85
+662	43	1.02	29	1.41	1.9
+663	43	66.14	16	64.81	63.1
+664	43	4.89	20	4.21	4.91
+665	43	6.99	23	7.56	4.87
+666	43	1.52	27	1.47	1.41
+667	43	18.6	30	20.2	20.6
+668	43	34.76	24	32.27	29.11
+671	43	77.32	22	78.92	82.65
+673	43	78.35	25	80.34	84.55
+674	44	27.24	24	25.56	21.04
+677	44	75.36	22	77.49	80.28
+679	44	23.3	30	24.5	27.6
+680	44	77.37	25	79.95	83.51
+681	44	87.47	15	85.49	83.7
+683	44	119.28	21	118.54	115.54
+684	44	81.91	14	82.17	81.48
+685	44	2.02	29	2.47	3.22
+686	44	65.04	16	63.88	62.4
+687	44	0.84	20	0.94	0.74
+688	44	8.27	23	7.13	5.41
+689	44	1.33	27	1.31	1.23
+690	45	87.22	15	89.42	90.42
+692	45	126.26	21	122.37	120.02
+693	45	87.43	14	84.48	84.04
+694	45	1.89	29	1.31	1.55
+695	45	65.82	16	67.87	68.97
+696	45	0.19	20	2.63	2.69
+697	45	11.21	23	13.41	15.6
+698	45	1.42	27	1.45	1.43
+699	45	30.41	24	32.54	31.63
+702	45	77.71	22	75.4	75.34
+704	45	19.8	30	20	22.1
+705	45	79.6	25	76.71	76.89
+706	46	75.98	25	77.18	77.57
+708	46	125.55	21	120.53	116.89
+709	46	81.74	14	82.97	81.79
+710	46	0.37	29	0.94	1.28
+711	46	86.01	15	86.28	87.19
+712	46	4.12	20	4.14	4.08
+713	46	3.9	23	7.17	5.6
+714	46	1.45	27	1.43	1.43
+715	46	65.87	16	66.03	67.23
+718	46	75.61	22	76.24	76.28
+720	46	20.9	30	21.3	22.8
+721	46	31.31	24	31.03	30.87
+722	47	82.52	25	83.14	86.72
+723	47	83.79	15	83.07	80.76
+736	47	-0.04	26	-0.06	-2.95
+725	47	117.49	21	115.77	112.43
+726	47	81.27	14	81.91	81.94
+727	47	1.22	29	1.17	1.82
+728	47	63.09	16	62.14	60.5
+729	47	2.85	20	3.53	3.46
+730	47	0.48	23	1.56	-0.38
+731	47	1.44	27	1.41	1.38
+732	47	29.41	24	28.29	25.45
+748	48	3.88	26	2.42	2.6
+758	49	6.38	26	7.67	3.34
+735	47	81.3	22	81.97	84.89
+737	47	20.9	30	20.6	21.9
+738	48	78.73	14	78.7	80.92
+739	48	1.48	29	1.39	1.78
+740	48	86.27	15	84.27	84.82
+783	50	1.82	26	0.18	-1.57
+742	48	114.86	21	117.79	114.38
+743	48	1.39	27	1.36	1.31
+744	48	65.17	16	63.66	63.54
+745	48	3.41	20	3.42	5.15
+746	48	7.26	23	9.57	7.67
+747	48	74.85	22	76.27	78.32
+749	48	24.3	30	23.6	26
+750	48	28.54	24	27.24	24.37
+790	51	1.84	26	1.51	-0.54
+813	52	5.23	26	3.71	0.9
+753	48	76.33	25	77.66	80.1
+754	49	35.56	24	34.71	32.09
+828	53	3.12	26	2.93	3.66
+757	49	75.27	22	74.51	76.89
+759	49	16.9	30	19	20.7
+760	49	75.53	25	75.24	78.36
+761	49	92.81	15	92.6	92.66
+763	49	131.13	21	124.42	125.03
+764	49	81.66	14	82.18	80.22
+765	49	0.26	29	0.73	1.47
+766	49	67.97	16	68.35	67.47
+767	49	0.81	20	1.9	2.17
+768	49	6.08	23	2.38	2.56
+769	49	1.48	27	1.48	1.41
+770	50	80.12	25	81.75	85.61
+772	50	125.93	21	128.75	125.44
+773	50	80.02	14	80.23	82.23
+774	50	1.93	29	1.7	1.81
+775	50	90.15	15	90.5	86.69
+776	50	3.57	20	3.88	4.4
+777	50	7.49	23	7.1	6.22
+778	50	1.48	27	1.45	1.43
+779	50	67.48	16	66.96	64.26
+782	50	78.2	22	80.05	83.8
+784	50	18.4	30	17.7	18.9
+785	50	36.3	24	35.42	32.26
+786	51	40.87	24	36.39	35.94
+789	51	73.94	22	76.98	77.57
+791	51	17.5	30	19	20.2
+792	51	73.7	25	76.78	77.57
+793	51	92.67	15	88.06	88.5
+795	51	131.37	21	128.36	126.75
+796	51	75.77	14	78.49	77.03
+797	51	-0.24	29	-0.19	0
+798	51	71.27	16	67.53	68.03
+799	51	-0.38	20	1.37	0.57
+800	51	9.34	23	11.32	10.72
+801	51	1.54	27	1.5	1.49
+802	52	78.49	25	79.6	85.63
+803	52	82.41	14	81.17	83.36
+804	52	1.31	29	2.14	3.16
+805	52	84.16	15	83.82	79.03
+807	52	116.12	21	111.38	110.04
+808	52	1.34	27	1.33	1.24
+809	52	63.84	16	63.8	59.85
+810	52	2.01	20	2.56	3.95
+811	52	2.24	23	3.05	5.79
+812	52	77.17	22	77.46	82.47
+814	52	24.6	30	26.2	28
+815	52	24.19	24	22.9	17.92
+818	53	76.27	14	78.65	78.74
+819	53	0.18	29	0.54	0.39
+820	53	87.2	15	86.97	90.19
+822	53	130.01	21	126.88	118.71
+823	53	1.63	27	1.59	1.55
+824	53	68.27	16	67.69	69.74
+825	53	1.96	20	1.28	3.58
+826	53	8.81	23	8.22	9.36
+827	53	73.15	22	75.72	75.08
+829	53	16.7	30	18.5	21.5
+830	53	40.57	24	38.32	36.73
+833	53	73.33	25	76.26	75.47
+834	54	73.18	25	74.03	76.69
+835	54	90.34	15	89.73	87.8
+837	54	125.85	21	125.69	122.99
+838	54	77.91	14	76.23	77.37
+839	54	1.12	29	1.49	2.05
+840	54	70.62	16	70.42	69.08
+841	54	6.17	20	6.7	4.64
+842	54	5.49	23	6.95	5.62
+843	54	1.55	27	1.54	1.47
+844	54	37.2	24	37.21	33.41
+848	54	5.85	26	3.69	2.73
+864	55	4.37	26	3.6	1.72
+847	54	72.06	22	72.54	74.64
+849	54	19.6	30	19.8	20.5
+850	55	79.99	15	79.83	78.31
+876	56	5.8	26	4.22	3.34
+852	55	120.31	21	117.54	114.75
+853	55	87.27	14	87.83	86.8
+854	55	0.37	29	0.67	1.54
+855	55	60.34	16	60.01	59.57
+856	55	2	20	3.15	2.81
+857	55	1.79	23	2.21	0.21
+858	55	1.35	27	1.36	1.3
+859	55	22.9	30	22.7	24.4
+860	55	25.98	24	25.44	23.21
+886	57	4.47	26	4.97	3.6
+912	58	6.68	26	4.32	2.64
+863	55	82.91	22	84.24	85.08
+865	55	83.28	25	84.91	86.62
+866	56	74.43	25	78.23	78.76
+867	56	0.6	29	0.6	1.95
+868	56	93.77	15	91.93	92.94
+918	59	5.49	26	5.97	5.33
+870	56	125.17	21	115.92	115.84
+871	56	79.62	14	81.85	80.16
+872	56	69.46	16	67.85	68.08
+873	56	1.41	20	1.71	1.74
+874	56	7.07	23	8.06	9.5
+875	56	1.5	27	1.47	1.42
+877	56	20.2	30	22.1	23
+878	56	36.52	24	33.75	31.47
+943	60	5.31	26	1.77	2.24
+954	61	6.09	26	4.96	5.23
+881	56	73.82	22	77.63	76.82
+882	57	38.46	24	38.21	34.03
+885	57	76.52	22	77.55	79.43
+887	57	17.4	30	17.4	21.5
+888	57	76.92	25	77.99	80.16
+889	57	89.4	15	91.93	89.86
+891	57	125.23	21	126.68	118.81
+892	57	80.99	14	82.52	83.04
+893	57	0.4	29	0.45	0.73
+894	57	67.9	16	67.82	67.5
+895	57	1.96	20	2.09	2.11
+896	57	7.17	23	7.88	4.94
+897	57	1.55	27	1.56	1.44
+898	58	81.86	25	86.62	86.94
+899	58	87.78	15	86.85	86.9
+901	58	125.81	21	125.4	126.23
+902	58	88.48	14	90.28	88.61
+903	58	0.06	29	0.66	0.96
+904	58	63.92	16	63.18	63.68
+905	58	2.65	20	4.2	3.07
+906	58	8.72	23	9.57	10.32
+907	58	1.48	27	1.4	1.41
+908	58	35.37	24	31.97	32.67
+911	58	81.79	22	85.96	85.98
+913	58	16.5	30	19.3	19.8
+914	59	40.05	24	39.52	39.66
+917	59	71.13	22	71.98	72.22
+919	59	19	30	19.1	19.9
+920	59	72.63	25	73.65	73.89
+921	59	91.67	15	91.73	91.53
+923	59	128.82	21	124.55	128.01
+924	59	76.62	14	77.95	77.55
+925	59	1.49	29	1.67	1.67
+926	59	68.71	16	68.62	69.28
+927	59	1.79	20	1.82	2.62
+928	59	12.07	23	11.66	10.05
+929	59	1.6	27	1.58	1.56
+930	60	88.22	15	86.61	85.98
+932	60	129.83	21	126.74	121.31
+933	60	82.6	14	81.46	81.74
+934	60	0.48	29	0.03	1.58
+935	60	65.09	16	64.44	64.25
+936	60	-1.12	20	1.05	2.05
+937	60	4.47	23	5.81	5.33
+938	60	1.42	27	1.42	1.41
+939	60	33.5	24	31.74	30.4
+942	60	77.29	22	79.69	79.5
+944	60	17.9	30	19.1	20.7
+945	60	77.77	25	79.72	81.07
+946	61	66.18	16	65.54	65.14
+947	61	0.86	20	1.82	2.11
+948	61	7.82	23	9.6	8.87
+949	61	1.44	27	1.42	1.4
+950	61	35.52	24	34.87	34.02
+953	61	76.26	22	76.88	77.9
+955	61	18.5	30	20.7	20.8
+956	61	77.65	25	78.34	79.37
+957	61	86.77	15	85.24	84.16
+959	61	131.23	21	130.07	130.37
+960	61	82.36	14	81.84	83.12
+961	61	1.39	29	1.47	1.47
+962	62	17.6	30	21	21.5
+963	62	36.63	24	31.96	30.87
+967	62	2.67	26	0.63	1.39
+993	63	5.13	26	2.9	-0.11
+966	62	77.03	22	78.99	79.45
+968	62	77.63	25	80.08	80.58
+969	62	89.6	15	86.48	86.88
+1007	64	6.32	26	2.98	2.88
+971	62	131.66	21	127.27	124.15
+972	62	79.7	14	79.62	80.84
+973	62	0.6	29	1.08	1.13
+974	62	67.23	16	65.18	65.28
+975	62	5.01	20	5.91	6.06
+976	62	11.72	23	11.75	11.9
+977	62	1.48	27	1.41	1.41
+978	63	72.87	25	75.6	79.27
+979	63	99.68	15	98.25	93.52
+1018	65	1.97	26	1.6	0.25
+981	63	122.61	21	127.05	118.23
+982	63	76.55	14	76.72	76.31
+983	63	1.45	29	1.78	2.86
+984	63	72.75	16	71.88	68.92
+985	63	2.98	20	3.96	5.25
+986	63	9.82	23	11.52	7.72
+987	63	1.5	27	1.47	1.38
+988	63	18.7	30	19.2	22.4
+989	63	37.19	24	36.92	30.15
+1034	66	6.27	26	5.3	6.73
+1053	67	7.88	26	8.05	9.22
+992	63	71.41	22	73.82	76.41
+994	64	76.67	25	76.34	77.03
+1070	68	0.72	26	1.44	-1.64
+996	64	132.36	21	132.37	131.79
+997	64	82.38	14	78.73	78.89
+998	64	0.61	29	0.6	1.02
+999	64	89.92	15	90.48	90.04
+1000	64	4.29	20	3.05	5.28
+1001	64	3.27	23	7.36	6.21
+1002	64	1.52	27	1.52	1.51
+1003	64	69.14	16	70.78	70.64
+1006	64	76.06	22	75.75	76.01
+1008	64	16.5	30	17.2	18.7
+1009	64	39.64	24	41.03	39.39
+1010	65	64.63	16	65.06	63.23
+1011	65	2.11	20	2.69	5.2
+1012	65	4.96	23	3.2	1.73
+1013	65	1.4	27	1.39	1.29
+1014	65	28.7	24	27.96	22.14
+1017	65	75.87	22	75.86	77.75
+1019	65	21.3	30	22.5	26.3
+1020	65	77.29	25	77.55	79.49
+1021	65	84.08	15	84.4	81.14
+1023	65	120.08	21	119.38	113.92
+1024	65	77.84	14	77.46	78
+1025	65	1.41	29	1.69	1.74
+1026	66	70.9	16	70.53	71.21
+1027	66	5.69	20	6.28	6.81
+1028	66	9.88	23	9.96	11.24
+1029	66	1.6	27	1.6	1.59
+1030	66	42.08	24	42.74	41
+1033	66	72.55	22	73.59	72.54
+1035	66	18.3	30	17.6	19.8
+1036	66	72.74	25	74.57	73.99
+1037	66	93.56	15	92.1	92.77
+1039	66	128.16	21	128.4	125.64
+1040	66	78.82	14	78.88	79.27
+1041	66	0.19	29	0.98	1.45
+1042	67	115.65	21	113.79	108.48
+1043	67	86.69	14	86.17	87.27
+1044	67	1.11	29	1.26	2.09
+1045	67	87.47	15	88.97	87.96
+1047	67	2.9	23	3.01	3.79
+1048	67	1.34	27	1.35	1.29
+1049	67	64.19	16	65.36	64.88
+1050	67	-1.32	20	-0.74	0.43
+1052	67	78.81	22	78.12	78.05
+1054	67	24.2	30	25	27.8
+1055	67	26.66	24	26.96	23.26
+1057	67	79.92	25	79.38	80.14
+1058	68	76.84	25	77.36	79.87
+1059	68	124.41	21	117.49	117.25
+1060	68	76.19	14	76.56	75.75
+1061	68	1.37	29	2.24	2.48
+1062	68	86.93	15	89.43	88.18
+1064	68	6.13	23	2.13	2.82
+1065	68	1.47	27	1.43	1.36
+1066	68	67.35	16	67.67	66.82
+1067	68	0.37	20	0.94	-0.48
+1069	68	75.47	22	75.12	77.39
+1071	68	20.4	30	22.7	25
+1072	68	34.71	24	33.11	29.96
+1074	69	73.89	14	73.86	75.44
+1075	69	0.7	29	1.25	1.62
+1076	69	92.34	15	94.79	94.57
+1078	69	119.53	21	118.3	113.61
+1079	69	1.48	27	1.52	1.43
+1080	69	69.14	16	71.55	71.22
+1081	69	2.01	20	3.47	2.38
+1082	69	4.22	23	4.82	5.04
+1083	69	73.1	22	71.61	73.42
+1085	69	22.2	30	20	24.3
+1086	69	34.89	24	36.91	33.4
+1084	69	0.79	26	2.25	2.03
+1105	70	5.84	26	7.62	0.59
+1089	69	73.8	25	72.86	75.03
+1090	70	80.61	25	80.87	84.92
+1091	70	88.54	15	91.92	89.95
+1110	71	4.9	26	3.87	2.68
+1093	70	123.37	21	121.62	116.76
+1094	70	85.52	14	87.29	84
+1095	70	0.94	29	1.2	1.52
+1096	70	65.24	16	66.51	64.56
+1097	70	6.04	20	6.99	7.23
+1098	70	1.01	23	3.3	-0.32
+1099	70	1.36	27	1.37	1.29
+1100	70	21.3	30	21.9	25.8
+1101	70	28.58	24	29.7	25.33
+1126	72	6.04	26	5.56	5.51
+1104	70	79.67	22	79.67	83.41
+1106	71	33.3	24	31.64	30.65
+1168	74	4.77	26	4.57	5.05
+1184	75	7.68	26	5.38	3.21
+1109	71	74.27	22	77.14	76.13
+1111	71	21.2	30	21.2	24
+1112	71	75.4	25	78.38	77.73
+1113	71	86.28	15	84.26	84.83
+1199	76	0.31	26	0.14	2.24
+1115	71	126.71	21	126.46	112.78
+1116	71	79.17	14	81	78.81
+1117	71	1.13	29	1.24	1.6
+1118	71	67.6	16	65.19	66.63
+1119	71	3.92	20	4.55	6.01
+1120	71	3.8	23	2.25	2.24
+1121	71	1.43	27	1.38	1.42
+1122	72	64.52	16	64.32	64.07
+1123	72	3.48	20	4.19	3.94
+1124	72	6.62	23	6.42	4.74
+1125	72	1.39	27	1.39	1.38
+1127	72	21.6	30	20.6	22
+1128	72	30.03	24	30.94	29.83
+1131	72	79.54	22	80.88	81.86
+1132	72	81.03	25	82.86	83.86
+1133	72	1.49	29	1.98	2
+1134	72	86	15	86.78	85.67
+1136	72	120.32	21	124.03	122.24
+1137	72	85.58	14	86.44	87.37
+1154	74	78.52	25	79.28	80.2
+1155	74	86.15	15	87.54	86.45
+1157	74	118.17	21	116.23	109.53
+1158	74	81.37	14	81.99	83.55
+1159	74	1.91	29	1.86	1.7
+1160	74	65.68	16	66.07	64.43
+1161	74	3.35	20	2.98	4.36
+1162	74	11.12	23	12.05	10.02
+1163	74	1.38	27	1.36	1.29
+1164	74	28.14	24	26.72	22.16
+1167	74	76.61	22	77.43	78.5
+1169	74	23.6	30	23.7	26.9
+1170	75	79	25	79.4	83.54
+1171	75	92.59	15	92.87	91.35
+1173	75	120.14	21	123.49	118.12
+1174	75	85.3	14	84.18	85.62
+1175	75	1.38	29	0.59	1.13
+1176	75	68.44	16	68.96	66.66
+1177	75	2.03	20	2.78	4.75
+1178	75	4.8	23	2.92	-0.77
+1179	75	1.43	27	1.42	1.31
+1180	75	33.93	24	34.51	28.26
+1183	75	77.62	22	78.81	82.41
+1185	75	20.9	30	22.2	25.4
+1186	76	85.35	15	85.51	83.88
+1188	76	113.58	21	109.74	103.33
+1189	76	80.84	14	81.12	83.68
+1190	76	1.76	29	1.96	2.6
+1191	76	63.36	16	62.61	62.91
+1192	76	2.51	20	2.94	2.95
+1193	76	2.95	23	3.1	1.74
+1194	76	1.33	27	1.3	1.26
+1195	76	24.98	24	22.67	19.8
+1198	76	80.52	22	80.98	81.44
+1200	76	24.3	30	24.9	28.3
+1201	76	82.29	25	82.94	84.04
+1202	77	76.18	25	78.61	77.13
+1203	77	81.48	14	82.97	81.39
+1204	77	1.28	29	1.02	1.17
+1205	77	89.45	15	86.67	86.68
+1213	77	6.58	26	5.38	5.43
+1207	77	126.03	21	125.64	124.47
+1208	77	1.47	27	1.43	1.46
+1209	77	65.71	16	64.17	65.16
+1210	77	3.77	20	4.65	6.09
+1211	77	6.45	23	4.97	4.04
+1212	77	74.9	22	77.59	75.95
+1214	77	20.8	30	22	21.7
+1215	77	33.5	24	31.38	33.1
+1229	78	2.77	26	2.24	2.3
+1247	79	4.54	26	7.51	6.93
+1218	78	78.48	25	79.74	82.25
+1219	78	80.22	14	80.99	82.77
+1220	78	1.03	29	0.99	1.78
+1221	78	87.09	15	83.7	82.43
+1265	80	5.27	26	3	3.63
+1223	78	121.45	21	122.28	121.62
+1224	78	1.45	27	1.42	1.35
+1225	78	64.39	16	64.42	63.71
+1226	78	2.66	20	3.11	4.28
+1227	78	7.44	23	9.42	10.05
+1228	78	77.45	22	78.75	80.47
+1230	78	20.4	30	19.4	22.4
+1231	78	31.95	24	31.93	27.3
+1275	81	4.49	26	4.23	5.35
+1292	82	5.15	26	4.86	1.64
+1234	79	83.17	15	85.48	84.84
+1309	83	5.02	26	3.32	2.32
+1236	79	126.39	21	123.98	122.27
+1237	79	79.75	14	82.48	82.46
+1238	79	0.94	29	1.24	0.84
+1239	79	64.56	16	66.55	65.79
+1240	79	4.02	20	4.84	5.14
+1241	79	4.08	23	6.76	6.38
+1242	79	1.43	27	1.41	1.4
+1243	79	30.81	24	31.69	30.07
+1316	84	3.24	26	4.04	4.94
+1246	79	75.21	22	74.97	75.54
+1248	79	20.1	30	21.6	22.1
+1249	79	76.16	25	76.22	76.37
+1250	80	79.63	25	81.84	82.84
+1251	80	88.95	15	89.67	89.17
+1253	80	118.04	21	120.59	122.04
+1254	80	83.63	14	83.11	84.48
+1255	80	1.27	29	1.73	1.99
+1256	80	65.16	16	64.75	64.77
+1257	80	1.69	20	2.13	4.25
+1258	80	5.85	23	6.85	4.72
+1259	80	1.35	27	1.33	1.33
+1260	80	24.7	30	23.9	24.6
+1261	80	28.55	24	28.33	27.64
+1264	80	78.36	22	80.11	80.85
+1266	81	65.33	16	63.23	62.54
+1267	81	1.74	20	3.39	2.8
+1268	81	10.15	23	8.52	7.04
+1269	81	1.52	27	1.49	1.39
+1270	81	18.5	30	19	22.9
+1271	81	34.44	24	31.46	27.52
+1274	81	77.94	22	78.53	80.7
+1276	81	78.41	25	79.61	82.39
+1277	81	86.75	15	84.49	83.04
+1279	81	127.02	21	123.11	118.39
+1280	81	82.43	14	82.76	86.05
+1281	81	0.48	29	1.09	1.68
+1282	82	75.01	25	77.3	80.72
+1283	82	1.73	29	2.01	2
+1284	82	86.24	15	86.49	84.37
+1286	82	125.73	21	121.63	118.05
+1287	82	78.44	14	80.15	80.36
+1288	82	66.14	16	65.41	63.58
+1289	82	2.47	20	2.5	2.8
+1290	82	6.08	23	3.25	4.28
+1291	82	1.47	27	1.43	1.34
+1293	82	18.2	30	21.6	23.3
+1294	82	32.84	24	30.38	25.42
+1297	82	73.29	22	75.29	78.72
+1298	83	75.61	25	76.49	79.41
+1299	83	78.95	14	78.16	79.59
+1300	83	1.68	29	1.64	2.15
+1301	83	86.88	15	88.04	84.08
+1303	83	122.97	21	121.68	117.15
+1304	83	1.47	27	1.44	1.37
+1305	83	65.38	16	66.48	64.56
+1306	83	1.56	20	2.82	3.02
+1307	83	5.62	23	5.26	4.33
+1308	83	73.93	22	74.85	77.27
+1310	83	18.7	30	20.9	22.3
+1311	83	32.38	24	31.51	27.28
+1315	84	70.25	22	72.64	72.36
+1317	84	14.9	30	14.1	14.9
+1318	84	42.2	24	42.3	43.15
+1320	84	71.53	25	74.45	74.21
+1321	84	134.09	21	136.07	132.78
+1322	84	73.49	14	76.68	77.3
+1323	84	1.28	29	1.81	1.85
+1324	84	91.48	15	90.85	90.78
+1331	85	2.27	26	1.41	0.59
+1326	84	13.02	23	10.25	10.26
+1327	84	1.64	27	1.66	1.67
+1328	84	70.04	16	69	69.66
+1329	84	6.11	20	4.64	5.98
+1330	85	70.55	22	71.86	74.8
+1332	85	19.3	30	19.7	22.2
+1333	85	34.72	24	32.53	28.81
+1350	86	5.73	26	2.34	1.84
+1375	87	3.1	26	4.07	3.28
+1336	85	72.21	25	73.82	76.98
+1337	85	72.82	14	73.27	75.39
+1338	85	1.66	29	1.95	2.18
+1339	85	87.05	15	84.4	82.86
+1383	88	4.17	26	4.59	2.52
+1341	85	126.8	21	123.46	119.7
+1342	85	1.52	27	1.47	1.4
+1343	85	67.58	16	66.24	64.2
+1344	85	1.53	20	2.88	3.79
+1345	85	10.8	23	10.32	11.15
+1346	86	38.19	24	34.85	32.42
+1422	90	7.34	26	5.53	6.25
+1349	86	72.57	22	76.49	76.68
+1351	86	19.6	30	19.7	22.3
+1352	86	74	25	77.56	78.55
+1353	86	90.23	15	86.99	86.14
+1440	91	2.84	26	3.16	4.36
+1355	86	126.27	21	129.42	123.88
+1356	86	78.3	14	78.83	78.52
+1357	86	1.43	29	1.07	1.87
+1358	86	70.55	16	68.07	67.7
+1359	86	3.16	20	4.59	5.21
+1360	86	9.77	23	11.11	11.2
+1361	86	1.52	27	1.45	1.41
+1362	87	80.55	25	80.77	84.84
+1364	87	121.31	21	120.45	120.78
+1365	87	82.75	14	83.29	85.63
+1366	87	0.91	29	1.54	2.49
+1367	87	92.88	15	94.95	91.64
+1368	87	1.48	20	2.96	4.02
+1369	87	1.5	23	4.24	3.36
+1370	87	1.39	27	1.41	1.34
+1371	87	65.95	16	67.47	64.46
+1374	87	79.64	22	79.22	82.35
+1376	87	20.5	30	20.9	22
+1377	87	31.67	24	31.91	28.35
+1378	88	1.41	27	1.4	1.37
+1379	88	64.07	16	65.94	65.01
+1380	88	2.3	20	2.97	3.72
+1381	88	4.76	23	5.43	2.83
+1382	88	82.42	22	80.92	83.02
+1384	88	21.2	30	22.1	23.3
+1385	88	32.35	24	31.6	29.2
+1388	88	83.54	25	82.4	84.83
+1389	88	86.59	14	85.5	85.54
+1390	88	1.12	29	1.48	1.81
+1391	88	86.99	15	89.23	86.2
+1393	88	118.97	21	114.75	115.61
+1411	90	119.59	21	115.8	116.28
+1412	90	81.23	14	81.64	84.45
+1413	90	0.82	29	0.97	1.23
+1414	90	86.17	15	87.33	85.46
+1415	90	2.12	20	1.86	2.66
+1416	90	8.82	23	9.08	10.87
+1417	90	1.46	27	1.42	1.37
+1418	90	66.44	16	66.37	64.63
+1421	90	73.89	22	76.1	78.19
+1423	90	22.3	30	23.3	24.6
+1424	90	32.75	24	30.94	28.47
+1425	90	74.72	25	77.07	79.43
+1426	91	80.01	25	80.03	80.7
+1427	91	84.13	15	83.03	83.31
+1429	91	118.34	21	121.98	120.35
+1430	91	81.48	14	81.3	82.93
+1431	91	1.36	29	1.9	2.12
+1432	91	63.69	16	63.68	63.28
+1433	91	2.34	20	3.23	4
+1434	91	4.63	23	4.95	4.83
+1435	91	1.41	27	1.42	1.36
+1436	91	28.73	24	28.97	26.04
+1439	91	78.64	22	78.14	78.58
+1441	91	21.2	30	20.7	22.3
+1442	92	80.82	25	79.81	84.06
+1443	92	125.31	21	124.75	115.57
+1444	92	84.85	14	84.73	86.94
+1445	92	1.2	29	1.21	1.87
+1446	92	91.47	15	91.32	88.39
+1454	92	5.22	26	6.13	4.75
+1448	92	6.63	23	9.65	9.83
+1449	92	1.43	27	1.45	1.35
+1450	92	66.76	16	67.27	64.25
+1451	92	3.52	20	3.63	4.62
+1468	93	5.7	26	5.13	2.34
+1453	92	79.62	22	78.6	82.19
+1455	92	19.9	30	19.9	23.9
+1456	92	34.03	24	34.23	28.1
+1488	94	6.51	26	6.92	5.93
+1458	93	81.94	14	82.5	82.24
+1459	93	0.97	29	0.88	1.25
+1460	93	85.5	15	87.37	84.24
+1504	95	6.78	26	4.91	4.55
+1462	93	121.38	21	117.26	115.55
+1463	93	1.43	27	1.41	1.34
+1464	93	65.34	16	66.51	63.57
+1465	93	3.17	20	4.69	4.74
+1466	93	4.78	23	6.84	6.21
+1467	93	76.24	22	77.37	79.9
+1469	93	20.5	30	22.6	23.5
+1470	93	30.78	24	30.91	26.07
+1510	96	5.65	26	3.88	2.57
+1535	97	7.63	26	7.36	6.46
+1473	93	77.2	25	78.25	81.15
+1474	94	78.31	25	80.52	81.54
+1475	94	87.88	15	88.4	87.32
+1541	98	3.84	26	4.3	4.55
+1477	94	116.1	21	117.67	112.58
+1478	94	84.01	14	86.66	86.44
+1479	94	0.81	29	0.77	1.03
+1480	94	66.81	16	66.39	65.95
+1481	94	2.21	20	1.17	2.56
+1482	94	7.94	23	8.61	9.51
+1483	94	1.37	27	1.33	1.32
+1484	94	28.74	24	26.77	24.87
+1487	94	77.5	22	79.75	80.51
+1489	94	22.2	30	23.8	25.7
+1490	95	73.59	25	79.71	81.1
+1491	95	93.07	15	86.62	85.74
+1493	95	124.02	21	117.36	114.74
+1494	95	80.9	14	83.82	85.2
+1495	95	-0.53	29	0.81	0.45
+1496	95	70.71	16	65.99	65.13
+1497	95	2.34	20	2.99	3.46
+1498	95	12.7	23	9.18	10.46
+1499	95	1.46	27	1.38	1.36
+1500	95	35.24	24	28.96	27.31
+1503	95	74.11	22	78.9	80.65
+1505	95	21.9	30	22	24.4
+1506	96	37.58	24	36.21	30.06
+1509	96	70.38	22	72.03	75.51
+1511	96	21.3	30	21.7	24.5
+1512	96	70.99	25	73.01	77.64
+1513	96	94.82	15	93.96	91.93
+1515	96	121.34	21	121.77	118.48
+1516	96	76.03	14	75.91	78.09
+1517	96	0.6	29	0.98	2.13
+1518	96	74.23	16	73.07	70.07
+1519	96	5.37	20	4.15	4.83
+1520	96	13.16	23	13.78	8.71
+1521	96	1.5	27	1.48	1.35
+1522	97	87.07	15	86.52	84.64
+1524	97	116.1	21	118.33	116.24
+1525	97	85.18	14	85.66	85.89
+1526	97	0.75	29	0.72	1.24
+1527	97	65.52	16	65.34	64.84
+1528	97	1.15	20	2.82	4.46
+1529	97	6.46	23	5.13	5.88
+1530	97	1.43	27	1.43	1.36
+1531	97	30.28	24	30.5	27.52
+1534	97	77.55	22	78.3	79.43
+1536	97	21.9	30	21.9	24
+1537	97	78.3	25	79.02	80.67
+1540	98	78	22	78.99	79.3
+1542	98	19	30	21.7	25.6
+1543	98	30.23	24	27.35	22.11
+1544	98	79.48	25	80.35	81.68
+1546	98	121.69	21	119.99	111.45
+1547	98	81.85	14	83.29	83.85
+1548	98	1.47	29	1.36	2.38
+1549	98	86.67	15	86.45	84.57
+1550	98	2.17	20	3.39	3.45
+1551	98	8.78	23	6.98	7.28
+1552	98	1.41	27	1.38	1.29
+1553	98	63.07	16	63.03	61.94
+1578	100	3.99	26	2.56	0.15
+1570	100	63.09	16	64.28	62.37
+1571	100	-0.18	20	1.9	3.04
+1572	100	9.46	23	11.52	8.8
+1573	100	1.49	27	1.48	1.45
+1574	100	33.45	24	33.16	31.1
+1600	101	7.54	26	7.73	6.51
+1609	102	3.69	26	4.03	3.21
+1577	100	77.48	22	76.8	78.11
+1579	100	18.2	30	19.5	20.2
+1580	100	78.96	25	78.34	80.25
+1581	100	84.62	15	85.32	83.08
+1626	103	7.4	26	7.35	6.22
+1583	100	124.37	21	122.88	122.38
+1584	100	81.47	14	79.35	78.26
+1585	100	1.48	29	1.55	2.14
+1586	101	77.33	25	77.62	78.78
+1587	101	92.38	15	91.1	90.14
+1639	104	4.16	26	4.52	5.12
+1589	101	125.58	21	123.09	121.49
+1590	101	85.39	14	85.43	85.4
+1591	101	-0.51	29	-0.09	-0.1
+1592	101	71.14	16	70.36	69.9
+1593	101	2.52	20	2.47	2.73
+1594	101	8.03	23	9	6.06
+1595	101	1.47	27	1.48	1.42
+1596	101	38.03	24	35.74	33.6
+1661	105	6.81	26	5.55	4.63
+1680	106	2.52	26	4.01	1.46
+1599	101	77.84	22	77.71	78.88
+1601	101	18.9	30	19.6	21.8
+1602	102	2.53	20	3.01	3.92
+1603	102	7.4	23	5.91	7.27
+1604	102	1.32	27	1.34	1.33
+1605	102	61.02	16	62.63	62.23
+1608	102	82.64	22	82.9	83.17
+1610	102	23.7	30	23.2	25
+1611	102	25.45	24	26.68	25.22
+1612	102	83.56	25	84.06	84.28
+1614	102	120.2	21	118.4	114.8
+1615	102	86.33	14	86.93	86.38
+1616	102	0.92	29	1.16	1.11
+1617	102	81.68	15	81.81	81.37
+1618	103	67.19	16	65.86	64.44
+1619	103	0.83	20	0.14	0.58
+1620	103	10.23	23	8.89	9.55
+1621	103	1.44	27	1.42	1.36
+1622	103	32.93	24	30.65	28.14
+1625	103	75.39	22	77.13	78.92
+1627	103	21.5	30	22.8	24.5
+1628	103	74.77	25	77.28	79
+1629	103	90.03	15	87.72	86.41
+1631	103	117.53	21	115.62	118.31
+1632	103	82.78	14	84.48	85.14
+1633	103	-0.61	29	0.16	0.08
+1634	104	21.1	30	22.4	23.9
+1635	104	29.48	24	29.74	30.35
+1638	104	75.76	22	75.88	75.28
+1640	104	77.95	25	77.36	77.58
+1641	104	88.13	15	86.62	89.09
+1643	104	115.19	21	114.35	116.1
+1644	104	79.92	14	80.4	80.4
+1645	104	2.19	29	1.48	2.3
+1646	104	65.13	16	65.65	67.69
+1647	104	3.53	20	4.83	4.43
+1648	104	9.1	23	7.45	8
+1649	104	1.43	27	1.42	1.4
+1650	105	120.12	21	115.92	113.1
+1651	105	89.06	14	89.89	90.04
+1652	105	0.49	29	0.93	1.46
+1653	105	84.69	15	85.15	83.39
+1655	105	5.59	23	4.97	4.76
+1656	105	1.3	27	1.28	1.25
+1657	105	60.8	16	59.75	59.25
+1658	105	3.87	20	4.15	5.05
+1660	105	82.26	22	84.34	85.41
+1662	105	23	30	25.1	26.1
+1663	105	24.06	24	22.16	21.41
+1665	105	82.74	25	85.27	86.87
+1666	106	83.12	15	81.11	78.06
+1668	106	116.51	21	111.65	108.49
+1669	106	83.43	14	85.36	86.11
+1670	106	1.45	29	1.76	2.29
+1671	106	63.24	16	62.03	59.66
+1672	106	3.37	20	4.9	4
+1673	106	6.97	23	5.5	5.15
+1674	106	1.36	27	1.35	1.3
+1675	106	24	30	23	26.5
+1676	106	27.12	24	24.88	22.05
+1679	106	80.92	22	81.35	84.65
+1681	106	82.36	25	83.11	86.94
+1682	107	83.33	15	85.14	86.35
+1695	107	3.43	26	4.32	5.63
+1684	107	122.43	21	123.44	117.54
+1685	107	85.95	14	85.76	85.94
+1686	107	0.51	29	1.11	1.28
+1687	107	61.52	16	63.14	62.8
+1688	107	3.9	20	3.32	2.53
+1689	107	5.6	23	6.45	6.9
+1690	107	1.34	27	1.36	1.34
+1691	107	26.53	24	28.18	25.56
+1711	108	0.69	26	1.22	0.39
+1727	109	3.7	26	1.1	6.01
+1694	107	82.52	22	81.44	80.3
+1696	107	21	30	21.4	21.2
+1697	107	83.03	25	82.55	81.59
+1698	108	85.52	15	84.15	82.85
+1745	110	5.44	26	4.05	4.21
+1700	108	123.3	21	120.4	119.55
+1701	108	82.96	14	81.7	82.1
+1702	108	0.01	29	0.69	1.3
+1703	108	62.38	16	61.61	60.33
+1704	108	2.21	20	2.47	3.29
+1705	108	2.68	23	4.76	6.09
+1706	108	1.36	27	1.33	1.32
+1707	108	28.56	24	25.71	24.8
+1754	111	2.46	26	1.92	2.84
+1775	112	2.96	26	3.41	3.88
+1710	108	82.27	22	80.48	81.71
+1712	108	21.3	30	22.6	22.5
+1713	108	82.28	25	81.17	83
+1714	109	83.69	15	87.09	87.09
+1791	113	2.65	26	3.04	0.54
+1716	109	123.35	21	133.2	121.19
+1717	109	81.67	14	80.83	85.71
+1718	109	1.73	29	0.86	1.88
+1719	109	65.7	16	67.11	66.85
+1720	109	1.71	20	1.82	2.64
+1721	109	4.32	23	5.76	6.28
+1722	109	1.47	27	1.52	1.47
+1723	109	35.86	24	37.94	34.35
+1796	114	7.06	26	7.4	7.02
+1726	109	77.97	22	79.74	79.7
+1728	109	18.9	30	19.1	21.4
+1729	109	79.7	25	80.6	81.58
+1730	110	75.36	25	75.42	77.95
+1731	110	87.11	15	86.3	86.99
+1733	110	121.42	21	121.28	116.81
+1734	110	80.17	14	79.07	81.62
+1735	110	0.63	29	0.4	0.54
+1736	110	69.07	16	68.64	69.16
+1737	110	0.73	20	1.24	1.16
+1738	110	9.16	23	9.92	11.48
+1739	110	1.49	27	1.51	1.42
+1740	110	21.3	30	20.5	23.4
+1741	110	34.53	24	35.01	32.71
+1744	110	74.73	22	75.02	77.41
+1746	111	62.79	16	61.57	63.12
+1747	111	4.24	20	5.34	4.57
+1748	111	1.55	23	1.08	2.71
+1749	111	1.4	27	1.36	1.35
+1750	111	27.71	24	25.43	25.6
+1753	111	77.24	22	78.84	78.83
+1755	111	21.8	30	23.1	23.5
+1756	111	78.67	25	80.28	80.7
+1757	111	84.22	15	82.44	84.28
+1759	111	117.32	21	113.31	117.38
+1760	111	79.7	14	80.76	81.67
+1761	111	1.43	29	1.44	1.87
+1762	112	86.51	15	86.49	86.39
+1764	112	122.75	21	125.37	125.12
+1765	112	78.8	14	80.37	82.34
+1766	112	1.78	29	2.04	1.74
+1767	112	64.07	16	64.2	64.87
+1768	112	4.26	20	3.17	3.97
+1769	112	7.52	23	8.48	9.84
+1770	112	1.44	27	1.41	1.39
+1771	112	30.85	24	31.1	31.25
+1774	112	75.85	22	76.96	78.46
+1776	112	20.1	30	20.3	20.2
+1777	112	77.63	25	79	80.2
+1778	113	88.92	15	89.72	87.35
+1780	113	114.3	21	113.13	104.01
+1781	113	77.36	14	78.36	78.23
+1782	113	1.28	29	1.17	2.26
+1783	113	66.69	16	67.01	65.28
+1784	113	3.36	20	4.48	4.99
+1785	113	7.92	23	6.59	5.91
+1786	113	1.4	27	1.43	1.31
+1787	113	30.48	24	30.63	24.08
+1790	113	74.7	22	75.32	77.69
+1792	113	23.6	30	23	27.6
+1793	113	75.98	25	76.5	79.95
+1795	114	79.62	22	81.41	83.17
+1797	114	18	30	19.6	20.6
+1798	114	34.17	24	32.82	31.29
+1800	114	79.18	25	81.01	82.62
+1801	114	128.68	21	126.54	124.62
+1802	114	86.69	14	88.81	90.19
+1803	114	-0.44	29	-0.4	-0.55
+1804	114	91.31	15	90.65	89.31
+1819	115	5.46	26	4.48	3.96
+1806	114	5.54	23	7.75	6.75
+1807	114	1.42	27	1.39	1.36
+1808	114	66.98	16	66.99	66
+1809	114	2.49	20	2.71	3.48
+1810	115	68.51	16	68.61	69.71
+1811	115	0.58	20	2.18	3.1
+1812	115	7.3	23	10.31	9.82
+1813	115	1.48	27	1.47	1.48
+1814	115	20.1	30	21.8	22.1
+1815	115	34.96	24	34.78	35.71
+1840	116	3.43	26	2.72	1.01
+1848	117	6.92	26	6.21	6.36
+1818	115	76.71	22	77.1	77.67
+1820	115	77.47	25	77.68	78.2
+1821	115	92.66	15	91.49	93.43
+1867	118	2.35	26	3.91	2.79
+1823	115	118.9	21	118.09	115.98
+1824	115	82.17	14	81.59	81.62
+1825	115	0.76	29	0.57	0.53
+1826	116	76.81	25	81.14	80.51
+1827	116	81.69	15	82.17	84.59
+1880	119	4.59	26	1.63	3.26
+1829	116	124.84	21	119.96	118.15
+1830	116	78.85	14	82.71	79.75
+1831	116	1.39	29	1.15	1.78
+1832	116	63.46	16	62.37	63.59
+1833	116	0.46	20	1.89	2.21
+1834	116	5.83	23	6.42	6.76
+1835	116	1.48	27	1.41	1.41
+1836	116	31.73	24	28.97	29.05
+1894	120	2.9	26	4.83	2.93
+1921	121	7.47	26	6.13	5.2
+1839	116	75.42	22	80	78.74
+1841	116	19.5	30	20.8	21
+1842	117	6.89	23	6.17	5.04
+1843	117	1.39	27	1.32	1.32
+1844	117	62.2	16	61.14	62.75
+1845	117	3.04	20	3.28	3.19
+1847	117	78.05	22	79.8	81.65
+1849	117	19.6	30	21.3	22.9
+1850	117	28.19	24	25.04	26.25
+1852	117	79.37	25	81.51	83.37
+1853	117	125	21	118.25	120.03
+1854	117	84.96	14	86.01	88.02
+1855	117	1.32	29	1.71	1.72
+1856	117	81.67	15	81.78	82.23
+1858	118	1.25	29	1.22	1.51
+1859	118	85.61	15	85.61	86.51
+1861	118	122.54	21	120.95	119.01
+1862	118	81.4	14	82.45	80.52
+1863	118	64.99	16	66.07	67.31
+1864	118	2.15	20	2.88	4.81
+1865	118	6.77	23	6.18	9.3
+1866	118	1.43	27	1.41	1.44
+1868	118	20.9	30	22.4	22.9
+1869	118	30.82	24	30.25	31.62
+1872	118	79.05	22	78.54	77.73
+1873	118	80.3	25	79.76	79.24
+1874	119	6.17	23	4.39	4.84
+1875	119	1.44	27	1.38	1.38
+1876	119	64.16	16	62.85	63.68
+1877	119	3.83	20	4.44	4.36
+1879	119	75.91	22	78.59	78.23
+1881	119	17.7	30	21.5	22.1
+1882	119	33.09	24	29.21	28.3
+1884	119	77.39	25	80.11	79.94
+1885	119	129.2	21	123.42	118.97
+1886	119	80.5	14	80.22	81.49
+1887	119	1.47	29	1.52	1.71
+1888	119	86.12	15	84.94	85.59
+1890	120	42.98	24	41.71	39.04
+1893	120	69.8	22	71.67	73.64
+1895	120	19	30	18.8	21.2
+1896	120	69.93	25	72.24	73.93
+1897	120	93.26	15	95.52	94.59
+1899	120	121.71	21	120.89	117.71
+1900	120	72.71	14	76.49	76.56
+1901	120	0.12	29	0.57	0.3
+1902	120	74.53	16	74.72	73.45
+1903	120	2.89	20	3.04	3.05
+1904	120	11.05	23	10.09	10.94
+1905	120	1.63	27	1.6	1.57
+1906	121	73.41	25	75.2	77.43
+1907	121	90.15	15	87.79	84.66
+1909	121	125.8	21	117.24	118.98
+1910	121	79.43	14	79.15	80.64
+1911	121	1.46	29	2.19	2
+1912	121	70.53	16	68.63	66.13
+1913	121	2.88	20	2.75	3.63
+1914	121	10.57	23	12.77	12.26
+1915	121	1.57	27	1.55	1.45
+1916	121	19.8	30	20.2	22.9
+1917	121	38.88	24	37.16	32.05
+1920	121	71.96	22	73.02	75.44
+1922	122	75.55	25	77.18	77.62
+1923	122	76.42	14	76.16	77.17
+1924	122	1.8	29	2.06	2.01
+1925	122	80.78	15	82.68	83.36
+1933	122	2.67	26	1.03	1.56
+1927	122	126.72	21	125.83	118.82
+1928	122	1.53	27	1.49	1.5
+1929	122	64.15	16	64.46	64.72
+1930	122	2.77	20	3.61	3.73
+1931	122	3.76	23	4.46	4.73
+1932	122	73.75	22	75.13	75.61
+1934	122	17.4	30	18.2	18.7
+1935	122	32.89	24	31.8	31.61
+1951	123	7.46	26	4.94	3.17
+1965	124	4.73	26	2.57	1.79
+1938	123	91.7	15	90.51	88.68
+1972	125	2.95	26	3.38	-1.11
+1940	123	117.53	21	116.96	116.1
+1941	123	80.26	14	77.39	77.2
+1942	123	0.82	29	1.04	1.71
+1943	123	70.56	16	71.49	70.11
+1944	123	2.75	20	1.97	3.51
+1945	123	6.38	23	7.63	8.6
+1946	123	1.5	27	1.5	1.44
+1947	123	36.71	24	36.36	33.73
+1990	126	6.26	26	6.53	5.47
+2010	127	1.37	26	0.59	-0.41
+1950	123	72.8	22	72.45	74.02
+1952	123	20	30	20.8	21.8
+1953	123	73.62	25	73.49	75.74
+1954	124	77.04	25	77.83	80.84
+1955	124	79.69	14	78.62	80.85
+1956	124	2.08	29	1.77	1.79
+1957	124	90.41	15	91.06	89.33
+2022	128	0.42	26	2.46	2.69
+1959	124	114.61	21	115.22	112.86
+1960	124	1.43	27	1.45	1.37
+1961	124	67.44	16	67.76	66.15
+1962	124	1.67	20	2.06	2.1
+1963	124	4.99	23	3.12	0.15
+1964	124	74.96	22	76.05	79.06
+1966	124	23.3	30	23	25.7
+1967	124	31.16	24	31.66	28.85
+1971	125	76.93	22	75.89	79.19
+1973	125	19.1	30	19.5	21.5
+1974	125	33.67	24	32.95	26.02
+1976	125	77.74	25	77.26	81.17
+1977	125	122.02	21	121.11	114.28
+1978	125	79.88	14	79.26	78.08
+1979	125	0.8	29	1.37	1.98
+1980	125	89.79	15	89.09	84.88
+1982	125	4.9	23	6.44	5.5
+1983	125	1.49	27	1.51	1.38
+1984	125	66.69	16	66.67	63.25
+1985	125	2.1	20	3.28	3.48
+1986	126	40.92	24	42.95	42.08
+1989	126	75.95	22	76.55	76.88
+1991	126	16.5	30	16.9	18
+1992	126	75.49	25	76.47	76.71
+1993	126	96.05	15	93.49	94.14
+1995	126	132.83	21	131.91	133.07
+1996	126	82.21	14	83.07	82.36
+1997	126	-0.46	29	-0.08	-0.17
+1998	126	70.4	16	71.36	71.74
+1999	126	2.38	20	3.75	3.87
+2000	126	11.06	23	11.92	12.57
+2001	126	1.55	27	1.51	1.53
+2002	127	69.03	16	68.42	68.88
+2003	127	0.56	20	1.1	1.25
+2004	127	10.23	23	11.55	10.35
+2005	127	1.56	27	1.5	1.44
+2006	127	40	24	37.72	36.27
+2009	127	73.93	22	75.55	76.25
+2011	127	18.2	30	20	21.4
+2012	127	74.73	25	77.08	77.92
+2013	127	88.3	15	88.26	88.3
+2015	127	128.18	21	126.77	125.61
+2016	127	75.3	14	76.14	75.84
+2017	127	0.79	29	1.53	1.67
+2018	128	35.68	24	36.43	33.73
+2021	128	75.36	22	75.29	76.39
+2023	128	18.6	30	18.9	23.4
+2024	128	77.25	25	77.34	78.68
+2025	128	89.81	15	86.24	86.46
+2027	128	125.16	21	125.57	120.69
+2028	128	75.78	14	77.75	79.08
+2029	128	1.89	29	2.05	2.28
+2030	128	66.47	16	68.57	69.01
+2031	128	4.17	20	3.11	4.04
+2032	128	8.35	23	9.87	10.78
+2033	128	1.5	27	1.55	1.45
+2034	129	76.87	25	77.9	79.2
+2035	129	91.8	15	90.09	88.7
+2037	129	127.26	21	127.35	122.26
+2038	129	79.51	14	79.64	79.33
+2039	129	0.86	29	0.79	1.39
+2040	129	70.59	16	68.88	68.4
+2041	129	-0.12	20	1.96	2.87
+2042	129	12.5	23	7.44	8.08
+2043	129	1.47	27	1.45	1.4
+2044	129	37.8	24	35.73	33.12
+2048	129	3.5	26	2.53	1.52
+2054	130	4.26	26	4.03	2.78
+2047	129	76.01	22	77.11	77.81
+2049	129	17.7	30	18.6	21.2
+2050	130	27.44	24	25.14	23.47
+2075	131	5.22	26	1.65	2.75
+2090	132	5.27	26	4.1	3.51
+2053	130	78.91	22	80.52	82.35
+2055	130	22.7	30	23.6	26.1
+2056	130	79.29	25	81.51	83.49
+2057	130	85.63	15	82.85	83.29
+2106	133	3.85	26	4.26	1.72
+2059	130	120.92	21	116.71	114.85
+2060	130	83.17	14	84.55	85.13
+2061	130	0.38	29	0.99	1.14
+2062	130	63.57	16	62.23	62.2
+2063	130	-0.08	20	2.02	1.3
+2064	130	12.19	23	10.17	7
+2065	130	1.35	27	1.33	1.29
+2066	131	70.61	16	69.31	68.36
+2067	131	2.36	20	2.48	3.48
+2068	131	7	23	6.34	6.5
+2069	131	1.57	27	1.55	1.49
+2070	131	18.7	30	19.6	20.5
+2071	131	40.93	24	38.43	37.55
+2122	134	3.86	26	5.99	2.14
+2141	135	4.97	26	5.72	5.44
+2074	131	75.26	22	76.67	77.55
+2076	131	75.48	25	77.47	78.09
+2077	131	90.77	15	89.22	87.46
+2161	136	4.28	26	5.24	3.37
+2079	131	123.83	21	122.44	125.52
+2080	131	80.47	14	78.32	80.3
+2081	131	0.23	29	0.79	0.54
+2082	132	68.87	16	68.29	68.36
+2083	132	1.66	20	2.81	3.57
+2084	132	10.28	23	9.5	10.56
+2085	132	1.51	27	1.5	1.45
+2086	132	35.75	24	35.04	33.18
+2089	132	75.37	22	77.37	78.3
+2091	132	21.4	30	22.2	24.4
+2092	132	76.24	25	78.49	79.68
+2093	132	89.28	15	88.12	88.32
+2095	132	116.7	21	116.09	113.58
+2096	132	80.64	14	81.47	81.82
+2097	132	0.87	29	1.12	1.38
+2098	133	64.72	16	64.96	64.18
+2099	133	2.19	20	3.29	4.7
+2100	133	7.42	23	7.35	9.11
+2101	133	1.4	27	1.38	1.34
+2102	133	29.08	24	28.47	26.09
+2105	133	77.77	22	78.89	80.74
+2107	133	22.8	30	22.3	24.6
+2108	133	79.23	25	79.94	81.93
+2109	133	84.04	15	85.06	83.48
+2111	133	114.96	21	114.45	114.85
+2112	133	81.62	14	83.15	82.47
+2113	133	1.46	29	1.04	1.18
+2114	134	59.98	16	58.76	58.28
+2115	134	0.62	20	1.97	2.55
+2116	134	5.77	23	3.43	3.07
+2117	134	1.34	27	1.31	1.26
+2118	134	25.94	24	23.4	20.43
+2121	134	82.54	22	84.26	85.22
+2123	134	21	30	20.2	22.8
+2124	134	84.66	25	85.89	88.03
+2125	134	80.38	15	79.32	78.95
+2127	134	123.97	21	123.91	119.45
+2128	134	86.4	14	90.24	87.36
+2129	134	2.12	29	1.63	2.8
+2130	135	79.08	25	78.43	78.51
+2131	135	84.44	14	84.18	84.05
+2132	135	-0.39	29	-0.02	-0.1
+2133	135	88.37	15	88.12	89.31
+2135	135	115.22	21	111.05	107.04
+2136	135	1.37	27	1.37	1.32
+2137	135	65.67	16	65.75	66.82
+2138	135	0.35	20	0.08	1.03
+2139	135	5.81	23	7.3	8.02
+2140	135	79.47	22	78.46	78.61
+2142	135	25	30	24.8	27.6
+2143	135	27.66	24	26.75	24.1
+2146	136	78.99	25	80.82	81.84
+2147	136	91.43	15	91.4	90.7
+2149	136	120.24	21	118.59	118.45
+2150	136	82.83	14	85.74	84.77
+2151	136	0.45	29	0.33	0.44
+2152	136	66.33	16	65.73	66.04
+2153	136	1.85	20	1.74	2.83
+2154	136	10.49	23	10.6	9.58
+2155	136	1.45	27	1.46	1.42
+2156	136	22.1	30	20.8	23.4
+2157	136	33.08	24	32.73	31.93
+2160	136	78.54	22	80.49	81.4
+2174	137	4.03	26	2.62	1.84
+2163	137	119.08	21	116.25	112.05
+2164	137	87.58	14	85.95	86.95
+2165	137	0.27	29	0.44	0.47
+2166	137	83.53	15	85.22	83.62
+2167	137	3.2	20	4.03	3.86
+2168	137	4.82	23	6.77	6.86
+2169	137	1.33	27	1.33	1.28
+2170	137	62.14	16	63.6	62.4
+2189	138	4.2	26	2.24	2.27
+2208	139	6.79	26	5.07	2.47
+2173	137	83.55	22	83.33	85.1
+2175	137	24.7	30	24.8	28.2
+2176	137	25.59	24	26.32	23.31
+2177	137	83.82	25	83.77	85.57
+2178	138	111.5	21	117	114.55
+2179	138	83.55	14	83.27	83.51
+2180	138	1.09	29	0.33	1.42
+2181	138	85.6	15	87.28	86.77
+2223	140	1.67	26	2.75	2.97
+2183	138	8.6	23	5.77	6.27
+2184	138	1.37	27	1.39	1.4
+2185	138	63.02	16	65.13	64.41
+2186	138	2.54	20	3.91	4.57
+2240	141	5.13	26	4.63	4.29
+2188	138	79.34	22	81.03	81.24
+2190	138	24.3	30	23.8	25.2
+2191	138	26.79	24	29.44	29.83
+2252	142	3.76	26	2.48	1.41
+2193	138	80.44	25	81.36	82.66
+2194	139	71.54	25	75.63	77.89
+2195	139	91	15	89.7	88.29
+2270	143	6.47	26	5.24	5.71
+2197	139	122.69	21	124.11	121.71
+2198	139	77.96	14	80.68	79.94
+2199	139	0.36	29	0.02	0.43
+2200	139	70.73	16	69.07	68.59
+2201	139	0.45	20	1.74	1.87
+2202	139	6.78	23	7.61	7.65
+2203	139	1.55	27	1.49	1.46
+2204	139	36.14	24	34.56	33.29
+2276	144	4.23	26	4.01	4.83
+2207	139	71.18	22	75.61	77.47
+2209	139	20.2	30	20	21.7
+2210	140	85.75	15	85.74	86.58
+2212	140	121.2	21	117.51	115.99
+2213	140	82.76	14	84	84.22
+2214	140	1.26	29	1.41	1.2
+2215	140	64.78	16	64.91	64.96
+2216	140	4.24	20	4.3	5.61
+2217	140	4.07	23	5.88	5.99
+2218	140	1.34	27	1.34	1.34
+2219	140	26.25	24	25.77	25.59
+2222	140	81.09	22	81.25	81.25
+2224	140	22.1	30	22.1	23.4
+2225	140	82.34	25	82.67	82.45
+2226	141	81.21	25	83.03	86.36
+2227	141	90.4	15	89.79	89.33
+2229	141	124.8	21	122.93	123.77
+2230	141	85.98	14	86.73	89.2
+2231	141	0.35	29	0.93	1.45
+2232	141	65.52	16	65.41	63.96
+2233	141	0.28	20	1.95	2.81
+2234	141	6.18	23	7.07	6.35
+2235	141	1.47	27	1.48	1.39
+2236	141	34.83	24	34.64	31.06
+2239	141	80.86	22	82.1	84.91
+2241	141	18.4	30	19.8	21.7
+2242	142	73.79	25	75.29	77.52
+2243	142	0.72	29	0.64	0.53
+2244	142	93.45	15	93.39	91.76
+2246	142	128.33	21	126.59	123.24
+2247	142	76.84	14	77.13	78.4
+2248	142	72.99	16	72.88	71.42
+2249	142	3.07	20	2.54	3.32
+2250	142	13.82	23	14.49	14.01
+2251	142	1.6	27	1.56	1.52
+2253	142	19.4	30	18.5	20.4
+2254	142	41.7	24	40.92	38.32
+2257	142	73.08	22	74.65	76.99
+2259	143	116.2	21	112.5	111.37
+2260	143	81.49	14	83.27	83.3
+2261	143	0.77	29	0.99	1.23
+2262	143	91.19	15	87.86	88.88
+2263	143	2.87	20	4.75	5.07
+2264	143	10.34	23	10.5	9.11
+2265	143	1.6	27	1.55	1.51
+2266	143	71.21	16	69.26	70.08
+2269	143	75.01	22	78.03	77.59
+2271	143	20.5	30	22.4	23.7
+2272	143	38.7	24	35.84	35.16
+2273	143	75.78	25	79.01	78.82
+2275	144	73.31	22	73.08	73.66
+2277	144	21.3	30	21.9	25.9
+2278	144	36.62	24	36.33	34.18
+2280	144	73.85	25	73.68	74.36
+2281	144	115.25	21	115.13	111.8
+2282	144	77.55	14	77.1	78.49
+2283	144	0.54	29	0.6	0.7
+2284	144	94.56	15	96.25	96.79
+2294	145	7.33	26	5.73	5.79
+2286	144	9.04	23	8.63	7.07
+2287	144	1.51	27	1.48	1.44
+2288	144	71.29	16	71.66	72.6
+2289	144	-0.08	20	0.39	1.48
+2290	145	29.73	24	27.42	25.91
+2321	146	4.46	26	6	2.7
+2326	147	6.02	26	4.22	3.72
+2293	145	75.58	22	77.49	77.45
+2295	145	25.3	30	25.5	28.7
+2296	145	76.85	25	78.85	78.75
+2297	145	89	15	87.44	88.37
+2352	148	5.78	26	6.81	6.43
+2299	145	113.83	21	113.93	110.47
+2300	145	82.92	14	83.22	83.25
+2301	145	1.26	29	1.36	1.3
+2302	145	67.97	16	66.98	67.92
+2303	145	1.44	20	2.05	3.05
+2304	145	11.12	23	12.16	12.4
+2305	145	1.39	27	1.36	1.33
+2306	146	73.93	25	74.68	76.98
+2307	146	91.8	15	95.15	93.1
+2364	149	1.77	26	1.1	0.05
+2309	146	127.22	21	127.9	130.14
+2310	146	78.59	14	81.06	79.71
+2311	146	-0.21	29	-0.38	-0.04
+2312	146	70.9	16	72.42	70.53
+2313	146	1.73	20	1.9	3.97
+2314	146	7.67	23	7.98	7.29
+2315	146	1.56	27	1.57	1.56
+2316	146	17.7	30	17.5	17.8
+2317	146	39.84	24	40.99	40.35
+2374	150	2.82	26	2.5	2.62
+2400	151	4.49	26	3.04	1.56
+2320	146	74.14	22	75.07	77.02
+2322	147	31.84	24	31.08	31.48
+2325	147	75.28	22	74.87	75.49
+2327	147	22.3	30	23.9	25.5
+2328	147	76.27	25	75.68	76.41
+2329	147	89.29	15	89.34	91.64
+2331	147	119.34	21	118.75	120.21
+2332	147	81.3	14	79.1	79.2
+2333	147	0.99	29	0.8	0.92
+2334	147	67.22	16	67.71	69.79
+2335	147	2.86	20	4.28	5.91
+2336	147	7.82	23	9.16	8.77
+2337	147	1.46	27	1.41	1.4
+2338	148	79.25	25	80.04	80.55
+2339	148	85.97	15	86.72	87.18
+2341	148	109.99	21	109.65	108.45
+2342	148	84.03	14	85.66	85.67
+2343	148	1	29	1.19	1.31
+2344	148	67.58	16	67.11	66.95
+2345	148	-0.51	20	2.19	2.11
+2346	148	9.99	23	8.81	8.09
+2347	148	1.27	27	1.26	1.26
+2348	148	21.55	24	21.22	21.3
+2351	148	78.25	22	78.85	79.23
+2353	148	30.4	30	29.7	29.8
+2354	149	74.25	14	74.94	76.1
+2355	149	2.97	29	3.18	3.68
+2356	149	85.46	15	85.58	82.12
+2358	149	113.97	21	115.36	112.63
+2359	149	1.57	27	1.54	1.52
+2360	149	65.61	16	65.14	62.8
+2361	149	3.41	20	4.58	4.99
+2362	149	10.29	23	8.78	6.75
+2363	149	72.48	22	73.84	76.05
+2365	149	19.5	30	20.1	20.4
+2366	149	33.87	24	32.39	30.36
+2369	149	75.45	25	77.02	79.73
+2370	150	27.52	24	27.85	25.69
+2373	150	77.53	22	77.14	77.44
+2375	150	21.3	30	22.7	24.5
+2376	150	79.5	25	79.12	79.72
+2377	150	87.51	15	88.64	88.21
+2379	150	121.52	21	119.35	113.07
+2380	150	80.35	14	79.65	80.06
+2381	150	1.97	29	1.97	2.28
+2382	150	65.61	16	66.8	66.89
+2383	150	4.76	20	5.18	6.86
+2384	150	3.25	23	2.58	2.32
+2385	150	1.36	27	1.38	1.33
+2386	151	72.81	25	74.05	75.49
+2387	151	93.22	15	91.7	90.91
+2389	151	122.74	21	124.89	123.61
+2390	151	76.26	14	76.04	76.14
+2391	151	1.04	29	1.06	0.92
+2392	151	70.84	16	69.98	68.97
+2393	151	2.16	20	2.5	3.48
+2394	151	11.73	23	11.04	11
+2395	151	1.5	27	1.48	1.43
+2396	151	35.88	24	35.36	33.53
+2399	151	71.77	22	72.99	74.57
+2401	151	21.5	30	21.2	21.8
+2403	152	24.6	30	27	28.1
+2404	152	27.83	24	22.5	20.68
+2402	152	6.13	26	3.84	3.85
+2429	153	3.79	26	6.66	6.73
+2407	152	77.81	22	82.45	83.72
+2408	152	78.68	25	83.42	84.93
+2409	152	0.87	29	0.97	1.21
+2410	152	90.46	15	86.82	86.3
+2439	154	2.64	26	1.18	1.36
+2412	152	110.44	21	110.04	105.12
+2413	152	83.94	14	86.3	87.57
+2414	152	67.04	16	64.76	63.52
+2415	152	2.2	20	4.2	5.64
+2416	152	3.57	23	2.85	5.19
+2417	152	1.38	27	1.28	1.26
+2418	153	80.75	25	79.97	78.18
+2419	153	83.33	14	85.52	83.83
+2420	153	1.21	29	1.11	1.07
+2421	153	82.68	15	84.65	84.68
+2463	155	2.49	26	2.75	0.9
+2423	153	122.3	21	119.74	120.94
+2424	153	1.4	27	1.46	1.51
+2425	153	62.48	16	63.56	65.97
+2426	153	3.59	20	2.43	5.28
+2427	153	11.1	23	12.49	10.52
+2428	153	79.54	22	78.86	77.11
+2430	153	21.9	30	21	22.2
+2431	153	30.96	24	32.11	33.55
+2475	156	5.44	26	6.57	7.48
+2497	157	2.41	26	1.91	-0.29
+2434	154	1.33	27	1.34	1.29
+2435	154	62.97	16	62.93	62.09
+2436	154	3.9	20	5.92	7.08
+2437	154	3.19	23	4.96	4.71
+2438	154	80.22	22	81.16	81.82
+2440	154	24.3	30	23.7	26.3
+2441	154	23.69	24	22.74	21.16
+2502	158	6.05	26	6.33	5.56
+2444	154	81.7	25	82.52	84.06
+2445	154	82.86	14	82.34	83.18
+2446	154	1.48	29	1.36	2.24
+2447	154	86.49	15	85.22	83.21
+2449	154	110.99	21	110.07	108.36
+2450	155	89.65	15	86.04	87.16
+2452	155	119.99	21	117.65	114.88
+2453	155	80.23	14	82.96	81.46
+2454	155	0.35	29	1.34	1.13
+2455	155	65.66	16	63.98	64.63
+2456	155	1.51	20	2.09	3.55
+2457	155	5.89	23	3.34	3.77
+2458	155	1.41	27	1.33	1.37
+2459	155	29.28	24	25.77	26.23
+2462	155	77.74	22	80.21	80.56
+2464	155	20.3	30	22.3	23
+2465	155	78.09	25	81.56	81.69
+2466	156	69.07	16	69.05	68.15
+2467	156	2.4	20	2.82	4.55
+2468	156	10.91	23	10.39	9.78
+2469	156	1.49	27	1.48	1.44
+2470	156	21.3	30	21	24
+2471	156	34.83	24	34.65	32.53
+2474	156	75.26	22	76.23	79.04
+2476	156	75.59	25	76.93	79.89
+2477	156	91.5	15	91.42	90.17
+2479	156	116.9	21	115.09	112.11
+2480	156	80.7	14	82.8	86.52
+2481	156	0.33	29	0.7	0.85
+2482	157	71.21	25	70.48	76.22
+2483	157	94.53	15	92.19	90.35
+2485	157	121.18	21	126.11	124.5
+2486	157	73.46	14	72.1	74.91
+2487	157	0.16	29	0.29	1.02
+2488	157	73.67	16	74.61	70.69
+2489	157	2.86	20	3.28	5.26
+2490	157	6.81	23	8.01	4.42
+2491	157	1.54	27	1.56	1.44
+2492	157	20.6	30	20.2	22.7
+2493	157	38.07	24	39.17	34.09
+2496	157	71.05	22	70.19	75.2
+2498	158	28.2	24	26.6	27.5
+2501	158	76.22	22	78.84	78.88
+2503	158	22.4	30	22.2	24.2
+2504	158	77.62	25	80.45	80.32
+2505	158	90.5	15	87.31	88.85
+2507	158	115.64	21	118.28	119.39
+2508	158	82.27	14	85.17	84.44
+2509	158	1.4	29	1.61	1.44
+2510	158	67.03	16	64.18	66.1
+2511	158	0.68	20	1.71	1.9
+2512	158	3.58	23	2.97	2.51
+2513	158	1.38	27	1.37	1.34
+2514	159	79.35	25	82.05	83.85
+2515	159	1.96	29	1.95	2.07
+2516	159	86.45	15	87.37	85.61
+2518	159	114.74	21	115.51	114.73
+2519	159	82.84	14	85.39	85.67
+2520	159	64.53	16	64.45	62.61
+2521	159	2.44	20	3.44	3.43
+2522	159	6.96	23	8.01	6.94
+2523	159	1.41	27	1.4	1.38
+2525	159	22.3	30	23.1	24.3
+2526	159	29.19	24	28.27	26.17
+2524	159	5.45	26	5.3	3.88
+2543	160	6.53	26	5.49	4.62
+2529	159	77.39	22	80.1	81.78
+2530	160	90.12	15	91.67	88.73
+2560	161	4.27	26	2.69	3.38
+2532	160	115.35	21	117.95	114.1
+2533	160	80.48	14	78.82	78.87
+2534	160	1.44	29	0.95	1.82
+2535	160	68.24	16	69.85	68.66
+2536	160	2.91	20	2.99	3.8
+2537	160	9.95	23	9.8	12.08
+2538	160	1.52	27	1.52	1.45
+2539	160	33.41	24	34.37	32.08
+2570	162	1.2	26	-0	-0.99
+2592	163	0.99	26	4.71	3.31
+2542	160	73.95	22	73.33	74.24
+2544	160	20.3	30	20.6	22.4
+2545	160	75.38	25	74.29	76.06
+2546	161	73.16	25	75.39	76.65
+2547	161	89.66	15	89.38	88.03
+2604	164	6.01	26	5.4	5.66
+2549	161	117.83	21	114.91	111.86
+2550	161	75.65	14	76.25	77.75
+2551	161	1.78	29	1.83	2.28
+2552	161	70.37	16	69.12	68.25
+2553	161	2.34	20	3.44	4.68
+2554	161	7.23	23	7.65	7.19
+2555	161	1.53	27	1.47	1.43
+2556	161	36.44	24	32.87	30.07
+2621	165	0.02	26	-2.36	-0.6
+2634	166	2.22	26	3.31	4.12
+2559	161	71.38	22	73.56	74.37
+2561	161	20.5	30	21.7	24.9
+2562	162	66.29	16	66.32	64.62
+2563	162	2.95	20	4.18	5.61
+2564	162	8.26	23	7.7	6.28
+2565	162	1.45	27	1.47	1.39
+2566	162	31.64	24	31.93	28.03
+2569	162	78.72	22	80.09	82.84
+2571	162	21.2	30	21.4	22.3
+2572	162	79.4	25	80.73	84.46
+2573	162	88.81	15	88.93	84.71
+2575	162	119.91	21	115.69	115.11
+2576	162	79.92	14	80.09	81.85
+2577	162	0.68	29	0.64	1.62
+2578	163	78.41	25	79.45	79.59
+2579	163	85.88	15	87.23	86.14
+2581	163	124.15	21	121.54	122.45
+2582	163	78.5	14	83.28	82.07
+2583	163	0.9	29	0.88	0.83
+2584	163	65.35	16	65.89	67
+2585	163	2.64	20	2.32	3.45
+2586	163	2.97	23	3.87	4.4
+2587	163	1.46	27	1.44	1.39
+2588	163	33.57	24	31.42	30.97
+2591	163	77.51	22	78.57	78.76
+2593	163	20.8	30	20.8	22.1
+2594	164	80.05	14	82.17	83
+2595	164	1.36	29	1.04	1.72
+2596	164	86.45	15	84.9	86.46
+2598	164	108.7	21	113.17	110.38
+2599	164	1.39	27	1.34	1.33
+2600	164	66.84	16	66.83	66.39
+2601	164	0.49	20	1.17	3.25
+2602	164	9.48	23	8.48	7.93
+2603	164	74.04	22	76.77	77.35
+2605	164	25.4	30	26.3	27.8
+2606	164	27.53	24	26.18	24.77
+2609	164	75.41	25	77.81	79.07
+2610	165	131.27	21	127.45	125.81
+2611	165	82.75	14	84.63	85.65
+2612	165	0.09	29	-0.1	0.73
+2613	165	85.42	15	83.58	85.04
+2615	165	6.5	23	6.15	6.5
+2616	165	1.43	27	1.39	1.39
+2617	165	62.09	16	60.49	62.54
+2618	165	1.94	20	2.09	3.69
+2620	165	82.73	22	86.98	86.25
+2622	165	18.3	30	19.3	19.3
+2623	165	32.07	24	29.67	30.56
+2625	165	82.82	25	86.88	86.98
+2626	166	64.29	16	63.75	62.37
+2627	166	4.68	20	4.36	5.64
+2628	166	4.75	23	4.46	5.27
+2629	166	1.38	27	1.34	1.32
+2630	166	28.16	24	26.45	24.49
+2633	166	79.51	22	81.11	83.81
+2635	166	22.5	30	23.8	24.9
+2636	166	80.08	25	81.71	85.02
+2637	166	86.08	15	86.45	84
+2639	166	118.01	21	114.89	114.87
+2640	166	81.73	14	84.42	87.94
+2641	166	0.57	29	0.6	1.21
+2642	167	73.01	25	72.83	73.19
+2643	167	0.66	29	0.59	-0.07
+2644	167	95.5	15	93.92	96.69
+2652	167	6.97	26	7.33	8.22
+2646	167	125.22	21	122.82	119.29
+2647	167	79.31	14	79.57	81.48
+2648	167	70.97	16	71.55	75.02
+2649	167	-0.48	20	1.12	0.56
+2650	167	10.32	23	10.86	11.05
+2651	167	1.55	27	1.55	1.54
+2653	167	19.6	30	20.9	23.8
+2654	167	39.36	24	38.41	40.95
+2659	168	2.84	26	3.15	-1.94
+2682	169	5.59	26	4.99	2.78
+2657	167	72.34	22	72.24	73.26
+2658	168	75.81	22	76.51	80.67
+2660	168	22.8	30	23.8	30.7
+2661	168	27.83	24	27.56	16.45
+2691	170	4.04	26	4.16	2.3
+2714	171	3.43	26	3.2	2.81
+2664	168	77.13	25	77.35	82.43
+2665	168	78.65	14	79.66	78.73
+2666	168	1.32	29	0.84	1.76
+2667	168	87.65	15	87.86	82.81
+2727	172	1.86	26	1.58	1.51
+2669	168	111.21	21	115.03	101.5
+2670	168	1.39	27	1.38	1.22
+2671	168	66.22	16	66.31	62.29
+2672	168	0.51	20	0.9	2.22
+2673	168	6.7	23	4.89	3.72
+2674	169	66.96	16	68.35	67.29
+2675	169	1.66	20	1.91	1.87
+2676	169	6	23	4.14	1.18
+2677	169	1.43	27	1.44	1.36
+2678	169	30.87	24	31.87	29.18
+2747	173	4.1	26	3.3	2.62
+2681	169	75.78	22	75.44	79.53
+2683	169	22	30	23	25.5
+2684	169	77.61	25	77.45	81.28
+2685	169	89.76	15	91.32	90.97
+2687	169	115.12	21	115.86	114.81
+2688	169	81.36	14	80.43	82.31
+2689	169	1.83	29	2.01	1.76
+2690	170	77.16	22	77.33	78.63
+2692	170	22.2	30	23.6	24.8
+2693	170	29.26	24	28.9	27.95
+2696	170	77.86	25	77.87	79.58
+2697	170	81.2	14	81.49	80.93
+2698	170	0.7	29	0.54	0.95
+2699	170	90.47	15	90.85	90
+2701	170	117.68	21	116.63	111.39
+2702	170	1.38	27	1.38	1.37
+2703	170	66.69	16	67.02	67.18
+2704	170	-0.14	20	0.56	1.19
+2705	170	2.93	23	3.03	2.9
+2706	171	66.65	16	66.62	65.76
+2707	171	1.41	20	2.77	2.82
+2708	171	4.64	23	3.03	0.42
+2709	171	1.49	27	1.48	1.42
+2710	171	35.91	24	36.87	32.84
+2713	171	79.31	22	79.42	83.04
+2715	171	18.2	30	19.1	20.5
+2716	171	78.93	25	79.93	83.68
+2717	171	91.47	15	89.43	90.68
+2719	171	127.33	21	125.6	128.1
+2720	171	82.74	14	82.61	85.85
+2721	171	-0.38	29	0.51	0.64
+2722	172	1.36	27	1.31	1.28
+2723	172	66.63	16	66.4	67.31
+2724	172	0.93	20	2.34	1.58
+2725	172	7.47	23	8.46	8.12
+2726	172	77.08	22	78.87	80.95
+2728	172	23.3	30	25.1	26.6
+2729	172	28.43	24	26.42	26.19
+2732	172	78.3	25	79.91	82.21
+2733	172	78.94	14	80.45	82.46
+2734	172	1.22	29	1.04	1.26
+2735	172	85.15	15	84.69	87.4
+2737	172	120.11	21	119.75	118.3
+2738	173	1.28	29	1.73	1.73
+2739	173	86.85	15	84.84	84.86
+2741	173	122.99	21	123.38	124.88
+2742	173	83.97	14	84.76	85.31
+2743	173	64.57	16	63.8	65.2
+2744	173	1.67	20	3.31	2.2
+2745	173	2.18	23	3.85	4.71
+2746	173	1.5	27	1.44	1.41
+2748	173	18.6	30	19	20.8
+2749	173	33.57	24	31.68	31.3
+2752	173	79.87	22	81.46	82.69
+2753	173	81.14	25	83.19	84.42
+2754	174	73.9	25	75.44	78.35
+2755	174	88.88	15	87.96	85.43
+2757	174	121.48	21	114.22	114.71
+2758	174	75.09	14	75.8	77.64
+2759	174	1.74	29	2.66	3.45
+2760	174	68.23	16	66.06	64.99
+2761	174	-0.15	20	1.34	1.42
+2762	174	11.01	23	9.24	10.76
+2763	174	1.53	27	1.44	1.4
+2764	174	19.7	30	22	24.2
+2765	174	35.75	24	30.94	28.48
+2769	174	2.93	26	3.03	2.74
+2774	175	2.99	26	2.44	2.44
+2768	174	72.16	22	72.77	74.9
+2770	175	29.21	24	30.3	24.51
+2790	176	3.91	26	4.26	3.1
+2802	177	6.22	26	7.23	7.6
+2773	175	77.91	22	78.08	83.97
+2775	175	20.4	30	22.2	22.8
+2776	175	79.71	25	79.8	86.77
+2777	175	87.68	15	89.54	85.82
+2823	178	4.52	26	5.31	2.48
+2779	175	121.22	21	118.99	117.14
+2780	175	80.9	14	80.52	86.4
+2781	175	1.8	29	1.72	2.8
+2782	175	65.21	16	66.8	62.56
+2783	175	1.72	20	2.33	4.12
+2784	175	11.49	23	11.63	9.99
+2785	175	1.41	27	1.41	1.33
+2786	176	31.67	24	30.31	22.58
+2847	179	1.37	26	0.58	-1.46
+2850	180	3.72	26	2.48	1.4
+2789	176	71.91	22	72.59	74.07
+2791	176	21.9	30	22.5	27.3
+2792	176	73.57	25	74.87	77.27
+2793	176	89.37	15	87.27	85.55
+2870	181	2.51	26	3.36	2.48
+2795	176	118.06	21	113.74	106.41
+2796	176	75.81	14	76.85	77.18
+2797	176	1.67	29	2.28	3.2
+2798	176	66.39	16	66.3	64.64
+2799	176	3.04	20	3.82	5.02
+2800	176	15.15	23	9.27	8.7
+2801	176	1.51	27	1.49	1.32
+2803	177	20.6	30	22.1	23.5
+2804	177	32.26	24	30.75	27.97
+2807	177	76.85	22	77.81	79.56
+2808	177	76.61	25	77.8	80.2
+2809	177	-0.24	29	-0.01	0.64
+2810	177	89.52	15	89.62	87.5
+2812	177	118.03	21	116.59	117.6
+2813	177	83.07	14	85.04	87.16
+2814	177	68.07	16	68.51	67.51
+2815	177	0.82	20	0.87	0.81
+2816	177	10.83	23	7.74	8.88
+2817	177	1.46	27	1.41	1.36
+2818	178	23.5	30	23.9	22.9
+2819	178	34.9	24	36.04	37.64
+2822	178	76.7	22	76.22	78.93
+2824	178	77.13	25	76.49	79.99
+2825	178	93.08	15	96.17	94.67
+2827	178	113.43	21	114.9	118.86
+2828	178	81.22	14	81.53	81.41
+2829	178	0.43	29	0.27	1.07
+2830	178	71.02	16	73.42	72.51
+2831	178	3.5	20	3.58	4.42
+2832	178	7.09	23	6.42	7.09
+2833	178	1.49	27	1.49	1.47
+2834	179	84.43	15	80.74	81.76
+2836	179	111.66	21	109.04	108.85
+2837	179	77.9	14	79.2	78.35
+2838	179	2.45	29	2.88	3.16
+2839	179	62.46	16	59.92	61.28
+2840	179	2.79	20	2.81	3.19
+2841	179	6.77	23	6.65	2.57
+2842	179	1.37	27	1.32	1.3
+2843	179	24.54	24	21.71	21.71
+2846	179	76.53	22	78.61	79.8
+2848	179	24.7	30	24.7	26.7
+2849	179	78.98	25	81.49	82.97
+2851	180	22.9	30	22.7	25.8
+2852	180	29.38	24	30.25	29.03
+2855	180	78.48	22	78.12	79.17
+2856	180	78.16	25	79.55	80.91
+2857	180	-0.32	29	1.42	1.74
+2858	180	88.62	15	89.07	89.46
+2860	180	115.07	21	117.35	112.76
+2861	180	82.2	14	80.6	80.57
+2862	180	65.5	16	67.4	68.27
+2863	180	1.88	20	3.55	3.63
+2864	180	6.09	23	4.41	7.22
+2865	180	1.43	27	1.43	1.37
+2866	181	30.57	24	29.97	25.78
+2869	181	76.19	22	76.49	79.43
+2871	181	22.4	30	22.2	26.2
+2872	181	77.6	25	78.04	81.55
+2873	181	85.51	15	86.91	85.21
+2875	181	115.08	21	113.53	107.43
+2876	181	78.71	14	79.85	81.91
+2877	181	1.41	29	1.55	2.12
+2878	181	65.69	16	65.83	64.76
+2879	181	1.62	20	3.91	3.87
+2880	181	6.7	23	8.99	8.16
+2881	181	1.45	27	1.46	1.35
+2882	182	32.25	24	31.05	28.81
+2886	182	4.72	26	3.7	2.61
+2908	183	3.21	26	3.71	2.6
+2885	182	75.81	22	75.22	75.79
+2887	182	24	30	26.5	28.6
+2888	182	77.64	25	77.26	78.42
+2889	182	88.87	15	89.77	90.79
+2918	184	2.97	26	4.07	2.55
+2891	182	116.2	21	112.13	107.54
+2892	182	80.53	14	78.92	78.4
+2893	182	1.83	29	2.04	2.63
+2894	182	69.72	16	70.8	71.52
+2895	182	0.74	20	2.17	3.04
+2896	182	10.38	23	6.77	5.89
+2897	182	1.44	27	1.39	1.35
+2898	183	76.7	14	77.8	77.05
+2899	183	1.89	29	2.53	2.75
+2900	183	94.11	15	94.42	96.63
+2943	185	3.87	26	3.33	4.08
+2902	183	121.44	21	119.22	122.2
+2903	183	1.61	27	1.65	1.6
+2904	183	70.59	16	70.94	73.03
+2905	183	3.47	20	4.43	5.1
+2906	183	9.33	23	10.68	10.3
+2907	183	73.48	22	74.09	74.45
+2909	183	19.4	30	18.9	19.9
+2910	183	39.99	24	39.93	41.86
+2951	186	0.78	26	-0.42	-0.95
+2976	187	4.3	26	3.31	3.18
+2913	183	75.38	25	76.61	77.21
+2914	184	71.2	16	72.47	70.91
+2915	184	1.32	20	2.95	2.45
+2916	184	5.74	23	5.48	4.06
+2917	184	1.48	27	1.45	1.37
+2919	184	20.6	30	22.2	25.3
+2920	184	35.33	24	34.66	29.97
+2983	188	3.83	26	2.5	3.21
+2923	184	71.66	22	71.53	73.63
+2924	184	73.38	25	73.88	76.44
+2925	184	1.72	29	2.35	2.81
+2926	184	93.67	15	95.88	93.06
+2928	184	124.12	21	120.81	114.51
+2929	184	74.63	14	75.6	76.18
+2930	185	90.91	15	91.61	95.05
+2932	185	128.32	21	124.63	119.26
+2933	185	79.3	14	78.71	78.92
+2934	185	1.62	29	1.75	2.1
+2935	185	68.23	16	69.27	71.64
+2936	185	3.45	20	3.76	5.35
+2937	185	8.97	23	9.4	10.26
+2938	185	1.45	27	1.45	1.4
+2939	185	34.53	24	34.42	33.67
+2942	185	75.43	22	75.39	74.85
+2944	185	19.1	30	19.2	21.7
+2945	185	77.05	25	77.13	76.95
+2946	186	21.5	30	21.5	21.5
+2947	186	34.39	24	33.75	34.28
+2950	186	75.03	22	74.88	75.65
+2952	186	76.33	25	76.47	78.38
+2953	186	90.26	15	89.35	88.16
+2955	186	116.72	21	114.16	113.06
+2956	186	75.81	14	74.46	74.7
+2957	186	1.3	29	1.59	2.73
+2958	186	69.05	16	68.94	67.74
+2959	186	0.92	20	3.27	2.67
+2960	186	8.1	23	6.17	5.66
+2961	186	1.51	27	1.51	1.52
+2962	187	75.23	25	76.88	79.89
+2963	187	94.67	15	93.85	91.64
+2965	187	119.31	21	121.48	120.53
+2966	187	78.55	14	78.71	81.68
+2967	187	0.98	29	1.47	1.38
+2968	187	70.4	16	69.3	67.98
+2969	187	2.55	20	2.6	2.96
+2970	187	10.37	23	8.41	4.5
+2971	187	1.51	27	1.49	1.46
+2972	187	35.28	24	34.84	34.12
+2975	187	74.25	22	75.4	78.5
+2977	187	20.2	30	19.6	20.9
+2978	188	19.7	30	20.1	21.1
+2979	188	35.27	24	34.4	33.8
+2982	188	72.83	22	75.53	77.44
+2984	188	74.52	25	77.34	79.29
+2985	188	89.82	15	89.89	89.23
+2987	188	121.86	21	120.69	119.39
+2988	188	76.66	14	78.03	80.64
+2989	188	1.7	29	1.81	1.85
+2990	188	66.75	16	67.09	67.5
+2991	188	2.99	20	3.63	4.68
+2992	188	14.04	23	11.24	8.78
+2993	188	1.56	27	1.51	1.47
+2994	189	77.72	25	78.32	79.25
+2995	189	90.77	15	90.75	89.62
+2997	189	121.22	21	116.24	113.31
+2998	189	84.8	14	85.61	82.22
+2999	189	0.95	29	1.21	1.69
+3000	189	66.38	16	66.53	67.04
+3001	189	-0.29	20	1.06	1.11
+3002	189	6.71	23	7.3	7.19
+3003	189	1.45	27	1.43	1.38
+3004	189	31.74	24	30.62	28.75
+3008	189	8.03	26	8.51	4.66
+3023	190	1.78	26	2.13	2.79
+3007	189	76.77	22	77.1	77.56
+3009	189	21	30	22.8	26.5
+3010	190	82.89	15	82.86	82.49
+3028	191	1.25	26	2.22	1.27
+3012	190	123.98	21	121.62	118.41
+3013	190	80.62	14	81.87	82.16
+3014	190	1.75	29	1.5	2.11
+3015	190	63.16	16	63.95	64.5
+3016	190	1.38	20	2.93	3.88
+3017	190	3.29	23	4.79	6.03
+3018	190	1.4	27	1.39	1.37
+3019	190	28.94	24	28.7	28
+3053	192	4.95	26	5.62	6.21
+3058	193	8.2	26	8.17	6.85
+3022	190	78.83	22	79.75	79.37
+3024	190	21	30	21.5	24.3
+3025	190	80.59	25	81.24	81.48
+3083	194	5.71	26	5	6.54
+3027	191	78.25	22	78.86	80.37
+3029	191	19.3	30	19.4	21.1
+3030	191	32.12	24	31.9	30.85
+3093	195	3.32	26	4.14	3.1
+3032	191	79.53	25	80.44	82.72
+3033	191	126.3	21	127.44	124.88
+3034	191	79.5	14	81.09	81.64
+3035	191	1.29	29	1.58	2.36
+3036	191	86.15	15	85.29	83.78
+3119	196	6.78	26	7.13	4.55
+3038	191	6.82	23	8.87	8.79
+3039	191	1.44	27	1.43	1.42
+3040	191	64.4	16	64.51	64.15
+3041	191	-0.36	20	1.32	0.87
+3042	192	113.76	21	112.26	111.85
+3043	192	81.24	14	83.2	83.9
+3044	192	0.9	29	1.08	1.7
+3045	192	85.72	15	85.18	84.49
+3047	192	7.28	23	8.38	9.87
+3048	192	1.47	27	1.46	1.44
+3049	192	65.91	16	64.51	65.6
+3050	192	-0.14	20	0.71	1.64
+3052	192	76.29	22	77.57	77.69
+3054	192	22.7	30	21.9	23.3
+3055	192	29.89	24	29.06	29.17
+3057	192	77.19	25	78.66	79.39
+3059	193	25.8	30	25.1	25.2
+3060	193	27.48	24	26.49	24.56
+3063	193	77.33	22	79.8	82.38
+3064	193	78.85	25	81.4	84.6
+3065	193	1.52	29	1.6	2.22
+3066	193	86.99	15	86.87	86.28
+3068	193	111.97	21	115.07	116.31
+3069	193	85.53	14	87.97	89.23
+3070	193	65.15	16	64.62	63.62
+3071	193	3.23	20	3.72	4.27
+3072	193	10.88	23	6.24	6.05
+3073	193	1.37	27	1.33	1.29
+3074	194	68.26	16	68.39	70.27
+3075	194	-0.22	20	0.18	1.79
+3076	194	7	23	6.47	5.44
+3077	194	1.49	27	1.47	1.45
+3078	194	20.4	30	21.7	23.5
+3079	194	34.4	24	33.37	34.55
+3082	194	78.25	22	79.01	78.28
+3084	194	77.64	25	79.29	79.06
+3085	194	91.88	15	93.75	93.48
+3087	194	119.69	21	118.87	115.45
+3088	194	83.97	14	84.01	84.82
+3089	194	-0.61	29	0.28	0.78
+3092	195	73.71	22	75.88	74.2
+3094	195	25.3	30	23.2	23.2
+3095	195	25.86	24	26.8	26.1
+3096	195	76.12	25	78.05	77.81
+3098	195	106.27	21	104.79	108.61
+3099	195	77.03	14	80.02	77.3
+3100	195	2.41	29	2.17	3.61
+3101	195	88.15	15	87.39	86.66
+3102	195	4.08	20	4.09	4.06
+3103	195	9.82	23	9.11	8.57
+3104	195	1.36	27	1.38	1.35
+3105	195	67.72	16	67.21	67.9
+3106	196	77.84	25	77.53	79.5
+3108	196	131.13	21	128.72	123.12
+3109	196	83.71	14	83.82	82.92
+3110	196	0.91	29	0.84	1.13
+3111	196	88.69	15	90.73	89.84
+3112	196	0.8	20	1.57	0.74
+3113	196	11.19	23	9.61	10.36
+3114	196	1.54	27	1.55	1.51
+3115	196	67.13	16	69.37	69.61
+3118	196	76.93	22	76.7	78.37
+3120	196	16.4	30	16.2	19.1
+3121	196	36.4	24	37.94	36.49
+3122	197	72.97	22	73.82	75.33
+3124	197	19.4	30	19.2	21.9
+3125	197	37.09	24	35.56	32.87
+3123	197	1.96	26	2.59	2.58
+3149	198	4.88	26	6.87	7.83
+3128	197	74.8	25	76.25	77.93
+3129	197	74.93	14	76.41	77.91
+3130	197	1.83	29	2.42	2.6
+3131	197	88.18	15	87.14	86.75
+3159	199	3.61	26	3.15	2.52
+3133	197	128.74	21	126.78	123.33
+3134	197	1.57	27	1.54	1.43
+3135	197	67.96	16	67.42	68.1
+3136	197	3.49	20	4.88	4.66
+3137	197	12.47	23	6.45	4.47
+3138	198	78.6	25	79.51	81.65
+3139	198	83.15	14	85.6	88.22
+3140	198	0.33	29	0.78	1.25
+3141	198	93.47	15	93.49	94.8
+3181	200	3.26	26	2.88	-0.11
+3143	198	121.31	21	113.28	113.86
+3144	198	1.43	27	1.42	1.37
+3145	198	69.33	16	67.88	68.66
+3146	198	0.26	20	1.58	0.92
+3147	198	7.44	23	7.37	10.04
+3148	198	78.27	22	78.74	80.4
+3150	198	21.9	30	21.8	23.3
+3151	198	34.18	24	31.55	31.09
+3200	201	1.82	26	0.55	-0.73
+3206	202	0.54	26	1.66	-1.17
+3154	199	1.36	27	1.34	1.28
+3155	199	62.22	16	62.23	64.02
+3156	199	1.59	20	2.61	3.48
+3157	199	2.75	23	5.93	6.71
+3158	199	81.66	22	82.12	82.92
+3160	199	22.4	30	23.4	27.3
+3161	199	27.76	24	26.64	22.88
+3226	203	3.99	26	4.29	3.33
+3164	199	81.4	25	82.75	83.69
+3165	199	85.27	14	85.27	85.45
+3166	199	-0.26	29	0.64	0.76
+3167	199	87.81	15	88.55	90.8
+3169	199	122.49	21	119.71	111.6
+3170	200	136.18	21	136.92	132.34
+3171	200	77.92	14	79.12	78.72
+3172	200	0.85	29	1.97	2.5
+3173	200	95.44	15	93.56	90.83
+3175	200	9.09	23	10.73	7.57
+3176	200	1.72	27	1.66	1.56
+3177	200	70.75	16	69.42	68.38
+3178	200	1.28	20	2.9	4.12
+3180	200	74.66	22	76.23	78.83
+3182	200	12.9	30	13.7	15.6
+3183	200	46.47	24	44.33	40.9
+3185	200	75.52	25	78.21	81.33
+3186	201	86.23	15	85.39	81.81
+3188	201	122.04	21	121.35	117.2
+3189	201	78.96	14	79.65	82.17
+3190	201	1.57	29	1.62	2.29
+3191	201	64.49	16	64.38	61.42
+3192	201	1	20	2.39	2.62
+3193	201	7.15	23	8.03	4.87
+3194	201	1.4	27	1.37	1.31
+3195	201	23	30	22.8	24.9
+3196	201	29.18	24	28.24	23.12
+3199	201	77.14	22	79.1	82.9
+3201	201	78.71	25	80.72	85.2
+3202	202	25.84	24	24.16	24.12
+3205	202	77.71	22	80.12	81.79
+3207	202	25	30	26	26.7
+3208	202	79.22	25	82.02	83.25
+3209	202	85.85	15	85.54	85.98
+3211	202	112.2	21	111.08	109.95
+3212	202	78.25	14	81.78	80.62
+3213	202	1.51	29	1.9	1.46
+3214	202	65.78	16	64.43	64.59
+3215	202	2.69	20	3.08	2.23
+3216	202	7.01	23	5.41	5.15
+3217	202	1.33	27	1.3	1.3
+3218	203	68.92	16	69.43	69.4
+3219	203	1.81	20	3.25	3.22
+3220	203	7.58	23	7.14	5.88
+3221	203	1.57	27	1.57	1.55
+3222	203	39.13	24	40.03	39.45
+3225	203	75.1	22	75.97	76.9
+3227	203	18.1	30	18.6	19.7
+3228	203	75.97	25	76.97	77.6
+3229	203	86.46	15	88.31	87.98
+3231	203	125.4	21	129.99	127.82
+3232	203	79.1	14	80.26	80.23
+3233	203	0.86	29	0.99	0.7
+3234	204	75.57	25	77.5	79.86
+3235	204	90.48	15	90.32	89.42
+3237	204	118.92	21	114.11	112.82
+3238	204	78.44	14	80.06	82
+3239	204	1.34	29	1.45	1.67
+3240	204	70.06	16	70.26	68.53
+3241	204	1.69	20	2.46	3.5
+3242	204	10.02	23	9.9	8.93
+3243	204	1.56	27	1.52	1.44
+3244	204	36.57	24	34.94	31.7
+3248	204	4.21	26	4.02	3.81
+3252	205	4.53	26	4.43	2.85
+3247	204	74.23	22	76.04	78.19
+3249	204	19.9	30	22.3	23.9
+3273	206	3.81	26	4.42	3.12
+3251	205	75.26	22	76.7	76.24
+3253	205	19.1	30	17.9	19.6
+3254	205	36.61	24	36.38	37.61
+3293	207	6.14	26	5.57	3.92
+3256	205	75.32	25	77.15	76.84
+3257	205	123.09	21	122.24	124.42
+3258	205	79.79	14	81.12	79.09
+3259	205	0.06	29	0.46	0.6
+3260	205	92.11	15	92.63	95.35
+3311	208	2.45	26	5	4.71
+3262	205	5.33	23	3.03	3.49
+3263	205	1.55	27	1.55	1.53
+3264	205	68.57	16	67.43	69.4
+3265	205	2.48	20	3.34	3.68
+3266	206	1.08	20	2.48	6.13
+3267	206	7.84	23	8.86	10.05
+3268	206	1.54	27	1.53	1.46
+3269	206	65.45	16	66.15	66.17
+3327	209	4.61	26	1.82	2.01
+3340	210	5.56	26	2.8	2.81
+3272	206	76.65	22	77.91	77.49
+3274	206	16.7	30	17.1	20.7
+3275	206	36.17	24	35.69	31.92
+3276	206	78.3	25	79.56	79.78
+3359	211	4.66	26	4.67	4.37
+3278	206	131.88	21	126.55	122.22
+3279	206	80.47	14	82.33	80.61
+3280	206	1.65	29	1.65	2.29
+3281	206	89.04	15	88.92	88.02
+3282	207	78.06	25	77.66	81.07
+3283	207	83.01	14	82.57	83.91
+3284	207	1.18	29	0.66	1.07
+3285	207	89.7	15	90.31	87.99
+3287	207	114.53	21	112.86	115.36
+3288	207	1.41	27	1.41	1.38
+3289	207	66.9	16	67.65	65.51
+3290	207	1.15	20	1.34	3.7
+3291	207	3.35	23	2.24	0.23
+3292	207	76.87	22	77	80
+3294	207	24.2	30	24.5	24.4
+3295	207	29.64	24	29.41	28.84
+3298	208	99.13	15	99.77	101.18
+3300	208	133.86	21	131.08	129.26
+3301	208	75.43	14	78.87	78.77
+3302	208	0.11	29	0.37	0.83
+3303	208	74.39	16	73.48	74.76
+3304	208	0.37	20	1.27	0.13
+3305	208	8.92	23	8.77	10.25
+3306	208	1.55	27	1.51	1.47
+3307	208	42.9	24	41.6	39.94
+3310	208	72.97	22	73.87	74.06
+3312	208	16	30	15.9	19.1
+3313	208	73.08	25	74.24	74.9
+3314	209	73.05	25	76.32	78.37
+3316	209	132.68	21	130.63	125.25
+3317	209	78.03	14	77.62	80.5
+3318	209	-0.38	29	0.52	-0.11
+3319	209	93.93	15	92.25	94.05
+3320	209	1.44	20	2.83	2.47
+3321	209	7.51	23	6.95	5.05
+3322	209	1.6	27	1.53	1.48
+3323	209	73.81	16	71.99	72.35
+3326	209	73.42	22	75.8	78.49
+3328	209	17.3	30	19	20.1
+3329	209	45.89	24	42.47	40
+3330	210	82.81	14	82.68	84.89
+3331	210	1.84	29	1.7	1.96
+3332	210	87.06	15	87.82	86.82
+3334	210	114.55	21	112.16	106.17
+3335	210	1.45	27	1.38	1.31
+3336	210	64.38	16	65.37	64.1
+3337	210	1.88	20	2.69	2.38
+3338	210	7.6	23	7.41	5.97
+3339	210	77.24	22	79.88	82.08
+3341	210	22.3	30	24.3	27.5
+3342	210	30.31	24	28.07	23.87
+3345	210	79.08	25	81.58	84.04
+3346	211	81.29	25	81.89	83.65
+3348	211	122.04	21	120.85	115.08
+3349	211	84.95	14	85.6	86.35
+3350	211	0.99	29	0.96	1.67
+3351	211	85.67	15	87.07	86.52
+3352	211	3.39	20	3.99	4.39
+3353	211	7.99	23	7.67	8.33
+3354	211	1.41	27	1.4	1.35
+3355	211	63.66	16	64.85	64.71
+3358	211	80.29	22	80.93	81.98
+3360	211	20.7	30	21.4	24.3
+3361	211	30.52	24	30.83	26.7
+3362	212	35.2	24	33.04	28.28
+3366	212	6.03	26	6.16	4.59
+3391	213	4.91	26	5.91	4.43
+3365	212	77.71	22	77.18	79.41
+3367	212	24.3	30	23.8	26.6
+3368	212	78.35	25	78.35	81.15
+3369	212	88.14	15	90.51	89.91
+3409	214	7.52	26	3.19	4.03
+3371	212	116.52	21	116.67	113.44
+3372	212	83.74	14	83.34	84
+3373	212	0.65	29	1.17	1.74
+3374	212	69.67	16	69.11	67.86
+3375	212	1.69	20	3.47	4.39
+3376	212	7.16	23	5.41	6.08
+3377	212	1.46	27	1.44	1.34
+3378	213	72.91	25	76.86	80
+3380	213	118.12	21	120.72	113.24
+3381	213	76.08	14	81.16	82.26
+3382	213	1.73	29	1.62	2.18
+3383	213	90.45	15	89.72	91.41
+3384	213	3.16	20	1.79	3.37
+3385	213	8.04	23	6.05	5.41
+3386	213	1.51	27	1.44	1.38
+3387	213	70.89	16	69.35	68.14
+3435	216	2.53	26	3.26	1.9
+3455	217	3.95	26	0.69	1.1
+3390	213	71.17	22	75.24	77.82
+3392	213	21	30	21.8	23.8
+3393	213	36.08	24	32.99	30.67
+3394	214	73.91	25	75.67	75.63
+3395	214	97.3	15	95.38	93.7
+3465	218	2.43	26	2.19	2.27
+3397	214	118.73	21	119.43	120.04
+3398	214	80.6	14	78.28	78.54
+3399	214	0.84	29	0.59	1.12
+3400	214	74.07	16	73.13	73.37
+3401	214	1.04	20	3.13	2.78
+3402	214	14.38	23	7.34	10.56
+3403	214	1.61	27	1.54	1.51
+3404	214	19.3	30	20	22
+3405	214	41.61	24	39.13	38.89
+3408	214	73.07	22	75.09	74.51
+3426	216	0.64	29	2.32	2.76
+3427	216	92.1	15	90.88	90.53
+3429	216	123.69	21	122.98	122.24
+3430	216	77.56	14	75.92	76.59
+3431	216	67.89	16	68.13	68.15
+3432	216	1.53	20	1.81	3.5
+3433	216	9.02	23	6.75	5.41
+3434	216	1.53	27	1.55	1.49
+3436	216	18.9	30	19.1	19.7
+3437	216	36.79	24	36.33	35.36
+3440	216	75.03	22	72.66	74.69
+3441	216	75.67	25	74.98	77.44
+3442	217	87.75	15	87.24	87.29
+3444	217	130.89	21	129.04	123.71
+3445	217	82.4	14	80.06	82.01
+3446	217	1.3	29	0.76	1
+3447	217	64.28	16	64.61	65.84
+3448	217	2.27	20	3.07	3.02
+3449	217	6.83	23	9.61	7.91
+3450	217	1.54	27	1.54	1.47
+3451	217	36.34	24	36.78	34.84
+3454	217	78.45	22	79.38	80.91
+3456	217	16	30	16.8	20.4
+3457	217	79.75	25	80.13	81.91
+3458	218	0.79	20	5.31	3
+3459	218	10.8	23	9.27	8.58
+3460	218	1.53	27	1.42	1.41
+3461	218	67.65	16	64.76	64.82
+3464	218	74.05	22	78.74	78.94
+3466	218	17.7	30	19.8	20
+3467	218	37.18	24	32.56	32.17
+3468	218	74.15	25	78.69	80.17
+3470	218	133.17	21	127.44	126.93
+3471	218	76.48	14	80.94	81.21
+3472	218	0.1	29	-0.06	1.23
+3473	218	89.46	15	87.26	86.61
+3474	219	73.54	14	78.7	77.95
+3475	219	0.66	29	0.8	0.73
+3476	219	91.93	15	89.51	91.26
+3478	219	130.19	21	125.44	121.75
+3479	219	1.56	27	1.53	1.47
+3480	219	70.24	16	67.66	68.26
+3481	219	2.45	20	3.68	2.81
+3482	219	8.91	23	4.35	3.34
+3483	219	72.28	22	75.36	75.21
+3485	219	18.3	30	19.7	21.7
+3486	219	39.33	24	35.35	34.33
+3484	219	1.26	26	3.35	2.74
+3501	220	6.68	26	5.03	2.63
+3489	219	72.94	25	76.16	75.94
+3490	220	82.12	25	84.87	85.15
+3491	220	88.68	14	89.56	87.15
+3492	220	0.12	29	0.34	0.63
+3493	220	88.8	15	88.16	86.21
+3511	221	4.33	26	0.2	1.4
+3495	220	123.02	21	123	120.75
+3496	220	1.41	27	1.39	1.36
+3497	220	63.55	16	63.47	62.62
+3498	220	-0.78	20	1.18	2.16
+3499	220	3.48	23	2.61	2.95
+3500	220	82	22	84.53	84.52
+3502	220	21	30	20.6	22.6
+3503	220	30.37	24	30.58	28.1
+3530	222	1.08	26	-1.12	-1.11
+3539	223	3.48	26	4.43	4.54
+3506	221	1.44	27	1.45	1.37
+3507	221	63.77	16	64.33	63.49
+3508	221	2.99	20	2.51	2.27
+3509	221	6.03	23	5.27	3.59
+3510	221	76.88	22	77.46	80.28
+3512	221	22.7	30	22.7	25.5
+3513	221	30.8	24	31.57	29.12
+3561	224	1.3	26	-1.85	-0.79
+3578	225	3.67	26	3.78	2.41
+3516	221	78.32	25	78.4	81.73
+3517	221	81.2	14	77.66	81.68
+3518	221	1.44	29	0.94	1.44
+3519	221	85.78	15	87.11	86.21
+3595	226	5.71	26	1.93	4.81
+3521	221	117.99	21	116.2	116.89
+3522	222	60.96	16	58.08	58.05
+3523	222	0.21	20	0.74	1.72
+3524	222	1.71	23	1.76	1
+3525	222	1.29	27	1.24	1.22
+3526	222	23.18	24	19.94	18.08
+3529	222	82.05	22	85.25	86.08
+3531	222	23.4	30	24.4	26
+3532	222	83.25	25	87.44	87.67
+3533	222	83.6	15	80.48	81.12
+3535	222	112.36	21	112.12	113.91
+3536	222	83.14	14	84.13	84.97
+3537	222	1.19	29	2.19	1.59
+3538	223	74.85	22	78.53	82.67
+3540	223	20	30	21.9	25
+3541	223	34.63	24	29.88	23.51
+3544	223	74.96	25	78.51	83.1
+3545	223	78.32	14	82.96	87.21
+3546	223	0.11	29	-0.02	0.43
+3547	223	86.78	15	87.13	82.08
+3549	223	125.15	21	124.07	118.34
+3550	223	1.48	27	1.39	1.29
+3551	223	67.14	16	65.64	62.04
+3552	223	-1.08	20	0.04	1.35
+3553	223	9.03	23	10.07	6.64
+3554	224	2.51	20	3.81	4.92
+3555	224	6.09	23	6.95	7.98
+3556	224	1.56	27	1.48	1.4
+3557	224	66.26	16	63.52	62.76
+3560	224	75.74	22	79.14	80.48
+3562	224	15.9	30	18.6	20.1
+3563	224	38.27	24	32	29.36
+3564	224	76.61	25	80.77	81.71
+3566	224	125.35	21	123.85	122.17
+3567	224	77.04	14	77.29	79.69
+3568	224	0.86	29	1.63	1.23
+3569	224	91.5	15	86.34	85.66
+3570	225	64.22	16	62.72	62.51
+3571	225	0.54	20	1.15	0.5
+3572	225	10.26	23	8.75	9.18
+3573	225	1.4	27	1.38	1.35
+3574	225	29.22	24	27.7	27.65
+3577	225	76.95	22	79.14	80.92
+3579	225	21.8	30	22.4	22.4
+3580	225	78.64	25	80.34	81.91
+3581	225	84.34	15	83.54	85.59
+3583	225	117.56	21	120.47	119.73
+3584	225	80.62	14	82.92	83.34
+3585	225	1.69	29	1.2	0.99
+3586	226	-0.3	29	-0.62	0.16
+3587	226	94.58	15	92.02	94.98
+3589	226	122.86	21	123.85	117.75
+3590	226	80.33	14	81.15	79.74
+3591	226	71.12	16	69.24	71.5
+3592	226	1.31	20	2.29	3.32
+3593	226	9.28	23	6.37	7.75
+3594	226	1.6	27	1.51	1.56
+3596	226	16.9	30	20.4	19.2
+3597	226	39.28	24	38.06	38.66
+3600	226	74.62	22	79.22	74.93
+3601	226	74.32	25	78.6	75.09
+3603	227	19.7	30	21.6	23.6
+3604	227	29.1	24	25.38	22.99
+3602	227	0.16	26	5.85	3.21
+3631	228	3.75	26	2.1	0.19
+3607	227	77.53	22	77.57	79.68
+3608	227	79.13	25	77.76	80.06
+3609	227	1.6	29	0.2	0.39
+3610	227	85.93	15	86.24	82.01
+3638	229	5.47	26	1.91	1.69
+3612	227	124.97	21	122.7	125.57
+3613	227	77.7	14	83.41	82.89
+3614	227	62.93	16	64.06	61.35
+3615	227	3.05	20	4.66	2.87
+3616	227	3.22	23	6.17	-0.27
+3617	227	1.4	27	1.33	1.29
+3618	228	88.52	15	89.52	89.21
+3658	230	0.83	26	4.66	2.65
+3620	228	116.06	21	118.19	115.48
+3621	228	84.88	14	82.31	82.03
+3622	228	0.74	29	0.97	0.97
+3623	228	64.39	16	64.71	64.44
+3624	228	0.75	20	3.16	2.32
+3625	228	7.08	23	8.25	9.46
+3626	228	1.4	27	1.39	1.32
+3627	228	30.8	24	30.28	26.28
+3674	231	0.47	26	1.71	1.27
+3690	232	3.51	26	3.05	1.6
+3630	228	81.13	22	80.21	81.84
+3632	228	21.5	30	21.7	24.7
+3633	228	81.87	25	81.18	82.81
+3634	229	36.27	24	33.1	31.61
+3702	233	2	26	1.98	1.1
+3637	229	79.25	22	80.39	82
+3639	229	19.1	30	19.8	20
+3640	229	79.57	25	81.87	82.46
+3641	229	91.12	15	89.26	87.34
+3643	229	130.05	21	127.2	125.9
+3644	229	84.71	14	82.31	83.69
+3645	229	0.32	29	1.48	0.47
+3646	229	67.34	16	65.55	65.26
+3647	229	-1.61	20	1.65	0.54
+3648	229	2.77	23	5.46	7.91
+3649	229	1.49	27	1.42	1.39
+3650	230	67.02	16	68.61	67.03
+3651	230	3.19	20	3.48	2.91
+3652	230	5.29	23	7.4	4.47
+3653	230	1.47	27	1.48	1.43
+3654	230	34.04	24	34.98	33.28
+3657	230	77.29	22	78.62	81.69
+3659	230	20.2	30	19.5	20.3
+3660	230	77.86	25	78.94	82.57
+3661	230	83.42	15	86.63	85.43
+3663	230	123.95	21	126.34	126.43
+3664	230	78.12	14	83.29	84.33
+3665	230	0.57	29	0.32	0.88
+3666	231	72.07	16	69.76	71.08
+3667	231	1.85	20	2.85	3.5
+3668	231	13.51	23	11	11.95
+3669	231	1.63	27	1.59	1.65
+3670	231	44.19	24	40.73	41.37
+3673	231	73.87	22	77.85	77.54
+3675	231	16	30	17.3	18.3
+3676	231	73.89	25	77.77	76.96
+3677	231	92.93	15	92.21	93.15
+3679	231	127.85	21	126.04	122.55
+3680	231	74.35	14	79.56	78.81
+3681	231	0.02	29	-0.08	-0.58
+3682	232	65.52	16	63.78	62.96
+3683	232	-0.18	20	1.99	1.82
+3684	232	7.05	23	7.27	7.68
+3685	232	1.47	27	1.41	1.35
+3686	232	33.33	24	29.18	26
+3689	232	78.34	22	78.92	80.52
+3691	232	17.8	30	19.9	23.2
+3692	232	79.08	25	80.7	82.81
+3693	232	90.7	15	88.04	88.82
+3695	232	120.52	21	117.54	114.65
+3696	232	81.85	14	81.97	82.12
+3697	232	0.74	29	1.78	2.29
+3698	233	30.17	24	26.71	21.96
+3701	233	77.87	22	76.3	78.08
+3703	233	21.2	30	24.6	27.1
+3704	233	79.61	25	78.83	81.17
+3705	233	84.86	15	85.17	82.37
+3707	233	116.07	21	107.9	111.61
+3708	233	79.88	14	78.28	79.18
+3709	233	1.74	29	2.53	3.09
+3710	233	65.77	16	65.92	62.78
+3711	233	0.49	20	1.37	2.43
+3712	233	6.36	23	8.02	7.5
+3713	233	1.43	27	1.36	1.29
+3714	234	89.22	15	86.04	84.21
+3716	234	121.8	21	117.4	118.39
+3717	234	80.51	14	81.05	84.63
+3718	234	0.09	29	1.03	1.66
+3719	234	67.18	16	64.88	63.87
+3720	234	0.98	20	3.5	2.6
+3721	234	12.48	23	9.74	7.94
+3722	234	1.48	27	1.42	1.34
+3723	234	21.3	30	21.4	23.6
+3724	234	34.3	24	30.13	26.73
+3728	234	5.11	26	3.42	3.08
+3733	235	3.75	26	2.19	3.76
+3727	234	75.4	22	77.63	81.55
+3729	234	75.49	25	78.66	83.21
+3750	236	6.37	26	4.7	4.47
+3777	237	1.31	26	3	-0.1
+3732	235	83.58	22	83.06	83.59
+3734	235	22.3	30	23.1	25.9
+3735	235	27.95	24	28.27	26.13
+3736	235	85.35	25	84.56	86.18
+3787	238	5.54	26	6.46	6.04
+3738	235	122.6	21	119.67	117.88
+3739	235	87.34	14	85.25	87.35
+3740	235	1.77	29	1.51	2.59
+3741	235	90.16	15	92.4	90.14
+3742	235	2.11	20	3.31	3.62
+3743	235	-0.39	23	-1.24	-2.04
+3744	235	1.33	27	1.35	1.29
+3745	235	63.68	16	65.18	64.7
+3746	236	38.78	24	34.77	33.99
+3798	239	6.96	26	6.04	4.53
+3820	240	-0.7	26	3.38	1.5
+3749	236	72.91	22	73.65	74
+3751	236	18.8	30	19.7	20.8
+3752	236	73.44	25	74.13	75.1
+3753	236	89.74	15	88.01	89.14
+3840	241	-0.32	26	-0.28	-0.86
+3755	236	131.09	21	125.98	120.58
+3756	236	79.28	14	78.34	78.47
+3757	236	0.53	29	0.48	1.1
+3758	236	69.86	16	69.33	69.91
+3759	236	2.66	20	3.26	2.15
+3760	236	8.37	23	5.03	7.97
+3761	236	1.53	27	1.47	1.46
+3762	237	74.69	25	74.66	78.05
+3763	237	88.91	15	88.72	86.23
+3765	237	136.59	21	136.81	137.08
+3766	237	74.9	14	75.67	75.65
+3767	237	1.1	29	1.98	2.29
+3768	237	68.82	16	69.49	67.09
+3769	237	0.75	20	0.02	1.11
+3770	237	7.66	23	8.5	3.03
+3771	237	1.65	27	1.65	1.54
+3772	237	14.9	30	14.1	14.6
+3773	237	43.75	24	43.82	41.1
+3776	237	73.59	22	72.68	75.75
+3778	238	0.33	29	0.16	-0.05
+3779	238	93.75	15	91.63	89.7
+3781	238	133.7	21	132.94	124.36
+3782	238	78.52	14	82.92	84.58
+3783	238	70.18	16	68.6	67.03
+3784	238	1.73	20	1.89	3.18
+3785	238	10.76	23	10.32	9.66
+3786	238	1.55	27	1.55	1.46
+3788	238	14.3	30	16.8	19.3
+3789	238	42.45	24	38.5	34.49
+3792	238	72.98	22	76.45	78.54
+3793	238	73.31	25	76.61	78.49
+3794	239	37.9	24	39.16	37.41
+3797	239	72.65	22	73.42	75.5
+3799	239	18.2	30	18.6	20.8
+3800	239	72.53	25	74.27	75.6
+3801	239	93.87	15	93.79	93.27
+3803	239	124.87	21	127.58	122.7
+3804	239	79.61	14	79.46	80.03
+3805	239	-0.12	29	0.85	0.1
+3806	239	71.07	16	71.26	70.98
+3807	239	2.24	20	2.03	0.1
+3808	239	4.59	23	9.63	9.29
+3809	239	1.54	27	1.55	1.49
+3810	240	82.72	25	80.98	83.48
+3811	240	2.33	29	2.18	1.89
+3812	240	83.28	15	84.06	83.82
+3814	240	126.32	21	120.97	117.63
+3815	240	79.69	14	82.17	83.09
+3816	240	60.34	16	61.67	60.37
+3817	240	2.24	20	2.65	3.65
+3818	240	5.31	23	6.46	3.89
+3819	240	1.32	27	1.44	1.34
+3821	240	18.4	30	19.5	21.7
+3822	240	26.48	24	29.34	25.67
+3825	240	80.39	22	78.79	81.59
+3826	241	79.79	25	77.17	80.3
+3827	241	86.66	15	87.99	88.02
+3829	241	118.11	21	116.06	116.03
+3830	241	75.9	14	75.08	76.39
+3831	241	3.56	29	1.81	3.04
+3832	241	65.56	16	67.56	66.13
+3833	241	1.22	20	1.3	1.08
+3834	241	2.28	23	3.67	1.11
+3835	241	1.4	27	1.43	1.39
+3836	241	30.06	24	31.13	30.78
+3839	241	76.23	22	75.36	77.26
+3841	241	21.8	30	22.4	23.3
+3842	242	73.97	25	77.02	79.87
+3843	242	75.9	14	78.42	79.09
+3844	242	1.2	29	1.18	1.37
+3845	242	84.65	15	84.89	82.32
+3853	242	3.12	26	2.59	0.59
+3847	242	126.52	21	123.86	120.14
+3848	242	1.53	27	1.47	1.39
+3849	242	65.55	16	64.23	61.93
+3850	242	1.42	20	3.59	1.66
+3851	242	5.73	23	7.5	3.88
+3852	242	72.77	22	75.84	78.5
+3854	242	18	30	20	22
+3855	242	34.54	24	31.38	26.88
+3861	243	4.27	26	3.9	3.52
+3878	244	3.35	26	4.73	5.01
+3903	245	-0.3	26	0.76	0.71
+3911	246	0.43	26	-0.08	-2.75
+3860	243	77.12	22	77.81	78.01
+3862	243	17.2	30	19.5	21.4
+3863	243	39.05	24	36.66	33.34
+3864	243	77.65	25	78.87	79.56
+3926	247	1.95	26	-0.01	-2.78
+3866	243	130.97	21	124.65	118.82
+3867	243	81.39	14	81.71	81.53
+3868	243	0.53	29	1.06	1.56
+3869	243	89.41	15	86.38	87.54
+3870	243	1.93	20	2.67	3.76
+3871	243	8.6	23	10.36	11.19
+3872	243	1.53	27	1.51	1.45
+3873	243	68.27	16	67.2	68.21
+3874	244	36.46	24	36.74	30.88
+3953	248	8.26	26	6.39	4.03
+3877	244	75.08	22	76.33	79.4
+3879	244	17.5	30	16.8	20.2
+3880	244	75.64	25	76.3	79.65
+3881	244	89.31	15	90.72	86.77
+3883	244	124.06	21	125.25	121.67
+3884	244	78.43	14	81.06	84.41
+3885	244	0.56	29	-0.03	0.25
+3886	244	66.1	16	66.97	63.97
+3887	244	0.25	20	-0.24	1.34
+3888	244	5.41	23	6.66	4.62
+3889	244	1.55	27	1.53	1.42
+3890	245	75.63	25	77.7	78.4
+3892	245	134.61	21	134.38	133.07
+3893	245	73.17	14	76.29	76.8
+3894	245	2.16	29	2.17	2.31
+3895	245	89.78	15	88.98	87.69
+3896	245	3.34	20	4.96	5.6
+3897	245	9.34	23	14.35	12.32
+3898	245	1.54	27	1.5	1.48
+3899	245	66.13	16	66.21	65.72
+3902	245	73.48	22	75.53	76.09
+3904	245	13.9	30	14.4	15.8
+3905	245	37.6	24	36.91	35.49
+3906	246	1.51	27	1.47	1.33
+3907	246	65.46	16	66.27	63.93
+3908	246	0.77	20	2.7	4.11
+3909	246	8.76	23	8.45	8.01
+3910	246	73.52	22	74.27	78.42
+3912	246	20.4	30	21.7	25.2
+3913	246	32.57	24	31.86	25.04
+3916	246	75.4	25	76.05	80.87
+3917	246	73.95	14	74.19	75.67
+3918	246	1.88	29	1.78	2.45
+3919	246	83.79	15	83.43	80.78
+3921	246	121.66	21	115.68	113.48
+3922	247	31.56	24	29.94	26.49
+3925	247	73.84	22	75.92	79.65
+3927	247	20.2	30	20.7	23.4
+3928	247	74.97	25	76.9	81.2
+3929	247	83.97	15	84.06	83.63
+3931	247	125.22	21	123.3	117.15
+3932	247	75.79	14	75.91	76.87
+3933	247	1.14	29	0.98	1.55
+3934	247	64.76	16	65.36	64.16
+3935	247	-1.04	20	1.49	1.36
+3936	247	5.02	23	5.98	6.46
+3937	247	1.45	27	1.42	1.33
+3938	248	76.31	25	79.51	81.49
+3939	248	90.87	15	90.86	90.57
+3941	248	130.13	21	129.56	132.6
+3942	248	84.41	14	85.63	85.11
+3943	248	0.16	29	0.27	0.41
+3944	248	66.19	16	65.93	65.23
+3945	248	0.85	20	2.48	2.55
+3946	248	8.99	23	9.48	6.44
+3947	248	1.47	27	1.45	1.41
+3948	248	18.3	30	17.6	19
+3949	248	35.22	24	36.47	35.21
+3952	248	76.15	22	79.24	81.08
+3954	249	74.21	25	77.69	79.5
+3955	249	92.01	15	89.12	88.26
+3957	249	125.24	21	128.1	124.67
+3958	249	78.91	14	77.91	81.28
+3959	249	1.16	29	1.36	1.67
+3960	249	69.04	16	68.16	67.42
+3961	249	1.84	20	2.25	3.81
+3962	249	8.46	23	6.96	6.63
+3963	249	1.58	27	1.52	1.49
+3964	249	38.21	24	36.65	34.94
+3968	249	5.87	26	1.59	3.45
+3981	250	2.75	26	2.34	2.97
+3967	249	73.04	22	76.32	77.83
+3969	249	16.8	30	17	18.3
+3970	250	126.79	21	126.73	123.22
+3971	250	77.57	14	78.84	79.77
+3972	250	1.07	29	2.15	1.96
+3973	250	88.02	15	88.55	90.71
+3988	251	4.63	26	6.6	7.33
+3975	250	7.84	23	6.82	8.36
+3976	250	1.57	27	1.49	1.47
+3977	250	67.19	16	67.4	67.73
+3978	250	2.96	20	3.68	4.53
+4011	252	8.8	26	4.76	4.07
+3980	250	74.82	22	76.5	76.8
+3982	250	17.1	30	19.1	20.3
+3983	250	39.03	24	36.33	34.66
+4032	253	9.42	26	8.43	7.27
+3985	250	75.89	25	78.65	78.76
+4041	254	7.86	26	6.57	4.24
+3987	251	78.82	22	78.19	78.29
+3989	251	23.4	30	22.7	24.4
+3990	251	28.1	24	29.56	29.3
+4062	255	3.4	26	5.74	3.48
+3992	251	79.18	25	78.85	79.18
+3993	251	121.24	21	121.84	116.22
+3994	251	83.45	14	84.79	85.61
+3995	251	0.37	29	0.66	0.89
+3996	251	86.91	15	84.82	85.45
+4079	256	8.69	26	4.75	3.57
+3998	251	7	23	4.21	3.89
+3999	251	1.35	27	1.37	1.36
+4000	251	64.25	16	65.11	65.98
+4001	251	0.66	20	0.79	1.98
+4002	252	0.77	29	1.09	1.5
+4003	252	89.3	15	84.72	83.98
+4005	252	121.7	21	124.46	116.89
+4006	252	83.85	14	83.25	84.48
+4007	252	66.9	16	63.21	62.73
+4008	252	-0.62	20	0.81	2.77
+4009	252	5.35	23	5.62	3.04
+4010	252	1.43	27	1.42	1.32
+4012	252	21.4	30	21.5	24.9
+4013	252	31.31	24	29.09	25.29
+4016	252	75.06	22	78.49	80.41
+4017	252	75.82	25	79.58	81.92
+4018	253	74.45	25	76.45	78.77
+4019	253	90.4	15	90.02	89.31
+4021	253	128.78	21	123.16	120.22
+4022	253	83.07	14	84.22	85.27
+4023	253	0.8	29	0.66	0.77
+4024	253	67.96	16	67.39	67.82
+4025	253	2	20	2.25	2.38
+4026	253	10.21	23	10.85	12.53
+4027	253	1.56	27	1.54	1.45
+4028	253	38.7	24	37.46	34.4
+4031	253	73.65	22	75.79	78
+4033	253	15.6	30	16.6	21.4
+4034	254	2.47	20	2.42	4.73
+4035	254	2.6	23	3.94	3.52
+4036	254	1.46	27	1.4	1.37
+4037	254	62.56	16	59.5	60.36
+4040	254	83.82	22	85.85	85.57
+4042	254	18.2	30	19.3	23.1
+4043	254	32.24	24	27.69	27.35
+4044	254	83.71	25	85.98	86.54
+4046	254	124.47	21	120.46	118.51
+4047	254	91.68	14	92.43	89.8
+4048	254	-0.11	29	0.12	0.97
+4049	254	84.5	15	80.13	80.61
+4050	255	76.51	25	76.46	79.58
+4051	255	123.56	21	120.48	115.67
+4052	255	78.35	14	80.49	80.98
+4053	255	1.56	29	1.71	2.08
+4054	255	89.37	15	90.54	87.6
+4056	255	8.51	23	9.2	7.26
+4057	255	1.54	27	1.55	1.47
+4058	255	67.45	16	67.76	66.03
+4059	255	1.72	20	2.83	1.94
+4061	255	74.95	22	74.75	77.5
+4063	255	18.9	30	18.9	21.2
+4064	255	35.34	24	36.41	33.16
+4066	256	90.13	15	91.57	90.4
+4068	256	123.25	21	121.85	119.46
+4069	256	93.15	14	84.04	83.96
+4070	256	0.11	29	0.25	0.79
+4071	256	65.46	16	69.46	68.3
+4072	256	-0.5	20	0.71	0.86
+4073	256	5.22	23	9.46	9.38
+4074	256	1.38	27	1.42	1.34
+4075	256	30.14	24	33.45	30.47
+4078	256	84.46	22	79.29	80.39
+4080	256	20.7	30	21.1	24.6
+4081	256	84.57	25	79.54	81.18
+4082	257	10.5	23	9.06	9.42
+4083	257	1.45	27	1.42	1.36
+4084	257	69.58	16	68.41	68.76
+4085	257	-0.17	20	0.87	0.4
+4088	257	5.36	26	5.48	0.88
+4087	257	76.84	22	79.72	79.95
+4089	257	20.2	30	20.5	23.9
+4090	257	34.28	24	32.59	30.06
+4106	258	4.51	26	5.22	7.31
+4092	257	77.04	25	79.87	80.76
+4093	257	127.41	21	125.33	119.1
+4094	257	82.2	14	85.2	80.83
+4095	257	0.2	29	0.15	0.81
+4096	257	89.7	15	91.05	92.05
+4128	259	3.29	26	5.01	5.59
+4098	258	63.59	16	63.69	65.47
+4099	258	1.4	20	1.26	1.27
+4100	258	4.57	23	2.59	2.33
+4101	258	1.43	27	1.46	1.41
+4102	258	32.33	24	31.21	30.89
+4132	260	3.46	26	3.62	4.93
+4158	261	3.58	26	3.36	2.09
+4105	258	78.67	22	80.43	80.39
+4107	258	19.3	30	19.7	21.3
+4108	258	79.21	25	80.67	80.64
+4109	258	86.93	15	85.33	87.57
+4170	262	3.06	26	3.3	2.86
+4111	258	118.67	21	121.12	117.17
+4112	258	83.18	14	85.65	87.7
+4113	258	0.54	29	0.24	0.24
+4114	259	79.29	25	78.21	79.32
+4115	259	83.92	15	86.29	87.09
+4186	263	4.86	26	3.91	3.85
+4117	259	118.99	21	117.47	113.64
+4118	259	81.83	14	82.84	84.15
+4119	259	0.75	29	0.38	0.76
+4120	259	63.98	16	65.2	65.95
+4121	259	0.24	20	0.31	0.52
+4122	259	3.28	23	2.93	1.81
+4123	259	1.45	27	1.45	1.42
+4124	259	31.07	24	32.28	30.92
+4127	259	78.54	22	77.83	78.56
+4129	259	20.5	30	20.3	23.3
+4131	260	79.34	22	80.02	79.89
+4133	260	23	30	23.4	24.1
+4134	260	27.78	24	28.14	29.74
+4136	260	81.72	25	81.96	82.04
+4137	260	116.42	21	118.39	120.74
+4138	260	82.8	14	83.65	84.82
+4139	260	2.38	29	1.94	2.15
+4140	260	82.11	15	83.84	85.77
+4142	260	7.48	23	5.67	7.69
+4143	260	1.37	27	1.37	1.37
+4144	260	61.71	16	62.36	63.71
+4145	260	4.88	20	4.83	6.28
+4147	261	124.03	21	124.08	117.51
+4148	261	75.51	14	75.99	76.73
+4149	261	1.75	29	1.97	2.42
+4150	261	89.08	15	88.12	86.31
+4151	261	-1.31	20	-0.25	1.09
+4152	261	13.59	23	13.9	12.9
+4153	261	1.5	27	1.53	1.43
+4154	261	66.62	16	67.06	67.77
+4157	261	71.92	22	72.63	74.65
+4159	261	19.3	30	19.2	22.7
+4160	261	33.98	24	34.28	31.48
+4161	261	73.67	25	74.6	77.06
+4162	262	65.3	16	63.63	63.96
+4163	262	2.13	20	2.19	2.25
+4164	262	12.39	23	10.23	11.06
+4165	262	1.44	27	1.39	1.32
+4166	262	28.9	24	25.79	22.5
+4169	262	69.82	22	71.01	72.78
+4171	262	23.6	30	23.5	27.5
+4172	262	72.49	25	73.91	76.29
+4173	262	85.12	15	84.25	82.25
+4175	262	111.72	21	110.78	110.25
+4176	262	72.88	14	74.32	75.64
+4177	262	2.68	29	2.89	3.51
+4178	263	65.09	16	63.98	63.5
+4179	263	1.82	20	2.23	3.14
+4180	263	-1.54	23	1.6	-0.79
+4181	263	1.42	27	1.34	1.31
+4182	263	30.69	24	27.71	25.42
+4185	263	78.4	22	79.37	81.59
+4187	263	22.6	30	24.7	26.7
+4188	263	78.46	25	80.09	82.31
+4189	263	87.9	15	87.7	87.43
+4191	263	116.52	21	113.85	111.56
+4192	263	83.26	14	83.28	85.44
+4193	263	0.06	29	0.72	0.71
+4194	264	78.85	25	81.42	80.69
+4195	264	122.16	21	120.21	118.51
+4196	264	81.98	14	82.66	80.94
+4197	264	1.04	29	1.85	1.33
+4198	264	83.87	15	83.62	84.39
+4200	264	5.14	23	5.51	5.29
+4201	264	1.46	27	1.41	1.41
+4202	264	63.6	16	62.88	63.79
+4203	264	2.09	20	3.25	3.41
+4206	264	4.17	26	3.08	1.58
+4205	264	77.81	22	79.57	79.36
+4207	264	19.3	30	21.9	22.3
+4208	264	32.06	24	28.7	28.88
+4222	265	5.58	26	5.3	5.25
+4210	265	80.23	25	80.51	82.97
+4211	265	123.77	21	120.24	118.96
+4212	265	84.02	14	83.69	85.45
+4213	265	1.79	29	2.11	2.78
+4214	265	85.53	15	84.74	83.42
+4240	266	5.39	26	5.05	5.62
+4216	265	5.04	23	6.17	6.06
+4217	265	1.37	27	1.37	1.35
+4218	265	62.09	16	62.35	61.61
+4219	265	2.73	20	3.83	2.89
+4255	267	7.12	26	4.91	5.17
+4221	265	78.43	22	78.4	80.2
+4223	265	20.9	30	20.8	21.2
+4224	265	25.92	24	25.57	24.47
+4271	268	1.66	26	0.74	1.16
+4226	266	78.51	25	79.37	82.47
+4227	266	86.17	15	85.11	84.86
+4282	269	2.83	26	3.44	3.57
+4229	266	123.53	21	121.02	118.83
+4230	266	82.87	14	83.29	86.55
+4231	266	1.03	29	1.13	1.55
+4232	266	66.8	16	65.54	65.88
+4233	266	-0.38	20	-0.31	0.94
+4234	266	6.58	23	5.2	5.28
+4235	266	1.42	27	1.4	1.33
+4236	266	32.12	24	30.09	28.23
+4304	270	4.5	26	4.02	1.14
+4317	271	8.72	26	6.19	9.66
+4239	266	77.48	22	78.24	80.93
+4241	266	21.1	30	22	24.7
+4242	267	92.8	15	90.18	89.21
+4244	267	128.86	21	122.45	116.73
+4245	267	80.74	14	78.92	81.79
+4246	267	1.16	29	1.5	1.99
+4247	267	70.59	16	69.23	69.19
+4248	267	-0.28	20	0.14	1.52
+4249	267	7.43	23	9.93	7.68
+4250	267	1.49	27	1.44	1.35
+4251	267	36.99	24	33.64	28.77
+4254	267	73.62	22	74.01	76.62
+4256	267	19.2	30	20.7	25.6
+4257	267	74.78	25	75.51	78.61
+4258	268	79.12	25	80.1	82.09
+4260	268	122.68	21	123.74	117.82
+4261	268	78.79	14	78.32	80.9
+4262	268	1.99	29	2.52	2.35
+4263	268	88.77	15	87.64	88.4
+4264	268	1.59	20	0.99	2.38
+4265	268	10.71	23	8.07	7.02
+4266	268	1.44	27	1.44	1.38
+4267	268	64.72	16	64.39	63.23
+4270	268	77.13	22	77.58	79.73
+4272	268	18.4	30	18.9	20.5
+4273	268	31.57	24	30.97	27.78
+4274	269	64.03	16	64.57	65.75
+4275	269	0.58	20	0.64	1.36
+4276	269	8.93	23	10.03	9.97
+4277	269	1.41	27	1.41	1.37
+4278	269	29.03	24	29.03	27.26
+4281	269	78.58	22	78.01	78.25
+4283	269	20.7	30	21.8	24.6
+4284	269	79.5	25	79.25	79.51
+4285	269	86.7	15	86.85	88.35
+4287	269	115.6	21	115.5	111.28
+4288	269	81.41	14	81.46	81.81
+4289	269	0.92	29	1.23	1.26
+4290	270	77.59	25	74.3	82.72
+4291	270	85.74	15	89.57	84.16
+4293	270	123.74	21	132.09	114.25
+4294	270	80.62	14	77.45	81.37
+4295	270	1.47	29	0.86	2.49
+4296	270	64.38	16	67.76	62.69
+4297	270	-0.33	20	2.59	1.53
+4298	270	5.58	23	9.66	4.89
+4299	270	1.44	27	1.54	1.35
+4300	270	32.73	24	38.71	25.69
+4303	270	76.12	22	73.43	80.23
+4305	270	19.1	30	17.8	23.5
+4306	271	73.57	25	76.34	76.23
+4307	271	82.06	14	81.81	85.21
+4308	271	0.24	29	0.72	0.69
+4309	271	96.47	15	95.46	95.79
+4311	271	119.23	21	119.69	117.51
+4312	271	1.55	27	1.52	1.46
+4313	271	73.06	16	71.05	72.25
+4314	271	2.84	20	2.13	3.76
+4315	271	7.05	23	6.3	6.73
+4316	271	73.33	22	75.62	75.55
+4318	271	20.2	30	20.4	23.1
+4319	271	41.06	24	37.74	37
+4322	272	77.89	25	80.6	81.25
+4323	272	84.1	14	83.92	87.01
+4324	272	0.13	29	0.42	0.94
+4325	272	91.26	15	88.41	89.94
+4333	272	6.35	26	3.73	6.7
+4327	272	124.13	21	121.37	116.03
+4328	272	1.52	27	1.45	1.41
+4329	272	67.77	16	66.09	67.3
+4330	272	1.7	20	2.17	1.76
+4331	272	8.93	23	9.47	11.39
+4332	272	77.75	22	80.18	80.31
+4334	272	19.1	30	21.4	23.8
+4335	272	36.87	24	33.37	31.73
+4351	273	5.67	26	5.01	4.46
+4358	274	4.41	26	2.08	1.11
+4338	273	83.97	15	84.41	84.37
+4372	275	5.1	26	3.67	2.12
+4340	273	125.7	21	127.17	122.25
+4341	273	86.56	14	85.87	85.79
+4342	273	-0.34	29	0.7	0.76
+4343	273	65.13	16	65.4	65.91
+4344	273	1.14	20	3.05	3.27
+4345	273	7.43	23	8.87	9.75
+4346	273	1.43	27	1.45	1.45
+4347	273	32.27	24	31.97	32.29
+4395	276	4.58	26	3.15	0.29
+4416	277	8.11	26	8.33	7.3
+4350	273	80.89	22	80.86	81.34
+4352	273	18.1	30	18.8	18.2
+4353	273	80.55	25	81.56	82.1
+4354	274	66.16	16	66.06	65.86
+4355	274	3.11	20	2.84	2.36
+4356	274	9.97	23	12.73	11.63
+4357	274	1.51	27	1.48	1.43
+4359	274	18.2	30	19	21.5
+4360	274	34.65	24	32.95	30.79
+4432	278	6.77	26	8.28	6.26
+4363	274	76.85	22	76.64	79.46
+4364	274	77.41	25	77.57	80.51
+4365	274	0.56	29	0.93	1.05
+4366	274	86.29	15	84.41	83.44
+4368	274	126.38	21	125.07	122.34
+4369	274	81.26	14	78.72	80.57
+4371	275	75.09	22	76.24	77.15
+4373	275	17.1	30	17.4	19.1
+4374	275	37.97	24	37.94	37.05
+4376	275	76.8	25	78.26	79.28
+4377	275	128.59	21	122.3	121.64
+4378	275	80.19	14	79.91	79.28
+4379	275	1.71	29	2.02	2.12
+4380	275	91.51	15	91.5	91.26
+4382	275	9.24	23	12.47	13.22
+4383	275	1.57	27	1.55	1.54
+4384	275	66.62	16	67.12	67.68
+4385	275	0.86	20	0.97	1.18
+4386	276	1.96	29	2.09	2.63
+4387	276	84.76	15	85.15	84.78
+4389	276	133.4	21	132.35	127.35
+4390	276	80.84	14	81.01	79.62
+4391	276	63.15	16	63.25	63.09
+4392	276	1.27	20	1.48	2.52
+4393	276	5.58	23	5.67	5.02
+4394	276	1.59	27	1.53	1.47
+4396	276	15	30	15.7	17.2
+4397	276	37.08	24	35.42	32.87
+4400	276	76.26	22	77.86	79.34
+4401	276	78.22	25	79.95	81.96
+4402	277	88.85	15	87.57	87.76
+4404	277	124.51	21	120.33	120.47
+4405	277	86.57	14	87.6	87.28
+4406	277	0.89	29	1.39	1.37
+4407	277	67.33	16	66.66	66.41
+4408	277	2.66	20	1.97	1.65
+4409	277	7.73	23	7.27	7.64
+4410	277	1.48	27	1.43	1.39
+4411	277	19.1	30	21.2	23.1
+4412	277	34.92	24	32.77	31.34
+4415	277	78.46	22	79.27	79.98
+4417	277	79.35	25	80.66	81.35
+4418	278	87.35	15	86.23	84.85
+4420	278	125.46	21	122.53	121.49
+4421	278	86.93	14	90.29	88.17
+4422	278	0.67	29	0.48	1.04
+4423	278	65.54	16	65.28	63.86
+4424	278	2.7	20	2.13	3.86
+4425	278	6.18	23	6.3	8.15
+4426	278	1.43	27	1.43	1.37
+4427	278	18.1	30	19.5	21.1
+4428	278	32.66	24	31.67	29.26
+4431	278	80.17	22	82	81.91
+4433	278	80.84	25	82.49	82.95
+4434	279	74.18	25	76.25	77.17
+4435	279	88.62	15	87.56	87.89
+4437	279	125.54	21	124.52	124.88
+4438	279	77.28	14	79.22	80.1
+4439	279	0.5	29	0.36	0.53
+4440	279	69.17	16	67.55	68.32
+4441	279	-1.29	20	-0.64	-1.39
+4442	279	10.38	23	10.12	11.09
+4443	279	1.58	27	1.53	1.51
+4444	279	16.3	30	17.4	18.9
+4445	279	39.49	24	36.48	37.19
+4449	279	3.6	26	3.33	3.46
+4454	280	3.43	26	2.45	2.41
+4448	279	73.68	22	75.89	76.64
+4450	280	33.78	24	32.63	32.1
+4475	281	2.48	26	1.65	-0.69
+4494	282	4.41	26	5.12	4.36
+4453	280	77.07	22	77.07	78.45
+4455	280	19.6	30	23.3	22.6
+4456	280	77.35	25	78.11	79.55
+4457	280	87.7	15	85.77	86.09
+4503	283	5.35	26	6.8	5.17
+4459	280	118.72	21	116.8	115.34
+4460	280	80.5	14	79.52	80.86
+4461	280	0.29	29	1.05	1.1
+4462	280	66.12	16	65.26	66.25
+4463	280	0.45	20	0.67	-0.98
+4464	280	7.14	23	6.69	6.94
+4465	280	1.49	27	1.44	1.42
+4466	281	0.48	29	1.18	0.84
+4467	281	85.2	15	86.12	88.34
+4524	284	8.87	26	7.98	6.28
+4469	281	128.92	21	127.09	126.82
+4470	281	78.09	14	77.77	75.55
+4471	281	65.88	16	66.16	68.11
+4472	281	1.8	20	2.11	1.71
+4473	281	1.89	23	2.04	3.64
+4474	281	1.47	27	1.47	1.48
+4476	281	17.3	30	18.8	19
+4477	281	33.45	24	33.35	34.96
+4533	285	4.48	26	2.59	2.63
+4554	286	5.1	26	4.19	2.97
+4480	281	75.61	22	76.12	76.24
+4481	281	76.1	25	77.31	77.08
+4483	282	123.81	21	119.66	122.3
+4484	282	77.37	14	80.25	79.85
+4485	282	1	29	0.95	1.45
+4486	282	90.74	15	88.37	90.25
+4487	282	-0.68	20	1.78	1.42
+4488	282	6.69	23	4.27	2.01
+4489	282	1.53	27	1.51	1.49
+4490	282	70.72	16	69.67	70.25
+4493	282	72.96	22	75.13	75.48
+4495	282	20	30	19.9	19.1
+4496	282	37.41	24	36.09	38.46
+4497	282	73.96	25	76.08	76.93
+4498	283	19.6	30	19.7	23.5
+4499	283	44.23	24	41.72	37.28
+4502	283	70.29	22	71.94	73.5
+4504	283	70.62	25	72.46	74.52
+4505	283	93.53	15	93.29	91.69
+4507	283	124.54	21	120.54	118.89
+4508	283	75.64	14	78.74	78.67
+4509	283	0.33	29	0.52	1.01
+4510	283	74.72	16	73.41	71.74
+4511	283	1.15	20	3.05	3.77
+4512	283	14.03	23	10.05	9.91
+4513	283	1.65	27	1.58	1.48
+4514	284	83.69	14	83.94	81.19
+4515	284	0.54	29	0.55	1.03
+4516	284	95.15	15	94.63	94.6
+4518	284	119.5	21	117.49	114.89
+4519	284	1.54	27	1.5	1.44
+4520	284	70.76	16	70.14	70.95
+4521	284	1.07	20	2.03	3.28
+4522	284	7.26	23	7.56	7.69
+4523	284	74.83	22	75.95	74.91
+4525	284	19.7	30	21.7	25
+4526	284	39.03	24	36.24	35.1
+4529	284	75.36	25	76.51	75.94
+4532	285	73.52	22	77.73	78.2
+4534	285	18.4	30	20.1	21.6
+4535	285	32.48	24	28.79	27.7
+4536	285	74.4	25	78.5	79.36
+4538	285	128.69	21	128.07	124.76
+4539	285	78	14	80.31	80.83
+4540	285	0.88	29	0.77	1.16
+4541	285	86.2	15	84.04	82.76
+4542	285	2.22	20	2.92	2.35
+4543	285	7.08	23	6.91	7.14
+4544	285	1.45	27	1.37	1.35
+4545	285	65.83	16	63.54	63.17
+4546	286	66.74	16	65.26	63.52
+4547	286	1.6	20	1.48	2.35
+4548	286	7.2	23	5.59	5.6
+4549	286	1.42	27	1.37	1.31
+4550	286	30.06	24	27.25	23.74
+4553	286	74	22	75.61	76.8
+4555	286	20.3	30	22.1	24.8
+4556	286	75.26	25	77.15	78.95
+4557	286	87.56	15	85.18	83.44
+4559	286	121.27	21	122.38	117.8
+4560	286	79.1	14	79.8	79.77
+4561	286	1.26	29	1.55	2.15
+4563	287	16.6	30	18	21.1
+4564	287	36.36	24	34.65	33.17
+4562	287	2.27	26	1.74	2.5
+4591	288	1.08	26	1.48	-0.06
+4567	287	76.18	22	76.81	77.92
+4568	287	77.49	25	78.75	80.01
+4569	287	1.31	29	1.94	2.09
+4570	287	84.63	15	84.02	85.26
+4599	289	3.53	26	1.78	-0.44
+4572	287	127.45	21	123.57	119.1
+4573	287	78.45	14	78.55	80.43
+4574	287	65.48	16	64.61	65.71
+4575	287	0.73	20	-0.05	1.14
+4576	287	7.8	23	7.3	6.99
+4577	287	1.6	27	1.54	1.49
+4578	288	87.08	15	87.11	87.35
+4618	290	2.63	26	2.49	1.88
+4580	288	118.64	21	119.65	114.79
+4581	288	81.34	14	80.74	79.75
+4582	288	1.55	29	2.05	2.51
+4583	288	64.48	16	64.76	65.14
+4584	288	1.99	20	1.35	1.66
+4585	288	4.69	23	6.44	5.91
+4586	288	1.48	27	1.49	1.42
+4587	288	32.86	24	32.91	29.66
+4638	291	2.69	26	3.15	1.23
+4650	292	4.32	26	4.11	2.53
+4590	288	80.26	22	79.27	79.81
+4592	288	18.3	30	18.5	22.5
+4593	288	81.81	25	81.32	82.33
+4594	289	1.62	27	1.56	1.57
+4595	289	71.63	16	69.84	70.42
+4596	289	0.79	20	0.49	1.55
+4597	289	12.75	23	13.15	10.79
+4598	289	71.79	22	74	74.53
+4600	289	12.7	30	13.1	15.1
+4601	289	43.96	24	43.06	41.61
+4670	293	2.04	26	1.93	-0.03
+4604	289	72.25	25	74.26	75.07
+4605	289	75.32	14	75.79	74.09
+4606	289	0.46	29	0.25	0.54
+4607	289	91.9	15	90.18	90.56
+4609	289	137.62	21	139.17	134.63
+4610	290	69.67	16	69.73	69.34
+4611	290	2.5	20	2.2	1.98
+4612	290	12.15	23	9.35	7.93
+4613	290	1.58	27	1.54	1.45
+4614	290	38.49	24	37.32	33.76
+4617	290	74.99	22	76.82	79.11
+4619	290	17.5	30	19.2	24
+4620	290	75.17	25	77.4	80.05
+4621	290	91.78	15	91.62	90.84
+4623	290	124.5	21	120.3	112.3
+4624	290	77.61	14	79.31	80.99
+4625	290	0.18	29	0.58	0.94
+4627	291	120.79	21	121.05	113.55
+4628	291	77.58	14	80.91	78.6
+4629	291	0.51	29	1.09	1.7
+4630	291	90.22	15	91.39	92.88
+4631	291	2.21	20	2.22	2.55
+4632	291	7.7	23	8.59	8.33
+4633	291	1.51	27	1.47	1.44
+4634	291	70.16	16	69.11	71.16
+4637	291	74.89	22	77.75	77.37
+4639	291	17.8	30	19	22.1
+4640	291	36.35	24	34.18	34.89
+4641	291	75.4	25	78.84	79.07
+4642	292	65.54	16	64.54	65.21
+4643	292	0.07	20	-1.09	1.82
+4644	292	8.39	23	5.53	4.33
+4645	292	1.36	27	1.37	1.3
+4646	292	26.95	24	26.83	25.23
+4649	292	79.33	22	79.06	80.49
+4651	292	24.6	30	24.3	25.6
+4652	292	80.39	25	79.95	81.47
+4653	292	89.63	15	86.99	87.15
+4655	292	113.26	21	114.15	114.15
+4656	292	83.66	14	83.17	83.02
+4657	292	1.06	29	0.89	0.98
+4659	293	127.88	21	127.58	126.6
+4660	293	75.54	14	78.69	79.16
+4661	293	1.07	29	1.18	0.66
+4662	293	86.09	15	86.04	86.01
+4663	293	1.36	20	-0.99	0.9
+4664	293	12.12	23	9.22	7.98
+4665	293	1.57	27	1.53	1.56
+4666	293	68.53	16	67.52	66.71
+4669	293	73.49	22	76.76	79.19
+4671	293	18	30	18.9	17.7
+4672	293	36.76	24	36.1	35.96
+4673	293	74.57	25	77.93	79.86
+4674	294	82.67	15	81.67	80.24
+4676	294	121.64	21	119.74	116.36
+4677	294	86.59	14	89.33	87.25
+4678	294	0.56	29	1	0.71
+4679	294	61.83	16	60.39	61.57
+4680	294	0.15	20	-0.09	1.85
+4681	294	7.43	23	1.31	4.68
+4682	294	1.36	27	1.36	1.3
+4683	294	20.5	30	20	25.6
+4684	294	26.43	24	25.84	23.71
+4688	294	5.06	26	6.22	4.93
+4699	295	4.83	26	6.16	2.83
+4687	294	81.53	22	83.1	82.32
+4689	294	82.09	25	84.11	83.03
+4690	295	0.63	29	1.12	1.7
+4691	295	90	15	91.76	90.54
+4716	296	2.79	26	1.27	1.22
+4693	295	133.12	21	131.57	134.6
+4694	295	77.34	14	77.6	74.59
+4695	295	68.65	16	70.11	69.46
+4696	295	1.72	20	1.03	3
+4697	295	11.06	23	11.28	9.57
+4698	295	1.6	27	1.57	1.57
+4700	295	17.4	30	17.7	17.4
+4701	295	40.22	24	40.38	40.83
+4725	297	6.2	26	5.8	6.7
+4745	298	2.58	26	2.37	-1.15
+4704	295	72.51	22	71.44	71.76
+4705	295	73.14	25	72.56	73.46
+4706	296	87.07	14	87.51	85.09
+4707	296	2.58	29	2.63	2.94
+4708	296	82.72	15	82.23	85.07
+4758	299	0.35	26	2.26	1.24
+4710	296	122.34	21	121.92	124.7
+4711	296	1.34	27	1.35	1.36
+4712	296	59.65	16	58.03	61.71
+4713	296	6.2	20	6.6	6.71
+4714	296	1.28	23	2.04	2.58
+4715	296	84.28	22	86.24	83.87
+4717	296	21.4	30	21	22
+4718	296	26.68	24	25.64	27.02
+4774	300	1.78	26	0.76	-3.36
+4800	301	5.31	26	5.39	1.39
+4721	296	86.86	25	88.87	86.81
+4724	297	73.9	22	74.8	73.2
+4726	297	20.7	30	19.4	21.8
+4727	297	32.9	24	34	33.5
+4728	297	74.9	25	76.5	75
+4730	297	120.3	21	122.4	116
+4731	297	80.1	14	80.7	79.9
+4732	297	1	29	1.7	1.8
+4733	297	86.1	15	88.2	88.2
+4734	297	1.9	20	3.1	3.7
+4735	297	6	23	6	7.1
+4736	297	1.5	27	1.5	1.5
+4737	297	67.6	16	68.1	70.4
+4738	298	1.44	20	1.6	2.75
+4739	298	9.75	23	10.94	8.39
+4740	298	1.59	27	1.59	1.56
+4741	298	68.92	16	69.23	69.89
+4744	298	72.56	22	71.54	72.35
+4746	298	19.2	30	19	20.6
+4747	298	36.79	24	36.06	35.36
+4748	298	73.57	25	73.04	74.09
+4750	298	120.83	21	118.66	117.17
+4751	298	75.14	14	73.91	71.2
+4752	298	1.01	29	1.51	1.74
+4753	298	88.82	15	88.31	88.66
+4754	299	22.93	24	21.28	18.78
+4757	299	80.35	22	81.47	80.86
+4759	299	25.7	30	25.3	26.9
+4760	299	81.74	25	83.23	83.48
+4761	299	86.31	15	85.14	81.29
+4763	299	112.01	21	113.47	108.05
+4764	299	80.69	14	83.73	82.1
+4765	299	1.39	29	1.76	2.62
+4766	299	62.89	16	61.71	60.86
+4767	299	0.83	20	0.94	4.04
+4768	299	5.71	23	6.05	5.02
+4769	299	1.31	27	1.28	1.25
+4770	300	71.41	16	68.5	64.44
+4771	300	2.14	20	0.86	3.6
+4772	300	4.71	23	2.25	1.37
+4773	300	1.5	27	1.44	1.34
+4775	300	20.5	30	20.4	22.2
+4776	300	37.58	24	33.65	28.55
+4779	300	71.75	22	75.68	81.27
+4780	300	73.77	25	77.89	83.94
+4781	300	2.02	29	2.21	2.67
+4782	300	90.11	15	90.87	86.9
+4784	300	119.06	21	118.25	120.24
+4785	300	73.53	14	76.44	77.91
+4786	301	80.34	25	79.89	83.9
+4787	301	85.35	15	85.18	83.58
+4789	301	118.56	21	114.77	118.83
+4790	301	84.36	14	83.71	83.94
+4791	301	1.29	29	1.56	1.36
+4792	301	65.72	16	66.49	65.17
+4793	301	1.71	20	2.29	2.14
+4794	301	7.81	23	8.04	4.88
+4795	301	1.41	27	1.4	1.35
+4796	301	30.24	24	29.94	27.86
+4799	301	79.05	22	78.32	82.54
+4801	301	21.9	30	23.4	23.9
+4802	302	1.77	20	1.43	0.36
+4803	302	7.02	23	8.48	6.75
+4804	302	1.41	27	1.35	1.33
+4805	302	67	16	63.56	64.21
+4809	302	4	26	2.71	1.99
+4818	303	1.32	26	2.11	1.19
+4808	302	75.58	22	78.4	78.5
+4810	302	21.6	30	22.9	25.3
+4811	302	29.77	24	25.27	23.42
+4812	302	76.41	25	80.19	80.27
+4845	304	7.98	26	6.53	4.95
+4814	302	115.99	21	114.56	108.77
+4815	302	79.58	14	81.11	80.49
+4816	302	0.83	29	1.8	1.76
+4817	302	87.06	15	84.14	84.4
+4819	303	21.1	30	20.9	22.4
+4820	303	35.09	24	33.21	31.29
+4850	305	5.3	26	6	5.15
+4870	306	8.83	26	7.67	6.48
+4823	303	73.86	22	76.65	79.56
+4824	303	73.58	25	76.6	80.02
+4825	303	-0.28	29	-0.05	0.46
+4826	303	87.26	15	88.44	86.09
+4897	307	3.41	26	4.54	3.76
+4828	303	120.87	21	123.43	120.65
+4829	303	75.17	14	78.75	80.75
+4830	303	68.77	16	67.64	66.25
+4831	303	1.98	20	2.47	2.73
+4832	303	15.5	23	14.84	10.32
+4833	303	1.51	27	1.46	1.42
+4834	304	123.69	21	120.74	120.07
+4835	304	86.29	14	86.62	87.72
+4836	304	0.34	29	0.23	0.3
+4837	304	86.17	15	85.11	86.99
+4910	308	3.15	26	5.35	1.31
+4839	304	10.08	23	7.39	6.92
+4840	304	1.49	27	1.45	1.4
+4841	304	63.95	16	63.14	63.79
+4842	304	0.46	20	1.66	0.76
+4918	309	3.6	26	2.96	2.6
+4844	304	78.31	22	80.09	82.77
+4846	304	18.4	30	19.5	21.3
+4847	304	31.83	24	30.32	29.13
+4849	304	78.65	25	80.32	83.07
+4851	305	20.1	30	19.9	22.8
+4852	305	33.45	24	33.46	30.28
+4855	305	83.51	22	82.34	83.35
+4856	305	83.8	25	82.77	84.12
+4857	305	0.29	29	0.43	0.77
+4858	305	84.98	15	88.44	86.41
+4860	305	122.94	21	123.87	121.8
+4861	305	88.81	14	88.34	88.49
+4862	305	62.54	16	63.53	62.97
+4863	305	4.85	20	6.54	5.61
+4864	305	5.35	23	5.17	5.42
+4865	305	1.47	27	1.49	1.4
+4866	306	39.94	24	40.28	38.47
+4869	306	75.17	22	74.1	75.77
+4871	306	18	30	18.9	19.3
+4872	306	74.68	25	73.25	74.87
+4873	306	93.02	15	95.53	93.37
+4875	306	128.59	21	124.74	123.64
+4876	306	84	14	81.77	82.25
+4877	306	-0.49	29	-0.85	-0.9
+4878	306	71.32	16	73.27	72.78
+4879	306	1.43	20	3.55	1.1
+4880	306	4.94	23	4.85	5.59
+4881	306	1.53	27	1.54	1.5
+4882	307	76.21	25	74.61	77.7
+4883	307	91.3	15	91.36	90.61
+4885	307	124.5	21	120.45	122.32
+4886	307	79.3	14	78.86	80.96
+4887	307	0.32	29	0.29	0.5
+4888	307	68.23	16	69.19	68.1
+4889	307	1.48	20	1.88	4.37
+4890	307	9.85	23	11.72	7.74
+4891	307	1.49	27	1.51	1.42
+4892	307	19.5	30	18.9	21.3
+4893	307	35.85	24	36.82	32.67
+4896	307	75.89	22	74.32	77.2
+4899	308	124.76	21	120.9	120.49
+4900	308	80.47	14	82.96	81.95
+4901	308	-0.73	29	0.72	0.57
+4902	308	91.16	15	88.6	85.39
+4903	308	1.33	20	1.77	2.55
+4904	308	10.97	23	11	5.96
+4905	308	1.45	27	1.47	1.41
+4906	308	67.79	16	66.07	64.22
+4909	308	77.32	22	77.61	80.65
+4911	308	21	30	20.7	22.6
+4912	308	32.74	24	32.26	28.74
+4913	308	76.59	25	78.33	81.22
+4914	309	36.2	24	34.01	34.99
+4917	309	79.1	22	80.95	80.12
+4919	309	16.8	30	18.3	18.6
+4920	309	80.01	25	81.22	81.8
+4921	309	87.43	15	88.76	88.41
+4934	310	6.27	26	7.04	5.04
+4923	309	129	21	125.06	127.58
+4924	309	82.7	14	83.91	82.71
+4925	309	0.91	29	0.27	1.69
+4926	309	65.87	16	65.87	67.07
+4927	309	2.05	20	1.54	-0.15
+4928	309	2.5	23	-0.64	2.1
+4929	309	1.52	27	1.45	1.47
+4930	310	39.97	24	37.08	38.99
+4955	311	4.29	26	5.91	0.5
+4975	312	5.75	26	5.84	3.77
+4933	310	75.63	22	76.6	76.66
+4935	310	14.8	30	16	16.6
+4936	310	75.33	25	76.38	76.49
+4937	310	90.74	15	89.45	86.24
+4988	313	3.55	26	3.87	2.86
+4939	310	125.53	21	128.93	123.46
+4940	310	81.91	14	83.64	81.71
+4941	310	-0.3	29	-0.22	-0.18
+4942	310	67.3	16	66.22	66.21
+4943	310	1.52	20	3.83	3.39
+4944	310	11.19	23	11.98	14.95
+4945	310	1.64	27	1.56	1.67
+4946	311	1.35	29	1.03	1.72
+4947	311	86.43	15	91.47	88.95
+4998	314	3.39	26	4.05	0.38
+4949	311	124.15	21	123.51	120.77
+4950	311	76.3	14	77.98	76.39
+4951	311	69.94	16	72.29	69.89
+4952	311	1.52	20	2.53	4.31
+4953	311	9.99	23	8.43	7.05
+4954	311	1.47	27	1.5	1.39
+4956	311	20.8	30	20.8	24.4
+4957	311	34.23	24	37.06	30.99
+5024	315	2.46	26	2.24	0.69
+5030	316	1.39	26	1.77	3.59
+4960	311	72.01	22	72.07	75.89
+4961	311	73.36	25	73.1	77.6
+4962	312	91.44	15	89.77	89.14
+4964	312	124.74	21	123.25	121.05
+4965	312	81.08	14	82.94	81.44
+4966	312	0.61	29	0.53	0.67
+4967	312	68.2	16	67.34	67.21
+4968	312	2.14	20	2.76	1.89
+4969	312	7.68	23	6.78	5.96
+4970	312	1.46	27	1.41	1.37
+4971	312	32.14	24	30.64	28.11
+4974	312	75.33	22	77.1	77.67
+4976	312	19.9	30	21.1	22.1
+4977	312	75.94	25	77.63	78.34
+4978	313	77.2	25	77.82	79.09
+4979	313	2.02	29	2.01	2.39
+4980	313	87.68	15	87.77	85.88
+4982	313	117.79	21	115.55	120.4
+4983	313	78.73	14	79.67	79.56
+4984	313	64.8	16	65.72	64.75
+4985	313	0.74	20	1.46	1.35
+4986	313	8.6	23	7.66	5.41
+4987	313	1.4	27	1.41	1.39
+4989	313	21.5	30	21.9	22.6
+4990	313	28.72	24	29.58	28.96
+4993	313	75.18	22	75.8	76.7
+4994	314	70.14	16	71.99	71.92
+4995	314	2.72	20	0.82	2.48
+4996	314	8.59	23	6.89	4.76
+4997	314	1.59	27	1.67	1.61
+4999	314	18.4	30	16.8	18
+5000	314	38.62	24	43.01	42.15
+5003	314	72.57	22	72.88	74.12
+5004	314	73.7	25	74.24	75.53
+5005	314	1.13	29	1.36	1.41
+5006	314	90.21	15	92.94	94.05
+5008	314	127.53	21	127.37	121
+5009	314	75.96	14	76.93	74.5
+5010	315	81.96	25	81.33	84.92
+5011	315	84.75	15	83.71	83.51
+5013	315	128.22	21	125.8	128.06
+5014	315	83.26	14	81.99	84.23
+5015	315	1.16	29	1.58	1.39
+5016	315	62.12	16	63.29	62.68
+5017	315	1.86	20	2.02	3.08
+5018	315	4.75	23	3.45	3.24
+5019	315	1.42	27	1.39	1.42
+5020	315	29.53	24	27.67	28.19
+5023	315	80.8	22	79.75	83.54
+5025	315	18.3	30	19.3	18.9
+5026	316	35.62	24	31.95	35.08
+5029	316	75.76	22	77.75	77.6
+5031	316	19.6	30	21.6	22
+5032	316	77.4	25	79.71	79.21
+5033	316	90.18	15	87.85	91.13
+5035	316	125.25	21	122.36	117.66
+5036	316	77.15	14	79.52	81.2
+5037	316	1.64	29	1.96	1.61
+5038	316	68.54	16	67.07	69.42
+5039	316	1.58	20	2.59	2.96
+5040	316	8.56	23	8	4.93
+5041	316	1.47	27	1.43	1.48
+5042	317	78.26	22	77.84	78.15
+5044	317	21.5	30	21.8	24.3
+5045	317	31.03	24	31.36	28.87
+5043	317	3.94	26	5.35	4.92
+5067	318	0.93	26	1.5	-1.15
+5048	317	78.64	25	78.27	78.77
+5049	317	82.2	14	83.19	83.07
+5050	317	0.39	29	0.43	0.62
+5051	317	87.33	15	89.52	87.39
+5078	319	5.6	26	3.73	3.6
+5053	317	117.87	21	117.41	115.52
+5054	317	1.45	27	1.43	1.37
+5055	317	66.04	16	67.55	66.73
+5056	317	0.84	20	1.6	2.03
+5057	317	9.95	23	7.62	5.33
+5058	318	1.56	29	2.06	2.56
+5059	318	87.32	15	88.35	86.24
+5101	320	6.4	26	4.96	3.68
+5061	318	116.48	21	118.13	109.98
+5062	318	75.79	14	76.8	74.67
+5063	318	68.98	16	68.51	67.58
+5064	318	0.33	20	1.99	3
+5065	318	7.13	23	7.18	10.21
+5066	318	1.42	27	1.39	1.34
+5068	318	22.9	30	23.5	27.3
+5069	318	31.27	24	29.66	26.05
+5114	321	6.45	26	7.47	6.11
+5136	322	3.47	26	2.38	2.32
+5072	318	74.86	22	75.29	75.82
+5073	318	76.42	25	77.35	78.38
+5074	319	39.03	24	40.02	38.03
+5142	323	3.91	26	2.93	0.61
+5158	324	4.48	26	3	3.2
+5077	319	76.02	22	75.13	77.31
+5079	319	16.1	30	16.9	17.1
+5080	319	76.33	25	75.78	78.37
+5081	319	92.82	15	93.47	90.75
+5083	319	126.7	21	128.16	129.8
+5084	319	81.62	14	78.86	80.91
+5085	319	0.31	29	0.65	1.06
+5086	319	69.34	16	70.52	68.67
+5087	319	2.19	20	5.16	4.96
+5088	319	6.9	23	9.18	8.27
+5089	319	1.56	27	1.58	1.53
+5090	320	131.03	21	130.32	125.63
+5091	320	78.46	14	79.82	79.99
+5092	320	-0.06	29	-0.66	-1.41
+5093	320	89.31	15	88.84	88.07
+5095	320	11.69	23	9.25	9.1
+5096	320	1.51	27	1.46	1.41
+5097	320	70.61	16	70.43	70.12
+5098	320	1.26	20	3.62	5.6
+5100	320	72.07	22	74.86	76.31
+5102	320	18.9	30	20.6	21.1
+5103	320	35.98	24	34.75	34.39
+5105	320	72.01	25	74.21	74.9
+5106	321	67.19	16	67.63	68.99
+5107	321	1.16	20	2.33	2.11
+5108	321	9.98	23	8.6	9.33
+5109	321	1.47	27	1.44	1.43
+5110	321	32.51	24	30.65	31.18
+5113	321	73.89	22	76.29	75.54
+5115	321	22.2	30	22.3	24.3
+5116	321	74.21	25	76.09	75.8
+5117	321	90.53	15	90.76	91.24
+5119	321	113.7	21	113.56	110.54
+5120	321	80.34	14	83.77	81.65
+5121	321	0.32	29	-0.2	0.26
+5122	322	83.17	15	85.42	87.89
+5124	322	118.3	21	118.42	113.41
+5125	322	81.19	14	80.4	79.9
+5126	322	1.27	29	0.77	1.07
+5127	322	62.95	16	64.71	68.3
+5128	322	0.32	20	1.16	2.16
+5129	322	8.91	23	10.11	7.59
+5130	322	1.42	27	1.39	1.35
+5131	322	20.7	30	21.1	26.6
+5132	322	28.09	24	29.83	28.33
+5135	322	77.73	22	78.02	77.58
+5137	322	79	25	78.79	78.65
+5138	323	38.03	24	38.18	35.56
+5141	323	75.06	22	76.86	77.33
+5143	323	20.4	30	21.2	21.4
+5144	323	76.13	25	77.19	78.02
+5145	323	93.42	15	95.47	93.22
+5147	323	119.16	21	120.1	114.25
+5148	323	78.97	14	79.8	77.94
+5149	323	1.06	29	0.33	0.69
+5150	323	70.28	16	71.98	70.53
+5151	323	3.03	20	3.33	4.98
+5152	323	6.9	23	6.23	3.72
+5153	323	1.56	27	1.51	1.48
+5154	324	38.85	24	36.61	35.57
+5157	324	74.64	22	75.37	74.47
+5159	324	19.2	30	18.6	20.3
+5160	324	75.21	25	76.89	75.87
+5161	324	89.87	15	90.65	89.82
+5174	325	-0.65	26	1.72	-1.81
+5163	324	129.14	21	126.37	124.34
+5164	324	79.11	14	78.36	77.67
+5165	324	0.57	29	1.52	1.4
+5166	324	68.2	16	67.52	68.27
+5167	324	2.38	20	3.77	2.31
+5168	324	10.65	23	11.26	11.18
+5169	324	1.55	27	1.52	1.49
+5170	325	30.93	24	30.54	25.2
+5199	326	5.23	26	4.72	3.57
+5206	327	5.92	26	5.21	4.03
+5173	325	80.29	22	80.79	81.16
+5175	325	19.9	30	21.1	26.6
+5176	325	81.98	25	83	84.29
+5177	325	88.08	15	88.03	85.27
+5232	328	1.56	26	-2.58	-1.51
+5179	325	115.95	21	117.39	112.21
+5180	325	79.63	14	82.5	79.36
+5181	325	1.69	29	2.22	3.13
+5182	325	65.08	16	65.45	64.96
+5183	325	1.77	20	2.74	3.57
+5184	325	5.36	23	6.01	6.02
+5185	325	1.41	27	1.41	1.32
+5186	326	87.41	15	87.22	84.47
+5241	329	7.04	26	4.91	0.53
+5188	326	117.17	21	115.64	108.19
+5189	326	86.83	14	88.43	89.78
+5190	326	1.31	29	1.67	2.56
+5191	326	63.73	16	63.09	61.67
+5192	326	2.27	20	3.44	3.38
+5193	326	4.4	23	6.18	5.89
+5194	326	1.35	27	1.31	1.18
+5195	326	25.47	24	23.69	15.14
+5257	330	4.79	26	2.55	1.97
+5277	331	3.87	26	0.53	-2.21
+5198	326	81.6	22	83.7	86.21
+5200	326	23.5	30	24.6	31.9
+5201	326	82.9	25	85.37	88.77
+5202	327	32.62	24	34.02	31.02
+5205	327	72.65	22	74.32	76.21
+5207	327	21.4	30	20.4	22.1
+5208	327	75.35	25	76.36	78.73
+5209	327	87.45	15	89.13	86.88
+5211	327	123.2	21	123.52	119.43
+5212	327	78.56	14	79.53	80.24
+5213	327	2.7	29	2.04	2.53
+5214	327	66.58	16	67.3	66.53
+5215	327	3.15	20	2.17	1.77
+5216	327	8.56	23	6.42	3.76
+5217	327	1.49	27	1.49	1.43
+5218	328	83.74	15	81.74	79.63
+5220	328	116.72	21	118.31	112.46
+5221	328	80.57	14	77.68	79.31
+5222	328	2.16	29	2.27	2.85
+5223	328	62.48	16	62.34	61.97
+5224	328	2.14	20	1.52	3.5
+5225	328	2.85	23	0.46	2.84
+5226	328	1.36	27	1.34	1.36
+5227	328	21.3	30	23	23.8
+5228	328	25.98	24	24.7	24.32
+5231	328	79.01	22	80.26	80.83
+5233	328	81.17	25	82.52	83.67
+5234	329	4.83	20	3.97	4.37
+5235	329	8.84	23	7.77	11.25
+5236	329	1.48	27	1.41	1.41
+5237	329	62.96	16	63.1	63.89
+5240	329	75.57	22	77.81	78.59
+5242	329	18	30	20	21.5
+5243	329	30.73	24	28.89	28.63
+5244	329	77.58	25	79.84	80.99
+5246	329	124.74	21	124.76	119.82
+5247	329	82.61	14	82.72	79.13
+5248	329	2.01	29	2.03	2.4
+5249	329	83.3	15	83.87	83.26
+5250	330	0.95	20	1.41	1.92
+5251	330	6.41	23	5.28	2.72
+5252	330	1.54	27	1.5	1.41
+5253	330	70.82	16	69.01	67.19
+5256	330	73.74	22	74.88	80.11
+5258	330	16.2	30	16.6	19.6
+5259	330	39.96	24	38.87	34.59
+5260	330	73.53	25	74.5	79.99
+5262	330	134.34	21	133.36	129.06
+5263	330	78.54	14	77.43	82.08
+5264	330	-0.21	29	-0.38	-0.12
+5265	330	93.68	15	91.68	89.41
+5266	331	78.39	25	79.3	81.28
+5267	331	81.46	14	78.39	77
+5268	331	0.81	29	1.45	2.07
+5269	331	90.73	15	87.56	85.9
+5271	331	117.23	21	114.3	111.77
+5272	331	1.47	27	1.44	1.39
+5273	331	68.65	16	68.81	67.42
+5274	331	3.45	20	1.93	2.41
+5275	331	8.76	23	5.84	6.21
+5276	331	77.58	22	77.85	79.21
+5278	331	20.8	30	22.8	25.6
+5279	331	33.31	24	31.55	28.48
+5282	332	0.87	20	2.08	2.24
+5283	332	6.23	23	9.08	6.59
+5284	332	1.56	27	1.51	1.43
+5285	332	67.31	16	65.58	62.49
+5289	332	5.03	26	4.63	0.19
+5310	333	5.09	26	5.48	4
+5288	332	75.07	22	77.91	81.74
+5290	332	18.1	30	18	20.7
+5291	332	37.34	24	36.04	29.44
+5292	332	75.3	25	78.65	83.24
+5315	334	0.84	26	2.6	-4.08
+5294	332	126.96	21	125.43	115.21
+5295	332	80.1	14	82.54	81.92
+5296	332	0.24	29	0.73	1.51
+5297	332	89.55	15	89.13	83.83
+5335	335	1.37	26	0.48	-0.97
+5299	333	125.66	21	123.1	119.43
+5300	333	75.18	14	77.38	79.27
+5301	333	-0.94	29	-1.07	-0.44
+5302	333	94.83	15	93.88	90.94
+5303	333	1.8	20	2.56	3
+5304	333	16.91	23	15.05	12.81
+5305	333	1.6	27	1.53	1.4
+5306	333	73.29	16	72.59	70.02
+5348	336	4.74	26	3.74	3.63
+5366	337	2.49	26	-0.76	-2.11
+5309	333	70.08	22	71.9	75.27
+5311	333	18.9	30	20.9	25.6
+5312	333	41.48	24	38.82	32.01
+5313	333	69.14	25	70.83	74.82
+5314	334	74.4	22	74.86	75.43
+5316	334	18	30	16.4	19.6
+5317	334	39.58	24	39.35	39.1
+5378	338	3.56	26	3.02	2.68
+5320	334	75.35	25	76.53	77.88
+5321	334	75.23	14	77.46	71.34
+5322	334	0.96	29	1.67	2.45
+5323	334	94.86	15	95.66	95.19
+5325	334	128.19	21	127.84	125.82
+5326	334	1.57	27	1.55	1.52
+5327	334	71.7	16	71.31	71.63
+5328	334	2.41	20	3.17	4.14
+5329	334	7.84	23	6.73	4.84
+5330	335	21.8	30	22.1	27.7
+5331	335	33.05	24	33.95	26.64
+5334	335	76.52	22	74.8	79.1
+5336	335	77.68	25	76.88	81.69
+5337	335	91.16	15	91.33	86.97
+5339	335	120.16	21	118.03	112.84
+5340	335	77.89	14	75.28	78.13
+5341	335	1.16	29	2.08	2.58
+5342	335	67.7	16	69.6	66.66
+5343	335	1.59	20	2.24	3.21
+5344	335	13.01	23	12.83	11.42
+5345	335	1.44	27	1.46	1.33
+5347	336	74.99	22	74.99	76.57
+5349	336	18.8	30	21.9	22.7
+5350	336	36.98	24	36.11	36.23
+5352	336	76.28	25	77.05	78.45
+5353	336	123.32	21	120.47	118.41
+5354	336	79.72	14	78.73	80.2
+5355	336	1.29	29	2.06	1.87
+5356	336	92.24	15	94	95.18
+5358	336	6	23	7.39	5.86
+5359	336	1.51	27	1.45	1.47
+5360	336	68.25	16	69.47	70.06
+5361	336	1.99	20	1.53	0.81
+5362	337	35.84	24	33.01	29.96
+5365	337	73.75	22	78.03	75.81
+5367	337	16.5	30	16.8	20.8
+5368	337	74.95	25	79.55	78.31
+5369	337	89.59	15	86.47	88.75
+5371	337	129.48	21	129.03	121.25
+5372	337	76.24	14	77.27	73.71
+5373	337	1.2	29	1.52	2.49
+5374	337	66.68	16	63.69	65.45
+5375	337	-0.75	20	-0.5	0.53
+5376	337	5.07	23	3.99	3.09
+5377	337	1.55	27	1.45	1.42
+5379	338	18.3	30	18.3	19.6
+5380	338	36.79	24	33.25	31.49
+5383	338	72.23	22	73.97	79.19
+5384	338	73.39	25	75.57	81.54
+5385	338	1.17	29	1.6	2.35
+5386	338	88.03	15	86.36	85.17
+5388	338	131.72	21	127.56	125.23
+5389	338	75.78	14	76.99	81.87
+5390	338	69.45	16	67.96	66.36
+5391	338	-1.5	20	0.11	-0.33
+5392	338	10.79	23	9.13	7.04
+5393	338	1.56	27	1.47	1.4
+5394	339	83.76	15	83.13	83.83
+5396	339	129.28	21	127.65	125.45
+5397	339	81.72	14	82.6	80.86
+5398	339	1.8	29	2.08	1.93
+5399	339	61.94	16	61.81	62.77
+5400	339	1.79	20	0.34	2.93
+5401	339	6.85	23	6.39	7.89
+5402	339	1.42	27	1.42	1.39
+5403	339	18	30	18.3	20.4
+5404	339	31.55	24	30.49	30.17
+5408	339	0.16	26	0.3	-2.29
+5419	340	4.79	26	3.68	1.45
+5407	339	81.56	22	82.3	83.15
+5409	339	83.36	25	84.38	85.08
+5410	340	67.18	16	64.07	62.2
+5411	340	1.45	20	1.42	1.81
+5412	340	9.25	23	5.86	7.87
+5413	340	1.48	27	1.46	1.4
+5414	340	18.8	30	19.9	21.5
+5415	340	32.8	24	29.65	28.52
+5440	341	4.86	26	3.7	2.09
+5456	342	3.3	26	1.58	1.24
+5418	340	74.61	22	77.86	81.72
+5420	340	75.12	25	78.6	83.4
+5421	340	89.41	15	84.16	80.82
+5472	343	6.35	26	6.05	-1.04
+5423	340	121.81	21	122.11	120.35
+5424	340	79.4	14	81.54	83.17
+5425	340	0.52	29	0.74	1.68
+5426	341	79.08	25	80.57	82.81
+5427	341	88.66	15	86.95	87.21
+5485	344	2.26	26	2.86	2.99
+5429	341	115.95	21	117.79	114.89
+5430	341	83.93	14	83.79	83.62
+5431	341	0.02	29	0.48	1.27
+5432	341	66.26	16	65.89	66.35
+5433	341	2.81	20	1.99	2.15
+5434	341	2.92	23	6.85	8.01
+5435	341	1.4	27	1.36	1.33
+5436	341	30.22	24	28.32	26.51
+5498	345	2.59	26	1.77	0.95
+5515	346	4.8	26	-1.05	-0.98
+5439	341	79.07	22	80.09	81.54
+5441	341	23.8	30	24.2	26.9
+5442	342	77.34	25	77.95	79.31
+5443	342	89.48	15	87.93	87.93
+5445	342	125.92	21	122.85	126.57
+5446	342	78.52	14	77.54	78.15
+5447	342	2.11	29	1.98	2.4
+5448	342	66.8	16	66.04	66.05
+5449	342	2.9	20	2.37	3.96
+5450	342	13.31	23	13.37	14.73
+5451	342	1.52	27	1.55	1.49
+5452	342	36.91	24	36.62	36.3
+5455	342	75.23	22	75.96	76.91
+5457	342	19.4	30	19.5	19
+5458	343	78.48	25	79.58	82.32
+5459	343	83.02	15	84.14	82.85
+5461	343	127.76	21	128.93	123.14
+5462	343	85.11	14	85.6	80.48
+5463	343	-0.28	29	0.04	0.81
+5464	343	64.79	16	64.34	64.52
+5465	343	0.84	20	1.99	2.83
+5466	343	2.44	23	2.72	0.53
+5467	343	1.49	27	1.48	1.37
+5468	343	34.53	24	33.11	29.57
+5471	343	78.75	22	79.54	81.51
+5473	343	15.8	30	17.1	20.8
+5474	344	77.79	25	79.49	79.85
+5475	344	78.61	14	80.2	81
+5476	344	1.43	29	2.16	1.85
+5477	344	86.75	15	84.83	83.19
+5479	344	125.43	21	120.08	116.47
+5480	344	1.5	27	1.49	1.41
+5481	344	65.5	16	64.74	63.62
+5482	344	2.4	20	4.32	4.47
+5483	344	8.8	23	10.53	9.22
+5484	344	76.35	22	77.34	78.01
+5486	344	19.5	30	21	22.8
+5487	344	34.94	24	30.69	27.37
+5490	345	64.96	16	64.98	65.15
+5491	345	1.31	20	2.45	2.29
+5492	345	3.13	23	6.13	3.16
+5493	345	1.47	27	1.44	1.42
+5494	345	34.69	24	33.69	31.72
+5497	345	76.1	22	77.14	77.61
+5499	345	20.5	30	21.6	23.8
+5500	345	77.34	25	78.71	79.75
+5501	345	88.2	15	88.7	87.68
+5503	345	123.99	21	123	120.8
+5504	345	78.69	14	78.91	78.56
+5505	345	1.24	29	1.57	2.14
+5506	346	64.73	16	66.94	65.85
+5507	346	-0.69	20	-0.32	1.28
+5508	346	2.14	23	1.2	0.06
+5509	346	1.44	27	1.4	1.36
+5510	346	19.3	30	22.2	24
+5511	346	31.58	24	30.95	27.62
+5514	346	77.19	22	77.57	78.44
+5516	346	78.05	25	78.35	79.9
+5517	346	87.12	15	90.33	88.84
+5519	346	124.55	21	121.96	116.56
+5520	346	82	14	76.53	77.45
+5521	346	0.86	29	0.78	1.46
+5524	347	5.51	26	4.53	3.58
+5523	347	79.23	22	80.86	83.93
+5525	347	21.2	30	22.3	24.7
+5526	347	29.38	24	27.23	20.74
+5546	348	5.21	26	0.52	4
+5528	347	80.42	25	82.11	86.59
+5529	347	123.71	21	123.42	115.2
+5530	347	84.74	14	85.39	87.51
+5531	347	1.19	29	1.26	2.66
+5532	347	83.89	15	83.59	81.24
+5562	349	4.5	26	4.41	2.89
+5534	347	5.69	23	7	6.2
+5535	347	1.41	27	1.37	1.27
+5536	347	64.51	16	63.34	60.2
+5537	347	0.92	20	1.42	1.94
+5538	348	66.67	16	68.64	70.79
+5539	348	0.38	20	0.14	1.98
+5540	348	2.79	23	4.02	6.66
+5541	348	1.49	27	1.5	1.44
+5542	348	34.07	24	35.68	34.74
+5574	350	3.66	26	2.31	2.87
+5593	351	1.81	26	1.28	0.17
+5545	348	77.51	22	76.13	75.1
+5547	348	19.2	30	18.9	22.6
+5548	348	77.55	25	76.2	76.11
+5549	348	91.43	15	91.4	91.7
+5606	352	2.32	26	2.03	0.56
+5551	348	123.04	21	125.25	122.02
+5552	348	82.72	14	76.65	79.1
+5553	348	0.04	29	0.07	1.01
+5554	349	64.26	16	64.15	63.76
+5555	349	-0.29	20	-0.33	-0.16
+5556	349	1.25	23	2.56	1.61
+5557	349	1.36	27	1.33	1.26
+5558	349	28.52	24	27.22	22.54
+5632	353	3.85	26	4.61	3.38
+5561	349	80.61	22	82.24	82.66
+5563	349	20.5	30	20.8	26.5
+5564	349	81.38	25	83.04	83.75
+5565	349	86.33	15	87.51	86.84
+5567	349	122.08	21	121.69	112.76
+5568	349	85.11	14	86.65	85.55
+5569	349	0.77	29	0.8	1.09
+5570	350	62.62	16	65.37	66.85
+5571	350	1.68	20	1.98	2.21
+5572	350	7.46	23	8.8	10.39
+5573	350	1.41	27	1.43	1.46
+5575	350	22.4	30	23.8	22.4
+5576	350	27.16	24	28.81	31.47
+5579	350	77.19	22	76.05	75.39
+5580	350	78.14	25	77.48	76.56
+5581	350	0.95	29	1.42	1.17
+5582	350	82.72	15	85.6	87.27
+5584	350	118.01	21	113.87	115.2
+5585	350	80.85	14	78.37	78.26
+5586	351	2.17	20	2.32	2.68
+5587	351	5.33	23	3.24	2.65
+5588	351	1.38	27	1.4	1.35
+5589	351	62.71	16	63.34	63.24
+5592	351	77.79	22	78.97	79.95
+5594	351	22.6	30	22.7	24.7
+5595	351	27.79	24	28.41	27.02
+5596	351	79.49	25	80.68	82.12
+5598	351	121.54	21	119.12	117.39
+5599	351	79.6	14	80.25	80.12
+5600	351	1.7	29	1.71	2.17
+5601	351	84.85	15	84.73	84.53
+5602	352	34.42	24	30.02	27.83
+5605	352	76.2	22	78.64	80.93
+5607	352	21.6	30	22.9	25.1
+5608	352	76.19	25	79.22	81.52
+5609	352	89.71	15	88.9	87.38
+5611	352	120.74	21	117.88	115.09
+5612	352	78.52	14	80.67	81.49
+5613	352	-0.01	29	0.58	0.59
+5614	352	66.47	16	65.03	64.81
+5615	352	1.54	20	1.82	1.6
+5616	352	8.33	23	7.33	9.11
+5617	352	1.49	27	1.41	1.37
+5618	353	77	25	76.81	78.21
+5619	353	87.7	15	88.2	90.34
+5621	353	109.92	21	112.91	113.82
+5622	353	80.01	14	80.6	80.46
+5623	353	0.83	29	0.83	1.13
+5624	353	64.69	16	65.17	66.54
+5625	353	2.41	20	2.46	1.96
+5626	353	8.54	23	8.12	9.13
+5627	353	1.41	27	1.43	1.41
+5628	353	29.3	24	30.85	30.16
+5631	353	76.16	22	75.98	77.07
+5633	353	23.4	30	21.8	23.8
+5634	354	74.84	25	74.07	76.76
+5635	354	90.82	15	91.82	90.38
+5637	354	128.64	21	127.76	129.48
+5638	354	79.3	14	76.11	78.41
+5639	354	1.39	29	1.93	1.76
+5640	354	67.55	16	68.39	67.83
+5641	354	1.24	20	1.59	1.34
+5642	354	4.53	23	4	4.61
+5643	354	1.51	27	1.56	1.49
+5644	354	37.52	24	38.01	36.33
+5648	354	5.85	26	3.97	3.41
+5665	355	7.48	26	6.26	6.59
+5647	354	73.45	22	72.14	75
+5649	354	17.9	30	18	18.7
+5650	355	71.15	25	71.24	70.43
+5651	355	93.87	15	92.72	94.2
+5672	356	4.26	26	4.02	5.45
+5653	355	125.24	21	122.22	118.3
+5654	355	78.44	14	77.51	76.32
+5655	355	0.18	29	-0.01	0.7
+5656	355	72.53	16	73.74	74.76
+5657	355	3.08	20	5.11	4.94
+5658	355	9.48	23	10.41	11.14
+5659	355	1.62	27	1.61	1.58
+5660	355	20	30	20.7	23.6
+5661	355	41.14	24	41.35	39.86
+5689	357	2.08	26	3.06	2.05
+5709	358	5.16	26	5.5	6.33
+5664	355	70.96	22	71.25	69.73
+5666	356	10.88	23	11.88	10.64
+5667	356	1.5	27	1.53	1.49
+5668	356	69.67	16	71.02	70.13
+5669	356	1.26	20	2.34	1.13
+5726	359	4.71	26	4.06	2.12
+5671	356	72.83	22	70.99	73.01
+5673	356	22.8	30	24	25.6
+5674	356	35.23	24	35.86	33.64
+5735	360	5.89	26	6.05	4.91
+5676	356	72.96	25	71.56	73.4
+5677	356	115.05	21	116.42	115.44
+5678	356	77.1	14	75.01	78.46
+5679	356	0.13	29	0.58	0.39
+5680	356	90.23	15	92	93.32
+5761	361	3.96	26	3.48	2.28
+5682	357	0.72	20	1.76	1.37
+5683	357	4.09	23	4.33	4.98
+5684	357	1.46	27	1.43	1.32
+5685	357	67.78	16	67.4	65.67
+5688	357	73.41	22	74.09	77.85
+5690	357	20.5	30	22	25.3
+5691	357	32.99	24	30.79	25.76
+5692	357	73.93	25	75.5	79.59
+5694	357	122.88	21	118.83	110.18
+5695	357	75.5	14	77.15	79.9
+5696	357	0.52	29	1.41	1.73
+5697	357	88.26	15	87.49	89.2
+5698	358	130.46	21	137.19	131.71
+5699	358	77.11	14	76.66	75.45
+5700	358	0.57	29	1.39	1.66
+5701	358	89.01	15	92.51	92.51
+5703	358	11.76	23	9.73	12.06
+5704	358	1.58	27	1.58	1.65
+5705	358	67.07	16	69.14	71.25
+5706	358	2.42	20	4.44	5.6
+5708	358	71.96	22	71.16	69.13
+5710	358	18.3	30	17.7	18.6
+5711	358	39.87	24	41.35	44.11
+5713	358	72.53	25	72.55	70.78
+5714	359	74.05	25	75.27	75.75
+5715	359	114.24	21	117.47	114.4
+5716	359	77.68	14	78.28	76.76
+5717	359	1.09	29	1.04	1.11
+5718	359	95.62	15	93.9	97.67
+5720	359	11.18	23	10.2	13.01
+5721	359	1.52	27	1.52	1.48
+5722	359	73.63	16	73.06	74.59
+5723	359	3.86	20	4.84	4.04
+5725	359	72.96	22	74.22	74.64
+5727	359	21.1	30	20.9	23.6
+5728	359	39.3	24	37.78	37.32
+5730	360	16.4	30	15.4	19
+5731	360	41.06	24	41.85	40.37
+5734	360	72.05	22	72.77	70.58
+5736	360	72.79	25	73.44	72.41
+5737	360	90.31	15	92.73	92.77
+5739	360	126.09	21	126.98	122.11
+5740	360	77.94	14	78.82	75.49
+5741	360	0.74	29	0.67	1.83
+5742	360	70.45	16	71.37	72.55
+5743	360	1.14	20	1.88	1.28
+5744	360	4.48	23	7.45	7.02
+5745	360	1.64	27	1.65	1.62
+5746	361	80.29	25	81.92	85.5
+5747	361	84.68	15	83.92	82
+5749	361	130.37	21	129.52	126.66
+5750	361	84.77	14	85.58	87.3
+5751	361	-0.52	29	-0.18	0.47
+5752	361	63.71	16	63.63	61.4
+5753	361	3.45	20	4.22	4.7
+5754	361	5.69	23	5.72	5.57
+5755	361	1.45	27	1.47	1.42
+5756	361	17.3	30	17.1	18.4
+5757	361	35	24	35.24	32.91
+5760	361	80.81	22	82.09	85.03
+5762	362	0.91	29	0.35	0.1
+5763	362	85.7	15	89.13	95.94
+5771	362	0.36	26	2.26	3.38
+5765	362	128.26	21	129.57	128.79
+5766	362	76.11	14	77.36	75.61
+5767	362	64.84	16	67.02	72.81
+5768	362	2.26	20	2.75	0.42
+5769	362	7.38	23	7.07	8.31
+5770	362	1.51	27	1.54	1.6
+5772	362	18.3	30	17.6	18.8
+5773	362	34.3	24	37.04	41.88
+5792	363	4.52	26	5.45	3.17
+5807	364	8.79	26	10.24	5.84
+5776	362	75.75	22	75.09	72.23
+5777	362	76.66	25	75.44	72.34
+5778	363	76.44	25	77.89	82.27
+5779	363	83.43	15	82.13	80.81
+5811	365	5.72	26	3.14	2.14
+5781	363	128.18	21	123.77	109.27
+5782	363	79.82	14	81.21	83.17
+5783	363	1.14	29	2.13	2.27
+5784	363	64.53	16	63.91	62.8
+5785	363	0.05	20	-0.57	1.07
+5786	363	12.15	23	11.55	9.36
+5787	363	1.52	27	1.51	1.35
+5788	363	34.23	24	32.93	24.76
+5835	366	3.64	26	2.13	-0.51
+5856	367	4.68	26	4.47	3.59
+5791	363	75.3	22	75.76	80.01
+5793	363	18.9	30	20.6	25.7
+5794	364	75.42	25	75.94	79.03
+5868	368	2.59	26	1.3	0.44
+5796	364	132.95	21	136.77	132.42
+5797	364	84.06	14	85.85	84.6
+5798	364	0.15	29	0.33	0.27
+5799	364	93.63	15	95.35	96.54
+5800	364	4.29	20	3	3.07
+5801	364	1.25	23	2.49	0.95
+5802	364	1.56	27	1.52	1.47
+5803	364	69.51	16	70.2	70.31
+5806	364	75.27	22	75.61	78.76
+5808	364	16.7	30	16.9	19
+5809	364	40.21	24	41.09	38.74
+5810	365	75.98	22	78.87	76.74
+5812	365	19.7	30	19.4	23.3
+5813	365	35.06	24	33.4	33.71
+5816	365	77.24	25	80.21	78.02
+5817	365	81.7	14	82.01	78.88
+5818	365	1.26	29	1.34	1.28
+5819	365	86.17	15	82	87.33
+5821	365	127.12	21	126.42	123.61
+5822	365	1.47	27	1.45	1.43
+5823	365	66.22	16	63.81	66.89
+5824	365	3.46	20	3.73	3.29
+5825	365	6.56	23	6.49	5.8
+5826	366	69.98	16	72.13	72.08
+5827	366	5.12	20	5.98	5.06
+5828	366	6.22	23	9.76	10.13
+5829	366	1.57	27	1.58	1.56
+5830	366	16.7	30	18.4	19.2
+5831	366	39.17	24	42.13	41.39
+5834	366	76.52	22	76.38	79.61
+5836	366	78.06	25	78.12	81.15
+5837	366	94.15	15	95.63	94.21
+5839	366	121.88	21	125.61	122.93
+5840	366	80.17	14	78.51	79.11
+5841	366	1.54	29	1.73	1.54
+5842	367	78.64	25	83.11	83.8
+5843	367	83.57	15	81.31	82.09
+5845	367	124.71	21	121.67	122.95
+5846	367	81.57	14	85.36	85.3
+5847	367	1.75	29	2.23	2.09
+5848	367	63.64	16	61.84	62.77
+5849	367	2.83	20	6.14	4.72
+5850	367	9.24	23	6.72	5.54
+5851	367	1.47	27	1.35	1.35
+5852	367	32.3	24	27.67	29.21
+5855	367	76.89	22	80.88	81.71
+5857	367	19.2	30	21.7	22.2
+5858	368	80.78	14	79.65	79.91
+5859	368	1.22	29	1.14	0.89
+5860	368	86.43	15	87.09	87.29
+5862	368	126.42	21	126.23	123.16
+5863	368	1.4	27	1.44	1.38
+5864	368	63.82	16	65.01	64.23
+5865	368	1.81	20	1.32	2.31
+5866	368	1.49	23	3.59	3.34
+5867	368	78.19	22	78.35	79.47
+5869	368	18.4	30	18.2	18.8
+5870	368	31.27	24	32.23	30.57
+5873	368	79.41	25	79.49	80.36
+5874	369	72.42	16	70.54	71.33
+5875	369	4.11	20	3.93	3.71
+5876	369	10.06	23	10.03	9.79
+5877	369	1.61	27	1.59	1.53
+5878	369	18.4	30	18.8	20.7
+5879	369	40.46	24	39.21	37.54
+5882	369	71.04	22	72.73	73.46
+5884	369	72.12	25	75.02	75.38
+5885	369	88.76	15	86.57	88.17
+5883	369	5.3	26	4.3	0.15
+5887	369	124.51	21	124.73	117.61
+5888	369	76.34	14	77.03	73.6
+5889	369	1.08	29	2.29	1.92
+5890	370	38.42	24	37.68	29.98
+5894	370	6.69	26	6.42	1.45
+5919	371	0.3	26	3.86	-2.08
+5893	370	72.74	22	73.11	79.04
+5895	370	20	30	20.2	26
+5896	370	73.3	25	75.32	81.43
+5897	370	91.1	15	91.8	89.62
+5927	372	0.48	26	0.51	-0.12
+5899	370	121.07	21	120.69	115.24
+5900	370	79.43	14	79.53	80.48
+5901	370	0.56	29	2.21	2.39
+5902	370	69.47	16	70.11	67.15
+5903	370	2.93	20	2.78	2.45
+5904	370	8.97	23	6.83	1.78
+5905	370	1.54	27	1.51	1.37
+5906	371	82.05	15	83.75	81.91
+5943	373	5.6	26	3.9	4.2
+5908	371	121.63	21	118.75	121.28
+5909	371	80.62	14	80.91	78.66
+5910	371	1.67	29	1.67	2.59
+5911	371	62.32	16	64.25	62.54
+5912	371	3.22	20	5.47	4.46
+5913	371	1.54	23	-0.2	-0.31
+5914	371	1.39	27	1.47	1.43
+5915	371	29.87	24	29.98	28.03
+5962	374	2.79	26	0.76	-0.61
+5974	375	2.51	26	1.26	-0.88
+5918	371	80.31	22	77.05	80.75
+5920	371	21.8	30	19.5	20.8
+5921	371	81.98	25	78.72	83.34
+5922	372	21	30	22.6	23
+5923	372	22	24	20.06	17.69
+5995	376	2.72	26	5.2	4.73
+5926	372	83.29	22	84.51	86.79
+5928	372	84.98	25	85.94	88.51
+5929	372	80.47	15	80.68	78.4
+5931	372	115.91	21	117.54	118.27
+5932	372	83.77	14	85.02	86.67
+5933	372	1.69	29	1.43	1.72
+5934	372	57.96	16	58.44	56.71
+5935	372	0.85	20	2.01	2.98
+5936	372	4.7	23	8.09	4.96
+5937	372	1.31	27	1.26	1.22
+5938	373	1.5	27	1.5	1.6
+5939	373	68.3	16	71.8	72.7
+5940	373	2.9	20	4.4	4.4
+5941	373	6.7	23	10.4	9.6
+5942	373	76.8	22	71.7	71.4
+5944	373	15.9	30	16.9	16.1
+5945	373	37.5	24	40.4	42.3
+5948	373	76.6	25	72.9	72.2
+5949	373	82.4	14	75.6	75.6
+5950	373	-0.2	29	1.2	0.8
+5951	373	89.4	15	91.7	92.5
+5953	373	127.1	21	131.3	134.7
+5954	374	64.79	16	65.82	67.12
+5955	374	2.94	20	3.01	4.33
+5956	374	3.06	23	5.74	6.99
+5957	374	1.45	27	1.44	1.45
+5958	374	33.2	24	32.89	31.94
+5961	374	75.72	22	75.49	76.95
+5963	374	19.7	30	20	21.9
+5964	374	75.81	25	75.89	78.27
+5965	374	85.63	15	86.32	88.27
+5967	374	126.95	21	125.79	124.81
+5968	374	78.51	14	76.24	76.34
+5969	374	0.09	29	0.4	1.32
+5970	375	36.41	24	31.42	31.08
+5973	375	75.53	22	77.51	78.27
+5975	375	17.1	30	18.7	20.2
+5976	375	76.19	25	79.11	79.77
+5977	375	89.49	15	88.57	90.49
+5979	375	124.08	21	118.46	119.1
+5980	375	78.04	14	78.78	77.39
+5981	375	0.65	29	1.6	1.5
+5982	375	67.27	16	64.63	65.68
+5983	375	1.7	20	3.17	1.66
+5984	375	6.19	23	4.58	6.14
+5985	375	1.53	27	1.43	1.4
+5986	376	63.21	16	63.21	62.64
+5987	376	4.24	20	4.59	5.13
+5988	376	3.76	23	3.2	8.2
+5989	376	1.42	27	1.37	1.31
+5990	376	22	30	24.4	26.9
+5991	376	30.94	24	29.41	25.3
+5994	376	75.95	22	77.01	78.38
+5996	376	76.84	25	79.45	80.29
+5997	376	86.07	15	85.65	87.43
+5999	376	109.68	21	113.36	112.87
+6000	376	78.66	14	82.21	83.12
+6001	376	0.89	29	2.44	1.9
+6002	377	119.17	21	121.45	118.82
+6003	377	85	14	83.62	84.98
+6004	377	0.23	29	0.32	0.39
+6005	377	86.72	15	87.99	88.44
+6013	377	6.74	26	5.03	6.13
+6007	377	0.25	23	2.27	3.58
+6008	377	1.37	27	1.33	1.33
+6009	377	63.33	16	64.57	64.17
+6010	377	3.5	20	3.77	3.6
+6022	378	5.61	26	4.06	3.41
+6012	377	78.26	22	78.59	78.85
+6014	377	19.9	30	22.2	22.8
+6015	377	29.23	24	27.39	26.97
+6048	379	3.32	26	2.12	0.23
+6017	377	78.49	25	78.91	79.23
+6018	378	69.81	16	69.31	69.79
+6019	378	2.72	20	3	3.5
+6020	378	8.8	23	5.81	8.8
+6021	378	1.5	27	1.47	1.43
+6023	378	18.2	30	18.3	22.2
+6024	378	37.24	24	36.14	33.61
+6061	380	6.5	26	7.18	6.02
+6074	381	3.99	26	4.57	3.21
+6027	378	73.56	22	76.08	75.92
+6028	378	74.13	25	75.98	76.52
+6029	378	0.58	29	-0.1	0.6
+6030	378	88.6	15	88.77	87.98
+6095	382	0.29	26	-0.19	-4.22
+6032	378	128.78	21	130.05	121.79
+6033	378	79.16	14	80.14	79.33
+6034	379	84.67	15	85.05	84.94
+6111	383	1.54	26	0.59	-0.77
+6036	379	125.86	21	116.61	115.23
+6037	379	84.05	14	82.2	80.3
+6038	379	1.27	29	2.68	2.61
+6039	379	61.93	16	63.49	63.67
+6040	379	4.15	20	1.45	3.28
+6041	379	3.67	23	5.78	6.74
+6042	379	1.37	27	1.35	1.33
+6043	379	19.9	30	23.3	23
+6044	379	26.39	24	26.25	25.92
+6047	379	80.72	22	80.08	80.07
+6049	379	81.99	25	82.76	82.68
+6050	380	122.06	21	121.44	122.16
+6051	380	82.34	14	86.85	85.12
+6052	380	-0.22	29	-0.2	-0.05
+6053	380	87.54	15	85.42	83.56
+6055	380	4.6	23	3.36	5.54
+6056	380	1.42	27	1.36	1.39
+6057	380	67.58	16	65.56	66.51
+6058	380	4.3	20	4.87	5.44
+6060	380	75.84	22	79.67	79.1
+6062	380	22.5	30	23.3	23.1
+6063	380	30.67	24	28.24	30.18
+6065	380	75.62	25	79.47	79.05
+6066	381	61.78	16	63.06	61.48
+6067	381	1.93	20	-1.59	0.27
+6068	381	4.48	23	6.46	4.19
+6069	381	1.32	27	1.32	1.28
+6070	381	25.94	24	28.23	23.79
+6073	381	80.88	22	82.97	85.71
+6075	381	23.3	30	21.6	23.2
+6076	381	82.58	25	84.2	87.87
+6077	381	83.34	15	89.16	88.08
+6079	381	121.46	21	118.02	117.51
+6080	381	84.87	14	87.54	88.92
+6081	381	1.7	29	1.23	2.16
+6082	382	83.93	15	87.03	83.63
+6084	382	124.98	21	121.89	119.07
+6085	382	76.35	14	76.21	72.37
+6086	382	2.16	29	1.22	2.61
+6087	382	62.76	16	64.42	63.38
+6088	382	3.14	20	4.02	5.04
+6089	382	8.7	23	9.01	5.95
+6090	382	1.47	27	1.45	1.41
+6091	382	31.3	24	31.27	28.66
+6094	382	76.06	22	76.4	76.6
+6096	382	19.4	30	20.2	22.1
+6097	382	78.22	25	77.62	79.21
+6098	383	84.16	15	85.18	85.86
+6100	383	126.74	21	122.59	114.05
+6101	383	74.54	14	76.1	76.78
+6102	383	0.32	29	0.91	1.28
+6103	383	66.45	16	65.78	66.12
+6104	383	0.52	20	1.16	1.59
+6105	383	8.12	23	11.56	8.4
+6106	383	1.5	27	1.42	1.36
+6107	383	33.08	24	29.78	28.1
+6110	383	72.99	22	75.51	77.56
+6112	383	20	30	22.7	24.4
+6113	383	73.32	25	76.42	78.84
+6114	384	55.26	16	56.53	56.25
+6115	384	1.52	20	2.45	3.14
+6116	384	1.2	23	2.94	2.19
+6117	384	1.37	27	1.39	1.33
+6118	384	24.71	24	25.8	24.31
+6121	384	84.79	22	84.56	85.45
+6123	384	19.5	30	19.3	21.8
+6124	384	85.89	25	85.93	87.92
+6125	384	75.47	15	75.83	75.02
+6122	384	3.36	26	1.93	1.07
+6127	384	123.25	21	123.31	117.55
+6128	384	88.15	14	86.5	86.52
+6129	384	1.1	29	1.37	2.47
+6130	385	59.87	16	60.59	60.92
+6131	385	3.33	20	4.45	5.27
+6132	385	0.42	23	0.53	-2.18
+6133	385	1.3	27	1.29	1.27
+6134	385	21.84	24	21.6	21.16
+6138	385	3.37	26	1.95	1.38
+6157	386	4.62	26	4.05	0.2
+6137	385	80.26	22	81.15	82.03
+6139	385	23.3	30	24.6	24.7
+6140	385	81.65	25	82.75	83.45
+6141	385	80.88	15	81.84	81.02
+6171	387	5.64	26	3.8	2.36
+6143	385	119.33	21	115.97	116.38
+6144	385	83.64	14	83.1	83.42
+6145	385	1.39	29	1.6	1.42
+6146	386	116.48	21	116.36	110.65
+6147	386	82.38	14	81.76	79.57
+6148	386	1.76	29	2.32	2.45
+6149	386	88.06	15	88.48	89.37
+6187	388	3	26	-0.35	1.3
+6151	386	4.59	23	3.91	4.34
+6152	386	1.43	27	1.4	1.35
+6153	386	64.2	16	65.02	65.61
+6154	386	0.83	20	1.45	1.92
+6208	389	3.64	26	2.03	2.4
+6156	386	77.77	22	77.71	79.36
+6158	386	20.6	30	22.9	25.7
+6159	386	29.52	24	28.62	27.48
+6211	390	3.16	26	3.25	3.52
+6161	386	79.53	25	80.04	81.81
+6162	387	1.23	29	0.82	1.48
+6163	387	91.82	15	90.39	87.94
+6226	391	5.51	26	4.67	3.44
+6165	387	129.52	21	129.21	125.77
+6166	387	81.59	14	83.18	84.16
+6167	387	66.38	16	65.76	63.99
+6168	387	1.65	20	1.19	2.28
+6169	387	5.17	23	1.27	2.64
+6170	387	1.44	27	1.42	1.33
+6172	387	17.6	30	17.7	21.5
+6173	387	34.62	24	34.5	29.51
+6176	387	75.95	22	79.38	81.8
+6177	387	77.18	25	80.2	83.28
+6178	388	-0.31	29	0.55	0.02
+6179	388	92.05	15	88.53	87.52
+6181	388	118.03	21	117.4	117.23
+6182	388	82.79	14	85.03	86.81
+6183	388	67.11	16	62.15	63.38
+6184	388	-0.11	20	2.76	3.84
+6185	388	3.31	23	-0.29	-0.89
+6186	388	1.39	27	1.33	1.31
+6188	388	22.2	30	21.7	24.5
+6189	388	31.47	24	26.98	24.88
+6192	388	79.79	22	85.37	85.51
+6193	388	79.48	25	85.92	85.53
+6194	389	79.25	25	77.92	80.72
+6195	389	92.48	15	94.59	96.15
+6197	389	127.68	21	124.48	121.84
+6198	389	81.24	14	77.9	80.89
+6199	389	1.66	29	2.04	2.23
+6200	389	67.65	16	69.55	68.51
+6201	389	1.7	20	1.74	3.24
+6202	389	6.79	23	4.06	3.38
+6203	389	1.45	27	1.43	1.39
+6204	389	35.22	24	35.37	31.55
+6207	389	77.6	22	75.87	78.49
+6209	389	18.1	30	18.6	20.6
+6210	390	72.84	22	73.5	79.63
+6212	390	16.1	30	17.2	20.7
+6213	390	40.01	24	37.76	34.59
+6216	390	74.07	25	75.16	80.84
+6217	390	76	14	76.75	83.14
+6218	390	1.23	29	1.66	1.22
+6219	390	89.37	15	89.52	87.78
+6221	390	125.57	21	126.98	123.18
+6222	390	1.62	27	1.57	1.46
+6223	390	68.73	16	69.02	67.52
+6224	390	0.65	20	1.64	0.96
+6225	390	6.97	23	9.81	3.35
+6227	391	18.4	30	18.3	20.7
+6228	391	34.71	24	36.5	31.28
+6231	391	77.2	22	75.7	81.7
+6232	391	78.05	25	77.22	82.87
+6233	391	0.86	29	1.53	1.16
+6234	391	86.91	15	88.21	85.75
+6236	391	124.95	21	123.94	120.48
+6237	391	82.71	14	80.37	85.14
+6238	391	66.31	16	68.17	65
+6239	391	2.64	20	1.49	1.78
+6240	391	6.95	23	12.32	6.73
+6241	391	1.49	27	1.54	1.42
+6242	392	70.13	25	72.72	72.32
+6243	392	88.25	15	88.07	89.1
+6257	392	3.87	26	4.72	3.01
+6245	392	123.35	21	120.91	120.97
+6246	392	73.46	14	76.38	74.53
+6247	392	0.54	29	1.06	0.8
+6248	392	70.41	16	69.32	70.66
+6249	392	0.27	20	0.8	2.63
+6250	392	9.56	23	9.14	8.93
+6251	392	1.56	27	1.54	1.55
+6252	392	19.4	30	20.4	20.7
+6253	392	38.7	24	37.51	37.49
+6267	393	3.85	26	3.37	1.72
+6283	394	5.92	26	3.59	3.95
+6256	392	69.58	22	71.66	71.52
+6258	393	-0.25	29	-0.24	0.65
+6259	393	92.29	15	93.94	92.02
+6304	395	6.56	26	4	3.41
+6261	393	128.42	21	122.72	124.56
+6262	393	80.09	14	78.53	78.49
+6263	393	68.14	16	69.76	69.28
+6264	393	0.38	20	1.18	1.01
+6265	393	6.33	23	7.39	8.81
+6266	393	1.59	27	1.61	1.51
+6268	393	16.7	30	18.5	19.5
+6269	393	39.51	24	40.27	37.44
+6311	396	2.91	26	4.42	1.56
+6335	397	-0.95	26	0.05	-0.16
+6272	393	76.24	22	75.16	76.77
+6273	393	75.99	25	74.92	77.42
+6274	394	65.59	16	64.6	63.06
+6275	394	3.24	20	2.85	3.39
+6276	394	7.56	23	7.95	9.4
+6277	394	1.46	27	1.44	1.36
+6278	394	18.9	30	20	21.7
+6279	394	35.61	24	31.5	27.81
+6349	398	5.5	26	6.32	5.59
+6359	399	7.2	26	7.66	6.37
+6282	394	77.84	22	79.12	79.74
+6284	394	77.95	25	79.51	81.49
+6285	394	88.16	15	85.87	84.65
+6287	394	129.09	21	124.34	123.91
+6288	394	83.76	14	82.71	83.69
+6289	394	0.11	29	0.38	1.75
+6290	395	77.33	25	76.14	80.69
+6291	395	85.31	15	87.56	85
+6293	395	124.29	21	123.48	120.09
+6294	395	82.64	14	78.85	82.15
+6295	395	1.26	29	1.29	1.95
+6296	395	66.46	16	68.45	65.44
+6297	395	1.78	20	1.76	2.12
+6298	395	7	23	9.28	5.24
+6299	395	1.55	27	1.53	1.49
+6300	395	38.84	24	38.16	33.82
+6303	395	76.07	22	74.85	78.74
+6305	395	17.4	30	18.7	20.8
+6306	396	22.1	30	23.6	24.8
+6307	396	34.12	24	34.95	34.03
+6310	396	72.35	22	70.46	73.44
+6312	396	74.44	25	73.35	76.05
+6313	396	86.72	15	85.6	86.37
+6315	396	120.45	21	117.37	116.02
+6316	396	75.27	14	74.88	75
+6317	396	2.09	29	2.89	2.61
+6318	396	69.36	16	71.15	70.68
+6319	396	2.79	20	2.92	2.8
+6320	396	7.35	23	9.15	9.2
+6321	396	1.48	27	1.47	1.45
+6322	397	82.77	15	81.31	77.69
+6324	397	116.75	21	119.5	113.59
+6325	397	81.06	14	85.89	86.85
+6326	397	2.71	29	2.05	3.14
+6327	397	60.08	16	57.95	56.47
+6328	397	2.51	20	3.98	5.78
+6329	397	4.31	23	1.48	0.51
+6330	397	1.39	27	1.35	1.34
+6331	397	26.75	24	23.81	22.71
+6334	397	82	22	85.84	87.01
+6336	397	20.4	30	20.4	21.1
+6337	397	84.72	25	87.89	90.15
+6338	398	131.53	21	127.9	120.78
+6339	398	80.34	14	81.95	84.73
+6340	398	0.79	29	1.12	2.12
+6341	398	94.35	15	95.46	91.83
+6343	398	7.04	23	6.66	3.05
+6344	398	1.51	27	1.49	1.38
+6345	398	70.3	16	70.26	66.81
+6346	398	2.82	20	2.76	3.84
+6348	398	74.84	22	75.64	79.14
+6350	398	16	30	18.4	22.1
+6351	398	39.92	24	37.65	31.37
+6353	398	75.64	25	76.76	81.26
+6354	399	17.4	30	18.1	21.5
+6355	399	36.41	24	36.83	32.22
+6358	399	75.6	22	75.66	78.65
+6360	399	76.35	25	76.87	80.07
+6361	399	93.42	15	93.46	92.81
+6381	400	2.19	26	1.36	0.22
+6363	399	129.19	21	127.29	121.24
+6364	399	82.8	14	83.33	85.02
+6365	399	0.75	29	1.2	1.42
+6366	399	69.33	16	69.63	68.3
+6367	399	3.23	20	2.39	2.91
+6368	399	6.05	23	5.88	6.04
+6369	399	1.46	27	1.45	1.38
+6370	400	121.31	21	119.18	111.94
+6371	400	82.25	14	82.39	83.48
+6372	400	0.8	29	0.29	0.72
+6373	400	87.69	15	88.3	86.58
+6387	401	1.01	26	-0.26	-1
+6375	400	6.48	23	5.85	6.02
+6376	400	1.41	27	1.4	1.31
+6377	400	64.47	16	64.82	64.14
+6378	400	0.96	20	0.58	0.69
+6412	402	5.99	26	5.73	5.08
+6380	400	80.06	22	81.03	83.27
+6382	400	20.9	30	21.6	25.7
+6383	400	30.55	24	29.86	25.4
+6430	403	5.75	26	4.82	4.16
+6385	400	80.85	25	81.32	83.99
+6386	401	80.73	22	81.5	83.67
+6388	401	21.4	30	22.1	26.4
+6389	401	25.94	24	24.65	20.5
+6449	404	4.52	26	3.22	2.73
+6457	405	1.67	26	0.62	0.36
+6392	401	81.94	25	82.61	85.73
+6393	401	81.74	14	81.24	82.66
+6394	401	1.21	29	1.11	2.06
+6395	401	83.67	15	82.84	82.27
+6479	406	2.23	26	0.71	-0.14
+6397	401	119.01	21	118.68	109.45
+6398	401	1.36	27	1.33	1.26
+6399	401	62.48	16	61.8	61.74
+6400	401	1.74	20	2.87	2.14
+6401	401	5.36	23	6.88	4.85
+6402	402	74.78	25	74.46	78.43
+6403	402	0.71	29	1.28	1.88
+6404	402	91.98	15	92.15	92.56
+6406	402	120.91	21	117.68	116.03
+6407	402	80.07	14	78.91	81.63
+6408	402	69.24	16	69.62	69.68
+6409	402	4.63	20	5.3	5.11
+6410	402	6.62	23	5.91	6.82
+6411	402	1.48	27	1.47	1.38
+6413	402	21	30	21.6	24.4
+6414	402	33.15	24	32.72	29.89
+6417	402	74.08	22	73.18	76.56
+6418	403	75.77	25	75.13	77.06
+6419	403	121.04	21	123.6	118.8
+6420	403	79.83	14	78.83	79.57
+6421	403	1.69	29	1.12	1.65
+6422	403	88.99	15	89.94	88.8
+6424	403	5.58	23	5.01	7.36
+6425	403	1.52	27	1.52	1.44
+6426	403	65.91	16	66.78	67.33
+6427	403	2.31	20	3.39	3.79
+6429	403	74.08	22	74.01	75.41
+6431	403	18.5	30	19.3	21.9
+6432	403	34.86	24	34.67	32.66
+6434	404	74.87	25	75.59	78.65
+6435	404	88.97	15	90.88	89.94
+6437	404	121.68	21	122.31	120.73
+6438	404	77.69	14	77.74	80.46
+6439	404	1.69	29	1.07	0.92
+6440	404	68.26	16	70.15	69.36
+6441	404	0.65	20	1.62	2.26
+6442	404	14.93	23	14.33	10.75
+6443	404	1.48	27	1.45	1.41
+6444	404	22.7	30	23.1	23.8
+6445	404	33.92	24	33.99	33.12
+6448	404	73.18	22	74.52	77.73
+6450	405	2.35	20	2.04	2.42
+6451	405	7.29	23	7.51	8.99
+6452	405	1.51	27	1.52	1.46
+6453	405	67.15	16	66.52	66.07
+6456	405	74.06	22	74.96	75.58
+6458	405	19.1	30	19.1	21.4
+6459	405	33.79	24	34.32	31.79
+6460	405	75.6	25	77.36	77.86
+6462	405	126.31	21	126.81	123
+6463	405	75.73	14	75.58	75.94
+6464	405	1.54	29	2.41	2.28
+6465	405	85.65	15	85.54	83.42
+6466	406	75.25	25	77.72	77.21
+6468	406	121.83	21	120.24	118.66
+6469	406	75.74	14	75.84	74
+6470	406	1.73	29	2.6	3.06
+6471	406	86.35	15	83.13	84.19
+6472	406	1.56	20	2.77	2.61
+6473	406	8.73	23	7.93	7.15
+6474	406	1.49	27	1.46	1.48
+6475	406	67.12	16	65.89	66.32
+6478	406	73.52	22	75.12	74.14
+6480	406	20.3	30	20.1	21.2
+6481	406	33.31	24	32.08	31.94
+6482	407	76.01	25	78.42	81.43
+6483	407	124.07	21	118.07	118.78
+6484	407	78.05	14	81.35	82.28
+6485	407	0.74	29	1.33	2.18
+6486	407	87.88	15	87.5	86.08
+6494	407	2.79	26	4.26	3.04
+6488	407	4.19	23	3.44	3.04
+6489	407	1.53	27	1.48	1.38
+6490	407	67.63	16	67	65.44
+6491	407	1.5	20	2.42	4.4
+6511	408	3.06	26	3.06	1.25
+6493	407	75.27	22	77.09	79.24
+6495	407	17.9	30	19.9	23.2
+6496	407	36.28	24	33.81	28.09
+6516	409	6.77	26	5.27	3.94
+6498	408	87.81	15	87.77	83.94
+6538	410	5.42	26	6.31	4.53
+6500	408	126.91	21	127.51	122.36
+6501	408	80.2	14	81.31	82.97
+6502	408	0.47	29	0.9	2.02
+6503	408	66.31	16	66.31	63.99
+6504	408	1.75	20	1.42	3.81
+6505	408	3.24	23	2.51	1.31
+6506	408	1.51	27	1.48	1.41
+6507	408	36.56	24	34.88	29.45
+6556	411	6.46	26	5.74	8.15
+6575	412	6.97	26	7.02	6.4
+6510	408	77.14	22	78.25	81.73
+6512	408	16.9	30	18.8	21.4
+6513	408	77.62	25	79.15	83.75
+6582	413	6.01	26	4.44	4.9
+6515	409	70.36	22	74.36	75.37
+6517	409	19.8	30	19.5	19.3
+6518	409	38.86	24	39.04	38.24
+6599	414	5.75	26	4.86	7.02
+6520	409	71.05	25	75.85	76.6
+6521	409	124.24	21	127.81	127.8
+6522	409	77.13	14	79.63	79.31
+6523	409	0.7	29	1.48	1.23
+6524	409	95.14	15	92.57	93.48
+6526	409	10.41	23	9.45	10.04
+6527	409	1.53	27	1.5	1.49
+6528	409	72.9	16	70.6	70.61
+6529	409	3.56	20	3.65	4.89
+6530	410	71.72	16	71.47	71.49
+6531	410	0.52	20	2.06	3.23
+6532	410	10.48	23	12.76	15.3
+6533	410	1.61	27	1.58	1.48
+6534	410	41.41	24	39.81	35.38
+6537	410	72.67	22	73.11	74.64
+6539	410	17.5	30	18.6	23
+6540	410	72.83	25	73.8	75.28
+6541	410	90.01	15	91.61	91.95
+6543	410	129	21	123.22	118.17
+6544	410	78.09	14	79.42	79.17
+6545	410	0.16	29	0.69	0.64
+6546	411	78.88	14	78.87	83.43
+6547	411	0.28	29	0.34	0.94
+6548	411	89.92	15	90.29	89.84
+6550	411	121.36	21	120.98	114.35
+6551	411	1.55	27	1.51	1.44
+6552	411	69.41	16	69.59	69.15
+6553	411	0.54	20	1.35	2.54
+6554	411	7.2	23	8.92	10.09
+6555	411	72.42	22	73.13	75.28
+6557	411	18.8	30	20.2	23.5
+6558	411	36.22	24	34.58	30.92
+6561	411	72.7	25	73.47	76.22
+6562	412	89.86	15	92.23	93.32
+6564	412	124.25	21	122.37	120.87
+6565	412	79.91	14	80.63	78.9
+6566	412	0.67	29	0.43	0.45
+6567	412	70.38	16	71.31	71.2
+6568	412	1.04	20	2.63	3.33
+6569	412	3.18	23	4.59	4.89
+6570	412	1.55	27	1.55	1.53
+6571	412	37.81	24	38.27	37.23
+6574	412	72.94	22	73.61	72.5
+6576	412	19.4	30	19	20.4
+6577	412	73.61	25	74.04	72.95
+6578	413	68.56	16	69.05	70.6
+6579	413	1.81	20	2.45	3.81
+6580	413	8.92	23	9.83	11.63
+6581	413	1.49	27	1.45	1.46
+6583	413	19.9	30	21.4	21.6
+6584	413	37.1	24	34.33	35.28
+6587	413	75.19	22	75.88	75.49
+6588	413	76.12	25	76.97	76.72
+6589	413	0.94	29	1.09	1.24
+6590	413	93.83	15	92.44	93.93
+6592	413	123.69	21	118.23	118.39
+6593	413	81.19	14	80.33	80.39
+6594	414	19.8	30	21.2	23
+6595	414	36.5	24	36.23	37.09
+6598	414	74.71	22	75.02	74.35
+6600	414	75.6	25	75.68	75.51
+6601	414	91.24	15	93.97	95.62
+6613	415	6.41	26	4.64	4.9
+6603	414	120.86	21	121.04	119.25
+6604	414	80.45	14	79.88	81.36
+6605	414	0.89	29	0.66	1.16
+6606	414	68.88	16	69.74	72.03
+6607	414	1.45	20	2.42	3.82
+6608	414	7.84	23	9.37	9.18
+6609	414	1.49	27	1.48	1.45
+6631	416	5.61	26	5.09	3.15
+6646	417	5.69	26	6.28	7.05
+6612	415	78.31	22	78.7	79.47
+6614	415	18.2	30	18.1	23.3
+6615	415	35.3	24	34.87	29.4
+6616	415	78.81	25	79.22	80.46
+6662	418	3.63	26	0.62	0.43
+6618	415	127.72	21	125.34	119.03
+6619	415	84.72	14	83.34	84.37
+6620	415	0.5	29	0.52	0.99
+6621	415	86.8	15	86.21	85.4
+6622	415	-0.12	20	-0.07	-0.09
+6623	415	7.2	23	9.34	10.18
+6624	415	1.48	27	1.5	1.39
+6625	415	64.6	16	64.01	64.87
+6626	416	1.48	27	1.45	1.35
+6627	416	65.16	16	65.45	64.84
+6628	416	0.68	20	0.82	1.02
+6629	416	4.45	23	4.97	4.11
+6630	416	77.93	22	79.25	80.53
+6632	416	18.1	30	19.8	23.9
+6633	416	34	24	31.76	26.83
+6678	419	3.77	26	5.56	3.96
+6699	420	4.89	26	4.01	3.45
+6636	416	78.64	25	79.94	81.76
+6637	416	83.53	14	84.34	83.68
+6638	416	0.71	29	0.68	1.23
+6639	416	87.56	15	88.51	87.12
+6717	421	0.66	26	1.31	-2.23
+6641	416	125.82	21	122.45	114.6
+6642	417	30.57	24	29.16	28.59
+6645	417	77.17	22	77.13	78.72
+6647	417	21.5	30	22.5	24.2
+6648	417	78.81	25	79.28	80.64
+6649	417	85.39	15	87.4	85.62
+6651	417	120.94	21	119.67	116.09
+6652	417	82.86	14	83.41	85.78
+6653	417	1.64	29	2.14	1.92
+6654	417	65.5	16	66.14	66.91
+6655	417	3.04	20	3.53	3.92
+6656	417	7.67	23	8.19	7.42
+6657	417	1.43	27	1.41	1.37
+6658	418	28.73	24	30.35	30.47
+6661	418	80.58	22	81.45	81.31
+6663	418	20.8	30	20.6	22.1
+6664	418	81.6	25	82.76	83.18
+6665	418	86.39	15	85.97	86.13
+6667	418	122.03	21	124.74	124.03
+6668	418	84.22	14	82.07	81.74
+6669	418	1.02	29	1.32	1.87
+6670	418	63.97	16	64.7	65.04
+6671	418	4.37	20	4.53	5.06
+6672	418	7.75	23	10.29	10.08
+6673	418	1.38	27	1.38	1.36
+6674	419	28.63	24	28.53	22.9
+6677	419	76.42	22	74.8	78.48
+6679	419	23.5	30	26.4	28.6
+6680	419	77.86	25	76.69	80.91
+6681	419	87.84	15	91.1	87.84
+6683	419	120.88	21	115.88	112.62
+6684	419	80.19	14	80.37	82.44
+6685	419	1.43	29	1.88	2.43
+6686	419	66.28	16	69.45	66
+6687	419	-0.41	20	0.13	0.46
+6688	419	8.84	23	13.57	9.28
+6689	419	1.38	27	1.36	1.27
+6690	420	1.13	29	1.58	1.79
+6691	420	88.93	15	87.58	89.63
+6693	420	121.92	21	121.79	118.39
+6694	420	84.96	14	86.68	87.63
+6695	420	62.96	16	61.81	62.97
+6696	420	-0.09	20	0.63	1.16
+6697	420	9.9	23	7.13	8.61
+6698	420	1.36	27	1.3	1.26
+6700	420	21.8	30	23.2	24.8
+6701	420	28.18	24	24.54	23.61
+6704	420	80.07	22	82.67	84.18
+6705	420	81.19	25	84.26	85.97
+6706	421	80.34	25	81.3	83.86
+6707	421	78.9	14	80.77	80.12
+6708	421	2.1	29	1.85	1.51
+6709	421	83.28	15	83.87	83.81
+6711	421	125.54	21	126.75	125.72
+6712	421	1.46	27	1.43	1.41
+6713	421	64.83	16	65.8	65.01
+6714	421	2.25	20	3.2	4.67
+6715	421	4.18	23	5.57	5.47
+6716	421	78.24	22	79.46	82.35
+6718	421	20	30	20.3	20.5
+6719	421	34.21	24	33.37	32.6
+6722	422	3.22	20	4.73	5.24
+6723	422	2.46	23	3.59	3.77
+6724	422	1.47	27	1.48	1.44
+6725	422	63.84	16	65.23	64.32
+6729	422	5.46	26	6.62	5.64
+6739	423	5.48	26	5.22	5.49
+6728	422	77.88	22	75.62	79.56
+6730	422	17.2	30	18	19.5
+6731	422	33.39	24	33.63	32.01
+6732	422	79.3	25	77.73	81.57
+6760	424	5.67	26	5.78	4.76
+6734	422	130.74	21	127.32	123.18
+6735	422	83.34	14	82.24	85.21
+6736	422	1.41	29	2.11	2.01
+6737	422	86.04	15	87.75	87.44
+6738	423	73.56	22	76.42	75.56
+6740	423	17.5	30	17.7	18
+6741	423	32.88	24	32.31	35.3
+6780	425	5.25	26	6.52	4.58
+6799	426	4.42	26	4.22	3.81
+6744	423	76.22	25	78.76	78.02
+6745	423	79.04	14	81.64	81.04
+6746	423	2.66	29	2.35	2.47
+6747	423	85.42	15	86.88	86.96
+6807	427	5.82	26	9.82	8.03
+6749	423	124.41	21	126.83	122.26
+6750	423	1.51	27	1.46	1.52
+6751	423	65	16	65.16	66.04
+6752	423	4.99	20	6.16	6.03
+6753	423	5.46	23	3.92	5.09
+6754	424	7.96	23	12.41	12.99
+6755	424	1.52	27	1.55	1.48
+6756	424	71.45	16	73.34	73.46
+6757	424	2.51	20	3.07	6.34
+6827	428	5.51	26	5.27	2.9
+6759	424	74.25	22	72.9	73.26
+6761	424	21.2	30	21.1	24.8
+6762	424	37.53	24	39.54	36.54
+6764	424	74.22	25	73.27	73.86
+6765	424	122.86	21	122.3	117.25
+6766	424	79.93	14	78.68	78.02
+6767	424	-0.03	29	0.38	0.6
+6768	424	92.84	15	93.51	93.66
+6770	425	79.39	14	81.61	78.37
+6771	425	0.25	29	0.22	0.92
+6772	425	97.01	15	96.15	100.34
+6774	425	121.48	21	120.52	116.41
+6775	425	1.53	27	1.49	1.47
+6776	425	72.51	16	72.32	75.74
+6777	425	2.2	20	3.38	4.7
+6778	425	8.31	23	7.72	10.72
+6779	425	74.14	22	75.09	73.79
+6781	425	21.1	30	21.5	25.2
+6782	425	40.82	24	38.35	40.29
+6785	425	74.39	25	75.31	74.71
+6786	426	88.77	15	92.56	93.32
+6788	426	136.15	21	132.36	131.25
+6789	426	77.74	14	76.75	77.02
+6790	426	0.56	29	0.74	0.93
+6791	426	68.34	16	70.59	72.5
+6792	426	0.9	20	1.78	2.65
+6793	426	11.44	23	13.28	12.48
+6794	426	1.55	27	1.55	1.48
+6795	426	40.99	24	40.96	38.68
+6798	426	73.32	22	72.53	73.21
+6800	426	15.9	30	16	20
+6801	426	73.88	25	73.27	74.14
+6802	427	1.45	27	1.46	1.45
+6803	427	65.95	16	68.52	69.76
+6804	427	-1.86	20	0.96	0.21
+6805	427	4.23	23	4.89	5.6
+6806	427	78.57	22	76.38	75.59
+6808	427	19.1	30	19.7	20.9
+6809	427	34.87	24	33.99	35.08
+6812	427	78.44	25	76.5	75.91
+6813	427	84.39	14	86.19	83.63
+6814	427	-0.13	29	0.13	0.32
+6815	427	88.7	15	89.49	89.45
+6817	427	127.95	21	123.53	119.21
+6818	428	1.43	29	1.86	1.79
+6819	428	85.64	15	85.6	84.57
+6821	428	127.01	21	123.57	120.47
+6822	428	86.27	14	85.19	85.27
+6823	428	63.18	16	64.06	63.23
+6824	428	1.82	20	1.54	1.87
+6825	428	-3.37	23	-1.29	-1.94
+6826	428	1.38	27	1.41	1.4
+6828	428	19.4	30	19.9	20.2
+6829	428	29.35	24	29.88	29.16
+6832	428	80.75	22	79.92	82.37
+6833	428	82.18	25	81.78	84.16
+6834	429	77.92	25	76.64	80.76
+6835	429	88.96	15	91.08	89.19
+6837	429	116.06	21	116.46	115.98
+6838	429	77.54	14	75.59	78.23
+6839	429	1.3	29	1.36	1.87
+6840	429	65.89	16	68.42	67.16
+6841	429	3.31	20	3.53	6.5
+6842	429	5.52	23	5.69	7.14
+6843	429	1.49	27	1.51	1.45
+6844	429	32.29	24	34.41	32.41
+6848	429	0.92	26	0.32	-0.66
+6864	430	1.89	26	1.48	1.92
+6847	429	76.62	22	75.28	78.9
+6849	429	18.7	30	19.7	20.9
+6850	430	78.26	25	77.27	79.86
+6851	430	91.32	15	90.44	91.68
+6878	431	3.66	26	3.88	1.21
+6853	430	118.98	21	117.15	115.35
+6854	430	79.04	14	77.86	80.33
+6855	430	1.11	29	0.89	1.45
+6856	430	67.17	16	67.8	68.74
+6857	430	1.71	20	4.26	3.52
+6858	430	4.54	23	7.25	6.77
+6859	430	1.49	27	1.51	1.46
+6860	430	33.46	24	34.66	33.66
+6890	432	6.69	26	6.26	6.99
+6911	433	7.34	26	6.38	5.86
+6863	430	77.15	22	76.38	78.41
+6865	430	19.1	30	21.1	22.5
+6866	431	80.57	25	82.29	83.95
+6867	431	119.43	21	118.77	112.83
+6868	431	83.06	14	85.16	83.29
+6869	431	1.16	29	1.01	1.87
+6870	431	84.68	15	84.19	80.26
+6924	434	5.05	26	6.51	4.41
+6872	431	5.57	23	5.23	5.64
+6873	431	1.36	27	1.33	1.28
+6874	431	63.65	16	62.65	61.67
+6875	431	5.12	20	4.37	4.36
+6941	435	4.82	26	4.85	5.42
+6877	431	79.41	22	81.28	82.08
+6879	431	20.8	30	22.4	26.1
+6880	431	26.5	24	23.64	20.74
+6960	436	5.9	26	5.54	4.76
+6882	432	72.31	16	72.57	73.64
+6883	432	1.85	20	2.36	3.43
+6884	432	9.96	23	11.49	11.53
+6885	432	1.46	27	1.43	1.39
+6886	432	32.55	24	32.29	31.52
+6889	432	69.8	22	70.49	72.03
+6891	432	26.1	30	26.4	28.1
+6892	432	70.67	25	71.73	73.37
+6893	432	94.64	15	93.32	93.46
+6895	432	113.52	21	112.67	109.97
+6896	432	76.49	14	76.75	79.02
+6897	432	0.86	29	1.24	1.33
+6898	433	92.55	15	91.15	91.42
+6900	433	119.53	21	116.38	111.3
+6901	433	78.48	14	77.92	78.4
+6902	433	0.86	29	1.9	1.51
+6903	433	71.21	16	69.89	70.92
+6904	433	1.59	20	1.49	2.42
+6905	433	9.26	23	9.98	10.7
+6906	433	1.51	27	1.46	1.43
+6907	433	36.39	24	32.33	31.15
+6910	433	71.15	22	71.54	72.53
+6912	433	21.7	30	23.8	25.9
+6913	433	72.01	25	73.44	74.05
+6914	434	79.64	25	79.8	80.96
+6915	434	-0.1	29	0.41	0.5
+6916	434	90.12	15	91.39	90.89
+6918	434	135.53	21	138.77	134.7
+6919	434	84.78	14	85.9	84.87
+6920	434	65.69	16	66.38	67.21
+6921	434	0.48	20	1.42	2.24
+6922	434	6.38	23	2.43	5.81
+6923	434	1.45	27	1.47	1.43
+6925	434	16.4	30	15.9	16.8
+6926	434	34.8	24	36.07	36.61
+6929	434	79.73	22	79.39	80.46
+6930	435	77.05	25	76.99	80.02
+6931	435	81.74	14	81.96	84.6
+6932	435	0.13	29	-0.12	0.84
+6933	435	88.78	15	90.81	90.6
+6935	435	133.59	21	133	134.09
+6936	435	1.52	27	1.53	1.47
+6937	435	66.42	16	68.18	68.06
+6938	435	1.73	20	1.32	2.94
+6939	435	5.25	23	5.31	5.5
+6940	435	76.93	22	77.11	79.18
+6942	435	16	30	16.3	17
+6943	435	37.75	24	38.07	36.87
+6946	436	88.33	15	88.52	88.44
+6948	436	124.41	21	125.41	125.63
+6949	436	80.35	14	80.22	81.96
+6950	436	1.02	29	0.95	1.87
+6951	436	68.07	16	68.18	67.32
+6952	436	1.86	20	2.65	4.3
+6953	436	12.38	23	7.84	6.4
+6954	436	1.5	27	1.5	1.45
+6955	436	18.3	30	18.5	20.1
+6956	436	35.4	24	34.42	32.69
+6959	436	74.45	22	74.68	77.2
+6961	436	75.47	25	75.62	79.08
+6962	437	83.55	14	84.6	83.87
+6963	437	0.55	29	1.21	1.61
+6964	437	88.34	15	88.66	88.18
+6972	437	6.21	26	7.11	5.93
+6966	437	125.51	21	118.55	117.55
+6967	437	1.37	27	1.36	1.3
+6968	437	65.21	16	66.12	66.79
+6969	437	3.78	20	3.91	3.82
+6970	437	6.73	23	10.4	9.25
+6971	437	77.34	22	77.48	77.94
+6973	437	22.1	30	24.7	26.7
+6974	437	31.14	24	28.02	26.6
+6989	438	3.87	26	4.22	3.21
+7007	439	7.36	26	7.14	5.53
+6977	437	77.89	25	78.7	79.55
+6978	438	123.58	21	116.2	116.48
+6979	438	79.01	14	81.16	81.28
+6980	438	0.72	29	1.15	1.73
+6981	438	84.25	15	84.66	86.38
+7022	440	6.68	26	3.25	2.37
+6983	438	10.19	23	9.04	9.24
+6984	438	1.51	27	1.47	1.4
+6985	438	66.2	16	66.58	66.42
+6986	438	2.91	20	1.53	1.61
+7038	441	6.95	26	5.47	4.09
+6988	438	75.14	22	76.94	78.07
+6990	438	20.9	30	22.2	26
+6991	438	35.09	24	34.26	30.25
+7046	442	6.66	26	6.6	5.32
+6993	438	75.87	25	78.08	79.8
+6994	439	89.22	15	86.24	86.89
+7062	443	4.89	26	1.81	0.56
+6996	439	127.88	21	131.64	126.32
+6997	439	88.23	14	87.45	88.65
+6998	439	1	29	1.32	2.26
+6999	439	63.39	16	62.66	62.05
+7000	439	2.7	20	2.93	2.58
+7001	439	0.95	23	3.17	2.58
+7002	439	1.42	27	1.39	1.37
+7003	439	30.97	24	29.89	28.56
+7006	439	80.87	22	80.31	83.12
+7008	439	17.7	30	18.3	21.9
+7009	439	81.87	25	81.64	85.38
+7011	440	130.31	21	124.99	126.1
+7012	440	82.48	14	80.12	80.58
+7013	440	0.76	29	2.05	2.76
+7014	440	86.3	15	86.97	86.94
+7015	440	0.57	20	0.75	1.78
+7016	440	3.19	23	3.28	5.1
+7017	440	1.46	27	1.42	1.38
+7018	440	62.99	16	64.09	63.76
+7021	440	75.8	22	76.87	78.21
+7023	440	17.9	30	18.9	20.3
+7024	440	32.73	24	30.63	30.21
+7025	440	76.56	25	78.91	80.97
+7027	441	122.53	21	115.4	116.94
+7028	441	88.15	14	86.35	85.33
+7029	441	1.2	29	0.62	0.68
+7030	441	87.72	15	90.13	90.91
+7031	441	2.74	20	3.31	5.29
+7032	441	5.51	23	6.28	8.73
+7033	441	1.43	27	1.44	1.43
+7034	441	64.18	16	65.05	65.98
+7037	441	81.2	22	80.88	81.24
+7039	441	21.2	30	21.2	24
+7040	441	32.18	24	32.36	32.91
+7041	441	82.4	25	81.51	81.92
+7042	442	32.62	24	29.51	25.71
+7045	442	71.62	22	74.74	76.74
+7047	442	21.6	30	24.2	27.2
+7048	442	73.19	25	76.34	78.74
+7049	442	87.61	15	86.68	83.61
+7051	442	120.47	21	113.78	112.85
+7052	442	78.28	14	81.35	82.06
+7053	442	1.57	29	1.6	2
+7054	442	69.87	16	67.95	65.61
+7055	442	4.55	20	4.48	5.87
+7056	442	8.77	23	7.65	4
+7057	442	1.47	27	1.41	1.35
+7058	443	26.09	24	24.94	17.56
+7061	443	80.75	22	81.43	83.05
+7063	443	20.9	30	21.1	28.3
+7064	443	81.99	25	82.77	85.03
+7065	443	85.89	15	81.72	81.57
+7067	443	122.84	21	119.05	108.77
+7068	443	85.63	14	83.25	83.61
+7069	443	1.24	29	1.33	1.98
+7070	443	61.32	16	60.15	59.94
+7071	443	4.4	20	4.19	5.84
+7072	443	1.6	23	0.11	3.43
+7073	443	1.35	27	1.32	1.22
+7074	444	73.63	25	76.63	76.71
+7076	444	127.36	21	124.09	124.57
+7077	444	79.7	14	83.22	81.95
+7078	444	0.9	29	0.88	1.07
+7079	444	93.25	15	91.27	92.59
+7080	444	0.11	20	0.28	0.73
+7081	444	9.07	23	7.28	8.89
+7082	444	1.56	27	1.47	1.46
+7083	444	71.23	16	68.33	70.27
+7087	444	6.97	26	7.47	6.3
+7094	445	7.09	26	7.41	6.41
+7086	444	72.73	22	75.75	75.64
+7088	444	18.4	30	19.3	20.4
+7089	444	40.27	24	36.76	37.14
+7090	445	37.19	24	38.24	37.44
+7119	446	3.86	26	3.67	0.32
+7131	447	4.49	26	4.42	3.1
+7093	445	76.39	22	76.5	76.3
+7095	445	18.3	30	18.8	20.5
+7096	445	77.16	25	77.08	77.07
+7097	445	89.89	15	90.41	90.37
+7148	448	6.12	26	4.94	2.27
+7099	445	123.5	21	124.02	121.92
+7100	445	83.48	14	83.91	82.71
+7101	445	0.77	29	0.58	0.77
+7102	445	67.61	16	68.59	69.66
+7103	445	0.31	20	0.61	1.01
+7104	445	5.03	23	6.25	6.46
+7105	445	1.53	27	1.51	1.51
+7106	446	84.49	15	85	84.48
+7168	449	2.95	26	2.3	0.92
+7108	446	122.48	21	119.16	115.65
+7109	446	85.16	14	85.05	82.68
+7110	446	-0.27	29	-0.27	0.53
+7111	446	61.25	16	63.99	63.85
+7112	446	1.61	20	2.14	3.23
+7113	446	7.29	23	7.67	8.93
+7114	446	1.37	27	1.4	1.35
+7115	446	26.34	24	28.49	26.16
+7181	450	6.57	26	4.95	4.9
+7199	451	6.35	26	5.65	4.14
+7118	446	81.31	22	81.38	82.36
+7120	446	21	30	22.3	24.8
+7121	446	81.04	25	81.11	82.89
+7122	447	0.8	29	0.45	0.72
+7123	447	82.91	15	82.92	82.3
+7125	447	119.12	21	116.37	112.54
+7126	447	83.05	14	84.67	85.87
+7127	447	62.3	16	62.16	61.74
+7128	447	0.69	20	1.3	1.72
+7129	447	6	23	4.64	2.22
+7130	447	1.41	27	1.39	1.29
+7132	447	21.8	30	22.4	26.8
+7133	447	28.59	24	28.03	23.21
+7136	447	78.56	22	80.25	82.78
+7137	447	79.36	25	80.7	83.49
+7138	448	79.48	25	81.47	81.64
+7139	448	1.7	29	2.16	2.12
+7140	448	87.87	15	87.17	86.88
+7142	448	117.35	21	116.7	114.33
+7143	448	83.9	14	84.25	81.79
+7144	448	65.29	16	64.9	65.33
+7145	448	1.03	20	1.73	2.41
+7146	448	4.42	23	4.96	5.31
+7147	448	1.39	27	1.36	1.38
+7149	448	22.1	30	21.1	23.5
+7150	448	29.13	24	29	27.53
+7153	448	77.78	22	79.31	79.52
+7154	449	80.93	25	82.67	85.03
+7155	449	86.62	15	87.48	87.09
+7157	449	116.46	21	119.66	113.39
+7158	449	83.39	14	84.55	85.1
+7159	449	0.49	29	0.42	0.85
+7160	449	64.55	16	65.19	64.39
+7161	449	2.04	20	2.85	2.08
+7162	449	2.82	23	1.98	3.56
+7163	449	1.44	27	1.43	1.37
+7164	449	30.14	24	32.55	29.7
+7167	449	80.44	22	82.25	84.18
+7169	449	20.4	30	19.2	22.4
+7170	450	124.61	21	124.06	124.3
+7171	450	83.32	14	83.62	84.99
+7172	450	0.09	29	0.18	0.55
+7173	450	88.03	15	88.66	88.6
+7175	450	6.47	23	6.97	5.67
+7176	450	1.49	27	1.41	1.43
+7177	450	67.29	16	66.42	67.21
+7178	450	2.33	20	3.38	2.54
+7180	450	76.75	22	78.67	80.09
+7182	450	19	30	20	21
+7183	450	35.18	24	32.52	33.8
+7185	450	76.84	25	78.85	80.63
+7186	451	77.25	25	77.9	77.08
+7188	451	123.09	21	122.06	122.04
+7189	451	81.6	14	82.27	79.09
+7190	451	2	29	1.28	2.14
+7191	451	87.34	15	87.14	87.86
+7192	451	2.33	20	2.94	4.28
+7193	451	5.81	23	7.74	10.19
+7194	451	1.51	27	1.54	1.54
+7195	451	65.74	16	66.46	68.87
+7198	451	75.25	22	76.62	74.94
+7200	451	17.4	30	17.2	19.1
+7201	451	34.3	24	36.11	36.25
+7202	452	79.65	25	79.94	81.8
+7204	452	116.29	21	113.78	111.07
+7205	452	79.29	14	79.58	81.09
+7206	452	1.93	29	2.12	2.57
+7207	452	85.33	15	85.46	83.25
+7208	452	2.62	20	3.23	3.16
+7209	452	3.55	23	5.64	5.1
+7210	452	1.46	27	1.46	1.42
+7211	452	63.74	16	63.7	63.73
+7214	452	77.72	22	77.83	79.23
+7216	452	18.6	30	19.9	22.3
+7217	452	30.19	24	29.12	27.97
+7218	453	96.54	15	99.68	94.41
+7220	453	136.08	21	132.28	118.79
+7221	453	81.21	14	83.27	83.34
+7222	453	-0.28	29	-0.4	1.22
+7223	453	71.94	16	71.52	67.42
+7224	453	1	20	1.35	2.09
+7225	453	2.14	23	1.81	2.16
+7226	453	1.57	27	1.51	1.37
+7227	453	43.31	24	41.56	31.41
+7230	453	74.2	22	76.04	79.84
+7232	453	15.7	30	15.5	22.9
+7233	453	73.91	25	75.64	81.07
+7215	452	1.57	26	1.76	1.86
+7231	453	7.01	26	7.23	3.5
+7298	6	7.57	26	6.96	5.51
+7330	3	1.78	26	5.9	2.85
+7346	5	7.94	26	8.37	6.7
+7299	6	83.91	14	83.32	83.7
+7300	6	76.33	22	76.36	78.19
+7301	6	76.91	25	76.91	78.53
+7302	6	18.7	30	18.5	19.1
+7303	6	0.57	29	0.55	0.34
+7304	6	33.76	24	33.33	33.78
+7305	6	14.65	23	13.19	14.16
+7306	6	90.24	15	90.44	89.35
+7307	6	65.96	16	65.91	65.92
+7308	6	2.93	20	2.82	4.23
+7309	6	126.73	21	128.44	123.32
+7310	6	1.46	27	1.46	1.43
+7331	3	77.76	14	83.19	80.65
+7332	3	75.98	22	77.29	77.8
+7333	3	77.72	25	79.48	80.63
+7334	3	19.1	30	18.1	23.5
+7335	3	1.74	29	2.19	2.83
+7336	3	35.41	24	33.74	29.22
+7337	3	6.04	23	2.54	4.4
+7338	3	90.71	15	90.35	88.68
+7339	3	67.38	16	67.65	66.75
+7340	3	2.48	20	2.14	1.74
+7341	3	123.87	21	120.37	113.02
+7342	3	1.46	27	1.5	1.36
+7347	5	86.65	14	88.62	91.58
+7348	5	78.71	22	80.26	84.88
+7349	5	80.68	25	82.43	87.47
+7350	5	22	30	21.3	24.6
+7351	5	1.96	29	2.17	2.6
+7352	5	25.14	24	24.17	17.2
+7353	5	1.86	23	-0.89	0.55
+7354	5	82.2	15	81.82	76.34
+7355	5	59.62	16	59.65	55.26
+7356	5	2.54	20	3.44	3.81
+7357	5	118.32	21	118.07	112.72
+7358	5	1.36	27	1.36	1.24
+7363	7	81.57	14	80.1	83.01
+7364	7	78.39	22	77.75	80.68
+7365	7	79.6	25	79.31	83.25
+7366	7	22.6	30	23.6	26.9
+7367	7	1.22	29	1.56	2.57
+7368	7	25.22	24	24.36	18.8
+7369	7	6	23	5.37	4.46
+7370	7	81.74	15	84.87	81.62
+7371	7	62.89	16	64.58	61.13
+7372	7	3.22	20	3.57	4.9
+7373	7	115.44	21	111.65	107.88
+7374	7	1.34	27	1.33	1.24
+7379	9	86.22	14	82.6	82.76
+7380	9	82.72	22	79.04	82.43
+7381	9	84.34	25	81.06	84.62
+7382	9	27.1	30	26	26
+7383	9	1.62	29	2.02	2.19
+7384	9	19.98	24	23.48	22.49
+7385	9	3.38	23	2.13	1.9
+7386	9	85.74	15	87.61	83.5
+7387	9	60.18	16	61.9	61.26
+7388	9	2.01	20	3.27	4.37
+7389	9	108.61	21	111.51	113.34
+7390	9	1.23	27	1.32	1.28
+7395	8	79.89	14	78.29	81.5
+7396	8	72.27	22	74.1	75.18
+7397	8	72.91	25	75.21	76.43
+7398	8	19.9	30	18.9	20.4
+7399	8	0.64	29	1.11	1.25
+7400	8	37.91	24	37.92	38.14
+7401	8	7.59	23	7.78	9.24
+7402	8	91.01	15	91.23	91.45
+7403	8	72.08	16	71.88	72.87
+7404	8	2.37	20	3.53	3.7
+7405	8	123.18	21	124.3	122.36
+7406	8	1.53	27	1.49	1.49
+7411	10	82.4	14	81.12	81.86
+7412	10	80.71	22	79.68	81.25
+7413	10	83.04	25	82.35	83.85
+7414	10	25.9	30	26.6	27.5
+7415	10	2.34	29	2.67	2.6
+7416	10	19.57	24	19.71	20.26
+7417	10	3.29	23	3.86	3.98
+7418	10	85.78	15	85.47	85.72
+7419	10	61.83	16	61.91	62.89
+7420	10	2.45	20	2.42	4.62
+7421	10	106.54	21	105.52	105.68
+7422	10	1.27	27	1.27	1.27
+7362	7	3.18	26	2.35	2.33
+7427	11	80.69	14	80.94	80.5
+7428	11	76.12	22	76.99	77.4
+7429	11	78.12	25	79.94	80.64
+7430	11	21.6	30	22.6	25.5
+7431	11	2	29	2.94	3.24
+7432	11	29.41	24	27.65	25.73
+7433	11	6.89	23	7.46	3.98
+7434	11	88.69	15	86.61	86.9
+7435	11	65.55	16	64.67	65
+7436	11	3.95	20	3.74	4.67
+7437	11	114.92	21	115.28	112.44
+7438	11	1.42	27	1.39	1.34
+7378	9	3.5	26	3.56	0.33
+7394	8	7.62	26	4.19	6.32
+7410	10	1.69	26	1.44	0.61
+7443	12	87.86	14	88.95	89.99
+7444	12	79.74	22	80.69	81.66
+7445	12	79.87	25	81.4	82.52
+7446	12	19.2	30	21.7	22.7
+7447	12	0.13	29	0.71	0.87
+7448	12	30.48	24	27.56	26.42
+7449	12	6.84	23	4.28	4.67
+7450	12	88.38	15	87.48	87.2
+7451	12	64.14	16	63.18	63.26
+7452	12	2.51	20	3.68	4.64
+7453	12	124.13	21	122.38	112.75
+7454	12	1.39	27	1.37	1.34
+7426	11	4.57	26	3.94	3.1
+7442	12	8.12	26	8.27	8.34
+7458	13	8.29	26	7.99	7.38
+7459	13	82.65	14	82.63	83.09
+7460	13	74.37	22	74.64	75.71
+7461	13	75.07	25	75.85	76.73
+7462	13	25.4	30	25.3	27.1
+7463	13	0.7	29	1.21	1.01
+7464	13	32.29	24	32.6	32.75
+7465	13	7.34	23	8.63	9.41
+7466	13	86.69	15	86.94	87.69
+7467	13	67.91	16	68.38	69.18
+7468	13	2.41	20	3.24	3.42
+7469	13	112.63	21	113.12	118.22
+7470	13	1.44	27	1.43	1.42
+7475	14	77.38	14	74.9	74.62
+7476	14	71.98	22	70.22	71.16
+7477	14	73.2	25	72.25	73.85
+7478	14	20.4	30	21	23.3
+7479	14	1.22	29	2.03	2.69
+7480	14	36.4	24	39.62	37.48
+7481	14	11.53	23	10.44	12.53
+7482	14	90.47	15	93.63	93.34
+7483	14	70.74	16	74.48	73.78
+7484	14	0.84	20	1.46	1.94
+7485	14	118.5	21	114.23	116.17
+7486	14	1.51	27	1.53	1.49
+7491	15	78.14	14	80.07	80.59
+7492	15	74.17	22	75.87	76.24
+7493	15	75.43	25	77.26	77.81
+7494	15	17.7	30	19.1	19.7
+7495	15	1.25	29	1.39	1.56
+7496	15	35.12	24	34.71	33.36
+7497	15	16.93	23	12.33	8.85
+7498	15	88.33	15	88.26	88.38
+7499	15	63.09	16	63.64	64.27
+7500	15	5.27	20	5.11	6.69
+7501	15	129.13	21	127.07	126.7
+7502	15	1.52	27	1.52	1.5
+7507	16	82.66	14	83.81	85.04
+7508	16	78.04	22	78.94	80.33
+7509	16	80.06	25	80.75	82.75
+7510	16	22.2	30	22.3	24.4
+7511	16	2.02	29	1.82	2.42
+7512	16	29.79	24	29.54	27.03
+7513	16	10.78	23	8.98	9.85
+7514	16	84.9	15	84.01	82.87
+7515	16	64.8	16	64.88	63.78
+7516	16	1.97	20	2.55	1.97
+7517	16	120.1	21	118.85	117.23
+7518	16	1.42	27	1.42	1.36
+7523	17	81.42	14	81.96	82.7
+7524	17	78.75	22	80.86	81.74
+7525	17	80.37	25	82.38	83.78
+7526	17	23.5	30	24.5	25.9
+7527	17	1.62	29	1.53	2.04
+7528	17	28.81	24	27.5	27.43
+7529	17	9.17	23	8.82	9.31
+7530	17	85.22	15	84.8	84.75
+7531	17	64.35	16	64.34	63.62
+7532	17	2.57	20	3.45	3.07
+7533	17	117.68	21	118.55	117.93
+7534	17	1.36	27	1.34	1.34
+7539	18	78.95	14	78.82	79.18
+7540	18	71.51	22	72.34	73.74
+7541	18	72.49	25	73.28	74.88
+7542	18	22.9	30	23.8	24.4
+7543	18	0.97	29	0.94	1.14
+7544	18	30.91	24	30	28.22
+7545	18	8.59	23	10.39	8
+7546	18	97.59	15	96.62	95.82
+7547	18	72.57	16	72.34	71.82
+7548	18	-1.12	20	-0.03	0.69
+7549	18	113.2	21	112.89	109.16
+7550	18	1.42	27	1.4	1.38
+7474	14	5.4	26	4.68	3.46
+7555	19	80.05	14	80.31	81.68
+7556	19	74.51	22	74.81	75.95
+7557	19	75.69	25	76.1	77.8
+7558	19	17.5	30	17.6	21.3
+7559	19	1.18	29	1.3	1.85
+7560	19	33.94	24	33.19	29.74
+7561	19	7.83	23	8.77	9.57
+7562	19	85.92	15	85.7	85.73
+7563	19	63.96	16	64.55	64.82
+7564	19	2.31	20	3.29	2.78
+7565	19	131.93	21	126.26	121.14
+7566	19	1.53	27	1.53	1.44
+7490	15	3.97	26	4.2	4.35
+7506	16	4.62	26	4.87	4.71
+7522	17	2.67	26	1.11	0.96
+7571	20	86.39	14	87.08	86.84
+7572	20	79.67	22	80.77	82.73
+7573	20	79.37	25	81.45	83.69
+7574	20	21.4	30	20.3	20.9
+7575	20	-0.3	29	0.68	0.97
+7576	20	35.1	24	33.55	32.89
+7577	20	4.28	23	3.57	3.25
+7578	20	92.86	15	92.51	91.43
+7579	20	66.68	16	66.52	65.27
+7580	20	3.06	20	2.76	2.88
+7581	20	124.15	21	125.25	125.36
+7582	20	1.43	27	1.42	1.38
+7538	18	7.44	26	6.48	5.44
+7554	19	5.53	26	5.51	5.73
+7570	20	6.73	26	6.31	4.12
+7587	21	81.4	14	79.47	81.23
+7588	21	74.41	22	73.86	74.65
+7589	21	75.25	25	75.42	76.24
+7590	21	22.7	30	23.6	26.5
+7591	21	0.84	29	1.56	1.59
+7586	21	6.99	26	5.61	6.59
+7592	21	30.98	24	30.31	28.74
+7593	21	8.18	23	8.83	9.05
+7594	21	90.04	15	89.82	90.55
+7595	21	67.61	16	68.08	68.87
+7596	21	2.19	20	2.45	3.45
+7597	21	117.79	21	116.52	112.96
+7598	21	1.45	27	1.44	1.4
+7603	22	80.27	14	82.65	82.25
+7604	22	76.02	22	77.91	78.34
+7605	22	77.6	25	78.69	80.33
+7606	22	17.8	30	18	18.2
+7607	22	1.58	29	0.77	1.99
+7608	22	35.65	24	35.69	33.63
+7609	22	10.86	23	8.53	7.98
+7610	22	85.28	15	85.02	83.58
+7611	22	64.5	16	65.13	63.95
+7612	22	2.99	20	2.99	4.17
+7613	22	129.8	21	127.39	124.55
+7614	22	1.54	27	1.56	1.51
+7619	23	82.62	14	83.45	83.93
+7620	23	76.58	22	77.8	80.3
+7621	23	76.43	25	78.55	82.07
+7622	23	19.5	30	21.2	24.2
+7623	23	-0.15	29	0.75	1.77
+7624	23	32.78	24	30.76	25.64
+7625	23	5.24	23	4.39	2.78
+7626	23	94.31	15	92.32	90.86
+7627	23	67.68	16	66.07	65.43
+7628	23	1.03	20	1.2	2.88
+7629	23	113.3	21	115.09	110.84
+7630	23	1.47	27	1.44	1.32
+7635	24	85.51	14	82.21	84.66
+7636	24	78.39	22	75.74	77.37
+7637	24	77.77	25	75.8	77.8
+7638	24	20.8	30	20.5	21.7
+7639	24	-0.61	29	0.06	0.43
+7640	24	32.79	24	33.81	32.2
+7641	24	4.71	23	8.42	7.13
+7642	24	88.46	15	90.19	89.64
+7643	24	66.39	16	67.92	67.8
+7644	24	1.81	20	3.06	3.08
+7645	24	126.51	21	125.13	124.27
+7646	24	1.44	27	1.48	1.44
+7651	25	80.78	14	81.09	80.67
+7652	25	76.16	22	76.91	75.44
+7653	25	76.84	25	78.46	77.64
+7654	25	21.7	30	22.8	24.4
+7655	25	0.68	29	1.56	2.2
+7656	25	31.28	24	28.68	29.78
+7657	25	5.78	23	6.22	7
+7658	25	91.18	15	89.77	92.53
+7659	25	69.07	16	67.41	69.82
+7660	25	0.61	20	0.64	0.15
+7661	25	116.66	21	114.93	112.57
+7662	25	1.44	27	1.39	1.38
+7602	22	4.25	26	4.74	3.91
+7667	26	80.36	14	80.61	81.5
+7668	26	77.88	22	77.84	81
+7669	26	78.39	25	78.65	82.21
+7670	26	20.2	30	21.4	23.7
+7671	26	0.51	29	0.81	1.21
+7672	26	31.28	24	30.54	27.84
+7673	26	7.1	23	10.72	8.38
+7674	26	85.79	15	87.59	85.9
+7675	26	64.23	16	66.17	63.6
+7676	26	2.56	20	2.22	2.87
+7677	26	121.58	21	118.48	121.48
+7678	26	1.43	27	1.42	1.35
+7618	23	6.05	26	5.66	3.63
+7634	24	7.12	26	6.47	7.29
+7650	25	4.62	26	4.19	5.23
+7683	27	82.82	14	81.24	79.82
+7684	27	75.34	22	74.63	75.8
+7685	27	75.59	25	75.57	77.13
+7686	27	20.7	30	21.7	24.5
+7687	27	0.25	29	0.94	1.33
+7688	27	34.67	24	33.48	30.12
+7689	27	7.99	23	8.15	8.21
+7690	27	92.83	15	91.68	90.37
+7691	27	67.29	16	66.54	66.71
+7692	27	0.25	20	1.77	2.77
+7693	27	119.71	21	115.85	113.04
+7694	27	1.52	27	1.49	1.42
+7666	26	2.48	26	2.77	0.5
+7682	27	7.48	26	6.61	4.02
+7698	28	1.93	26	1.48	-2.31
+7699	28	74.72	14	76.06	73.66
+7700	28	72.79	22	74.58	75.97
+7701	28	73.79	25	76.07	78.21
+7702	28	21	30	22.5	23.4
+7703	28	1	29	1.5	2.24
+7704	28	32.99	24	30.6	27.9
+7705	28	7.71	23	5.63	4.31
+7706	28	87.54	15	87.75	85.02
+7707	28	65.79	16	65.21	64.91
+7708	28	0.92	20	1	3.02
+7709	28	120.63	21	119.11	118.94
+7710	28	1.51	27	1.45	1.39
+\.
+
+
+--
+-- Data for Name: case_reports; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.case_reports (id, case_id, user_id, description, created_at, admin_note, admin_note_updated_at, admin_note_updated_by) FROM stdin;
+47	21	112	test	2025-10-14 09:43:05.35563+00	\N	\N	\N
+\.
+
+
+--
+-- Data for Name: cases; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.cases (id, code, patient_gender, age1, age2, age3) FROM stdin;
+2	BB0113	M	9	12	18
+3	BB0130	M	9	12	18
+4	BB0259	M	9	12	18
+5	BB0261	M	9	12	18
+6	BB0945	M	9	12	18
+7	BB1051	M	9	12	18
+8	BB1157	M	9	12	18
+9	BB1167	M	9	12	18
+10	BB1204	M	9	12	18
+11	BB1269	F	9	12	18
+12	BB1894	F	9	12	18
+13	BB1946	F	9	12	18
+14	BB2009	M	9	12	18
+15	BB2094	M	9	12	18
+16	BB2131	M	9	12	18
+17	BB2140	F	9	12	18
+18	BB2146	F	9	12	18
+19	BB2207	F	9	12	18
+20	BB2252	M	9	12	18
+21	BB2259	F	9	12	18
+22	BB2290	F	9	12	18
+23	BB2326	M	9	12	18
+24	BB2378	M	9	12	18
+25	BB2398	F	9	12	18
+26	BB2407	F	9	12	18
+27	BB2425	F	9	12	18
+28	BB2426	M	9	12	18
+29	BB2429	F	9	12	18
+30	BB2440	F	9	12	18
+31	BB2457	F	9	12	18
+32	BB2491	F	9	12	18
+33	BB2507	F	9	12	18
+34	BB2686	M	9	12	18
+35	BB2701	F	9	12	18
+36	BB2702	F	9	12	18
+37	BB2739	F	9	12	18
+38	BB2790	F	9	12	18
+39	BB2817	M	9	12	18
+40	BB2891	F	9	12	18
+41	BB3003	M	9	12	18
+42	BB3059	M	9	12	18
+43	BB3084	F	9	12	18
+44	BB3132	M	9	12	18
+45	BB3232	F	9	12	18
+46	BB3275	F	9	12	18
+47	BB3328	F	9	12	18
+48	BB3345	M	9	12	18
+49	BB3357	M	9	12	18
+50	BB3377	M	9	12	18
+51	BB3484	F	9	12	18
+52	BB3501	M	9	12	18
+53	BB3516	M	9	12	18
+54	BB3754	F	9	12	18
+55	Br0076	M	9	12	18
+56	Br0114	F	9	12	18
+57	Br0135	M	9	12	18
+58	Br0153	F	9	12	18
+59	Br0163	F	9	12	18
+60	Br0183	M	9	12	18
+61	Br0188	F	9	12	18
+62	Br0198	F	9	12	18
+63	Br0206	M	9	12	18
+64	Br0208	F	9	12	18
+65	Br0231	M	9	12	18
+66	Br0245	F	9	12	18
+67	Br0257	F	9	12	18
+68	Br0264	M	9	12	18
+69	Br0265	M	9	12	18
+70	Br0289	M	9	12	18
+71	Br0295	M	9	12	18
+72	Br0316	F	9	12	18
+73	Br0317	F	9	12	18
+74	Br0321	F	9	12	18
+75	Br0355	M	9	12	18
+76	Br0366	M	9	12	18
+77	Br0391	F	9	12	18
+78	Br0392	F	9	12	18
+79	Br0482	F	9	12	18
+80	Br0487	F	9	12	18
+81	Br0544	M	9	12	18
+82	Br0570	M	9	12	18
+83	Br0595	F	9	12	18
+84	Br0602	F	9	12	18
+85	Br0612	M	9	12	18
+86	Br0619	F	9	12	18
+87	Br0630	F	9	12	18
+88	Br0631	F	9	12	18
+89	Br0636	M	9	12	18
+90	Br0726	F	9	12	18
+91	Br0742	F	9	12	18
+92	Br0763	F	9	12	18
+93	Br0804	M	9	12	18
+94	Br0847	F	9	12	18
+95	Br0848	F	9	12	18
+96	Br0863	M	9	12	18
+97	Br0865	M	9	12	18
+98	Br0871	M	9	12	18
+99	Br0914	F	9	12	18
+100	Br0920	F	9	12	18
+101	Br0930	M	9	12	18
+102	Br0948	F	9	12	18
+103	Br1024	F	9	12	18
+104	Br1068	M	9	12	18
+105	Br1085	M	9	12	18
+106	Br1094	M	9	12	18
+107	Br1316	M	9	12	18
+108	Br1329	F	9	12	18
+109	Br1336	M	9	12	18
+110	Br1351	M	9	12	18
+111	Br1366	F	9	12	18
+112	Br1378	M	9	12	18
+113	Br1391	M	9	12	18
+114	Br1392	F	9	12	18
+115	Br2519	F	9	12	18
+116	Br2521	M	9	12	18
+117	Br2523	M	9	12	18
+118	Br2540	F	9	12	18
+119	Br2548	F	9	12	18
+120	Br2572	F	9	12	18
+121	Br2573	F	9	12	18
+122	Br2590	F	9	12	18
+123	Br2602	M	9	12	18
+124	D006	M	9	12	18
+125	D007	F	9	12	18
+126	D008	F	9	12	18
+127	D009	F	9	12	18
+128	D013	F	9	12	18
+129	D036	F	9	12	18
+130	D040	F	9	12	18
+131	D041	F	9	12	18
+132	D044	F	9	12	18
+133	D046	F	9	12	18
+134	D050	F	9	12	18
+135	D053	F	9	12	18
+136	D054	F	9	12	18
+137	D058	F	9	12	18
+138	D060	F	9	12	18
+139	D067	F	9	12	18
+140	D069	F	9	12	18
+141	D072	F	9	12	18
+142	D073	F	9	12	18
+143	D077	F	9	12	18
+144	D079	F	9	12	18
+145	D086	F	9	12	18
+146	D087	F	9	12	18
+147	D094	F	9	12	18
+148	D095	F	9	12	18
+149	D102	F	9	12	18
+150	D103	F	9	12	18
+151	D105	F	9	12	18
+152	D106	F	9	12	18
+153	D107	F	9	12	18
+154	D110	F	9	12	18
+155	D111	F	9	12	18
+156	D113	F	9	12	18
+157	D114	F	9	12	18
+158	D115	F	9	12	18
+159	D117	F	9	12	18
+160	D123	F	9	12	18
+161	D124	F	9	12	18
+162	D130	F	9	12	18
+163	D140	F	9	12	18
+164	D465	F	9	12	18
+165	D482	F	9	12	18
+166	D502	F	9	12	18
+167	D504	F	9	12	18
+168	D505	M	9	12	18
+169	D506	M	9	12	18
+170	D510	M	9	12	18
+171	D511	M	9	12	18
+172	D514	M	9	12	18
+173	D515	M	9	12	18
+174	D517	M	9	12	18
+175	D522	M	9	12	18
+176	D523	M	9	12	18
+177	D525	M	9	12	18
+178	D528	M	9	12	18
+179	D529	M	9	12	18
+180	D532	M	9	12	18
+181	D533	M	9	12	18
+182	D535	M	9	12	18
+183	D545	M	9	12	18
+184	D548	M	9	12	18
+185	D551	M	9	12	18
+186	D552	M	9	12	18
+187	D555	M	9	12	18
+188	D557	M	9	12	18
+189	D562	M	9	12	18
+190	D563	M	9	12	18
+191	D565	M	9	12	18
+192	D566	M	9	12	18
+193	D570	M	9	12	18
+194	D574	M	9	12	18
+195	D575	M	9	12	18
+196	D582	M	9	12	18
+197	D584	M	9	12	18
+198	D585	M	9	12	18
+199	D588	M	9	12	18
+200	D589	M	9	12	18
+201	D600	M	9	12	18
+202	D609	M	9	12	18
+203	D616	M	9	12	18
+204	D626	M	9	12	18
+205	D638	M	9	12	18
+206	D692	M	9	12	18
+207	D980	M	9	12	18
+208	D983	M	9	12	18
+209	D984	M	9	12	18
+210	D988	M	9	12	18
+211	D993	M	9	12	18
+212	D994	M	9	12	18
+213	FL0779	M	9	12	18
+214	FL1397	M	9	12	18
+215	FL1441	F	9	12	18
+216	FL1541	M	9	12	18
+217	FL1586	F	9	12	18
+218	FL2117	F	9	12	18
+219	FL2249	F	9	12	18
+220	FL2331	F	9	12	18
+221	FL2671	M	9	12	18
+222	FL2927	F	9	12	18
+223	FL3532	M	9	12	18
+224	FL3536	F	9	12	18
+225	FL3994	F	9	12	18
+226	FL4014	F	9	12	18
+227	FL4421	M	9	12	18
+228	FL4614	F	9	12	18
+229	FL4748	F	9	12	18
+230	FL5061	M	9	12	18
+231	FL5275	M	9	12	18
+232	FL5294	M	9	12	18
+233	FL5324	M	9	12	18
+234	FL5617	M	9	12	18
+235	FL5649	M	9	12	18
+236	FL5730	F	9	12	18
+237	FL6753	M	9	12	18
+238	FL6976	M	9	12	18
+239	FL7745	F	9	12	18
+240	FL8121	F	9	12	18
+241	FL9125	M	9	12	18
+242	FL9427	M	9	12	18
+243	FL9471	M	9	12	18
+244	FL9474	F	9	12	18
+245	FL9858	F	9	12	18
+246	FT003-11	M	9	12	18
+247	FT003-12	M	9	12	18
+248	FT005-12	F	9	12	18
+249	FT019-11	F	9	12	18
+250	FT019-12	F	9	12	18
+251	FT037-11	M	9	12	18
+252	FT037-12	F	9	12	18
+253	FT040-12	F	9	12	18
+254	FT042-11	M	9	12	18
+255	FT042-12	M	9	12	18
+256	FT044-11	M	9	12	18
+257	FT044-12	M	9	12	18
+258	FT051-11	F	9	12	18
+259	FT051-12	F	9	12	18
+260	FT055-12	F	9	12	18
+261	FT076-11	M	9	12	18
+262	FT076-12	F	9	12	18
+263	FT079-11	F	9	12	18
+264	FT103-12	F	9	12	18
+265	FT105-12	F	9	12	18
+266	FT120-11	M	9	12	18
+267	FT120-12	M	9	12	18
+268	FT133-11	F	9	12	18
+269	FT133-12	F	9	12	18
+270	FT155-12	M	9	12	18
+271	FT157-11	F	9	12	18
+272	FT157-12	F	9	12	18
+273	FT169-12	M	9	12	18
+274	FT275-11	F	9	12	18
+275	FT293-11	F	9	12	18
+276	FT293-12	M	9	12	18
+277	FT356-11	M	9	12	18
+278	FT356-12	M	9	12	18
+279	FT388-11	M	9	12	18
+280	FT388-12	M	9	12	18
+281	FT400-11	M	9	12	18
+282	FT400-12	M	9	12	18
+283	FT401-11	M	9	12	18
+284	FT401-12	M	9	12	18
+285	FT407-11	F	9	12	18
+286	FT407-12	F	9	12	18
+287	FT417-12	M	9	12	18
+288	FT417-21	F	9	12	18
+289	FT417-22	M	9	12	18
+290	FT419-11	M	9	12	18
+291	FT419-12	M	9	12	18
+292	Io01M	M	9	12	18
+293	Io02M	M	9	12	18
+294	Io03M	M	9	12	18
+295	Io04F	F	9	12	18
+296	Io06M	M	9	12	18
+297	Io07M	M	9	12	18
+298	Io08F	F	9	12	18
+299	Io09M	M	9	12	18
+300	Io10M	M	9	12	18
+301	Io16M	M	9	12	18
+302	Io18F	F	9	12	18
+303	Io19F	F	9	12	18
+304	Io19M	M	9	12	18
+305	Io20F	F	9	12	18
+306	Io22F	F	9	12	18
+307	Io24M	M	9	12	18
+308	Io28M	M	9	12	18
+309	Io32F	F	9	12	18
+310	Io34F	F	9	12	18
+311	Io34M	M	9	12	18
+312	Io35M	M	9	12	18
+313	Io38F	F	9	12	18
+314	Io38M	M	9	12	18
+315	Io39F	F	9	12	18
+316	Io40F	F	9	12	18
+317	Io40M	M	9	12	18
+318	Io41M	M	9	12	18
+319	Io43F	F	9	12	18
+320	Io45F	F	9	12	18
+321	Io46F	F	9	12	18
+322	Io48M	M	9	12	18
+323	Io49F	F	9	12	18
+324	Io50F	F	9	12	18
+325	Io50M	M	9	12	18
+326	Io53M	M	9	12	18
+327	Io55M	M	9	12	18
+328	Io59F	F	9	12	18
+329	Io64M	M	9	12	18
+330	Io67M	M	9	12	18
+331	Io68F	F	9	12	18
+332	Io68M	M	9	12	18
+333	Io71M	M	9	12	18
+334	Io72M	M	9	12	18
+335	Io73M	M	9	12	18
+336	Io76F	F	9	12	18
+337	Io76M	M	9	12	18
+338	Io77M	M	9	12	18
+339	Io78F	F	9	12	18
+340	Io78M	M	9	12	18
+341	Io80M	M	9	12	18
+342	Io81F	F	9	12	18
+343	Io82M	M	9	12	18
+344	Io83F	F	9	12	18
+345	Io83M	M	9	12	18
+346	Ma001	M	9	12	18
+347	Ma002	M	9	12	18
+348	Ma003	M	9	12	18
+349	Ma004	M	9	12	18
+350	Ma006	M	9	12	18
+351	Ma009	F	9	12	18
+352	Ma012	F	9	12	18
+353	Ma013	M	9	12	18
+354	Ma015	M	9	12	18
+355	Ma019	F	9	12	18
+356	Mi01820	F	9	12	18
+357	Mi01872	M	9	12	18
+358	Mi01890	F	9	12	18
+359	Mi01891	M	9	12	18
+360	Mi02000	M	9	12	18
+361	Mi02002	M	9	12	18
+362	Mi02008	M	9	12	18
+363	Mi02026	M	9	12	18
+364	Mi02101	M	9	12	18
+365	Mi02124	M	9	12	18
+366	Mi02125	F	9	12	18
+367	Mi02190	F	9	12	18
+368	Mi02191	M	9	12	18
+369	Mi02196	F	9	12	18
+370	Mi02245	M	9	12	18
+371	Mi02257	M	9	12	18
+372	Mi02276	F	9	12	18
+373	Mi02286	F	9	12	18
+374	Mi02367	M	9	12	18
+375	Mi02373	M	9	12	18
+376	Mi02377	M	9	12	18
+377	Mi02392	M	9	12	18
+378	Mi02398	M	9	12	18
+379	Mi02399	M	9	12	18
+380	Mi02406	F	9	12	18
+381	Mi02407	M	9	12	18
+382	Mi02411	M	9	12	18
+383	Mi02417	M	9	12	18
+384	Mi02449	F	9	12	18
+385	Mi02541	M	9	12	18
+386	Mi02549	M	9	12	18
+387	Mi02560	M	9	12	18
+388	Mi02580	M	9	12	18
+389	Mi02603	M	9	12	18
+390	Mi02679	M	9	12	18
+391	Mi02680	F	9	12	18
+392	Mi02707	F	9	12	18
+393	Mi02760	F	9	12	18
+394	Mi02802	M	9	12	18
+395	Mi02967	F	9	12	18
+396	Mi02970	F	9	12	18
+397	O013	F	9	12	18
+398	O015	F	9	12	18
+399	O033	M	9	12	18
+400	O043	M	9	12	18
+401	O044	M	9	12	18
+402	O052	F	9	12	18
+403	O053	M	9	12	18
+404	O058	F	9	12	18
+405	O061	F	9	12	18
+406	O062	F	9	12	18
+407	O062-2	M	9	12	18
+408	O062-3	M	9	12	18
+409	O064	F	9	12	18
+410	O076	F	9	12	18
+411	O077	F	9	12	18
+412	O079	F	9	12	18
+413	O083-1	F	9	12	18
+414	O083-2	F	9	12	18
+415	O089-1	M	9	12	18
+416	O089-2	M	9	12	18
+417	O092	M	9	12	18
+418	O100-1	F	9	12	18
+419	O105-1	M	9	12	18
+420	O105-2	F	9	12	18
+421	O109-1	F	9	12	18
+422	O119-1	M	9	12	18
+423	O119-2	M	9	12	18
+424	O121-1	F	9	12	18
+425	O121-2	F	9	12	18
+426	O121-3	M	9	12	18
+427	O123-2	F	9	12	18
+428	O132	F	9	12	18
+429	O143	M	9	12	18
+430	O144	M	9	12	18
+431	O153	M	9	12	18
+432	O179	M	9	12	18
+433	O180	F	9	12	18
+434	O183-1	M	9	12	18
+435	O183-2	M	9	12	18
+436	O184	F	9	12	18
+437	O198	F	9	12	18
+438	O222	M	9	12	18
+439	O226	M	9	12	18
+440	O240	M	9	12	18
+441	O241-2	F	9	12	18
+442	O247	F	9	12	18
+443	O248	F	9	12	18
+444	O250-1	F	9	12	18
+445	O250-2	F	9	12	18
+446	O251	F	9	12	18
+447	O251-1	F	9	12	18
+448	O275	F	9	12	18
+449	O295	M	9	12	18
+450	O301	F	9	12	18
+451	O304	F	9	12	18
+452	O305	F	9	12	18
+453	O317-1	M	9	12	18
+454	O317-2	M	9	12	18
+\.
+
+
+--
+-- Data for Name: options; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.options (id, option) FROM stdin;
+6	horizontal
+7	vertical
+5	normal
+\.
+
+
+--
+-- Data for Name: parameters; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.parameters (id, name, description, reference_value, display_order) FROM stdin;
+26	ANB	The angle between lines Point A- Nasion and Point B- Nasion.	3°	0
+22	SNB	The angle between lines Sella-Nasion and Nasion-Point B.	78°	2
+25	SNPog	The angle between lines Sella-Nasion and Nasion-Pogonion.	81°	3
+24	SN/MP	The angle between lines Sella-Nasion and mandibular plane.	32°	6
+15	Facial Axis	Angle formed by lines Basion-Nasion and Pterygomaxillare-Gnathion.	90°	8
+16	Y-Axis	Angle formed by lines Sella-Gnathion and Sella - Nasion.	66°	9
+21	Mn Ramus Angle	An angle fomed by lines Condylion - Gonion Posterior and Gonion Inferior - Menton	123°	11
+14	SNA	The angle between lines Sella-Nasion and Nasion-Point A.	81°	1
+30	Beta angle	The angle between the mandibular plane and a line from articulare to the intersection point of the mandibular plane and a line perpendicular to it, tangent to the anterior part of the symphysis​.	19°	4
+29	PgNB	The angle between lines Nasion- Point B and Nasion-Pogonion.	1°	5
+23	SN/PP	The angle between lines Sella-Nasion and palatal plane	8°	7
+20	Mn Base Angle	An angle formed by lines Menton-Gonion Inferior and Pre-Gonion - Gonion Inferior.	-	10
+27	AFH:PFH	The quotient of anterior facial height (AFH, distance between Nasion and Menton) and posterior facial height (PFH, distance between Sella and Gonion Inferior).	1.54	12
+\.
+
+
+--
+-- Data for Name: question_difficulty_votes; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.question_difficulty_votes (question_id, user_id, difficulty, created_at) FROM stdin;
+10	101	easy	2025-09-28 12:54:57.680068+00
+31	101	hard	2025-09-28 12:55:06.16471+00
+81	101	hard	2025-09-28 13:08:48.39882+00
+82	101	easy	2025-09-28 13:08:51.327947+00
+89	101	hard	2025-09-28 13:09:21.273315+00
+1	101	hard	2025-09-28 13:10:07.91911+00
+1	160	easy	2025-09-28 13:10:53.080176+00
+83	101	hard	2025-09-28 13:28:01.503249+00
+236	101	easy	2025-09-28 13:28:04.153039+00
+313	101	hard	2025-09-28 13:28:53.229998+00
+333	101	hard	2025-09-28 13:31:20.787482+00
+448	101	hard	2025-09-28 13:48:48.229331+00
+1	123	hard	2025-09-28 14:15:32.452311+00
+1	124	hard	2025-09-28 14:15:52.252273+00
+1	125	hard	2025-09-28 14:15:58.487251+00
+2	125	easy	2025-09-28 14:16:29.366042+00
+2	124	easy	2025-09-28 14:16:33.915274+00
+2	123	easy	2025-09-28 14:16:37.454097+00
+2	122	easy	2025-09-28 14:16:41.294777+00
+2	121	easy	2025-09-28 14:16:47.185388+00
+2	120	hard	2025-09-28 14:17:11.439408+00
+2	119	hard	2025-09-28 14:17:23.579344+00
+2	118	hard	2025-09-28 14:17:33.603738+00
+2	117	hard	2025-09-28 14:17:42.61747+00
+2	116	hard	2025-09-28 14:17:50.99399+00
+229	101	easy	2025-09-29 19:34:23.51397+00
+31	162	easy	2025-09-29 19:35:20.75636+00
+32	162	hard	2025-09-29 19:35:24.316514+00
+34	162	hard	2025-09-29 19:35:36.34893+00
+18	101	hard	2025-10-01 14:09:52.310488+00
+96	101	hard	2025-10-06 13:32:46.711851+00
+383	19	hard	2025-10-06 18:59:16.137044+00
+62	164	easy	2025-10-10 13:47:50.713812+00
+\.
+
+
+--
+-- Data for Name: question_options; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.question_options (id, question_id, option_id, is_correct) FROM stdin;
+14	215	5	t
+15	215	6	f
+16	215	7	f
+20	182	5	t
+21	182	6	f
+22	182	7	f
+32	185	7	f
+33	185	5	t
+34	185	6	f
+38	275	5	t
+39	275	6	f
+40	275	7	f
+41	395	5	t
+42	395	6	f
+43	395	7	f
+50	196	7	f
+51	196	5	t
+52	196	6	f
+56	333	5	t
+57	333	6	f
+58	333	7	f
+62	341	6	f
+63	341	7	f
+64	341	5	t
+68	337	5	t
+69	337	6	f
+70	337	7	f
+74	127	5	t
+75	127	6	f
+76	127	7	f
+77	450	5	t
+78	450	6	f
+79	450	7	f
+86	29	5	f
+87	29	6	f
+88	29	7	t
+89	274	5	t
+90	274	6	f
+91	274	7	f
+92	184	7	f
+93	184	5	t
+94	184	6	f
+95	32	7	f
+96	32	5	f
+97	32	6	t
+98	33	5	t
+99	33	6	f
+100	33	7	f
+101	286	6	f
+102	286	7	f
+103	286	5	t
+104	35	7	f
+105	35	5	f
+106	35	6	t
+107	36	5	f
+108	36	6	t
+109	36	7	f
+110	37	7	f
+111	37	5	f
+112	37	6	t
+113	254	5	t
+114	254	6	f
+115	254	7	f
+116	39	5	f
+117	39	6	t
+118	39	7	f
+119	53	7	f
+120	53	5	t
+121	53	6	f
+122	41	5	f
+123	41	6	t
+124	41	7	f
+125	42	7	f
+126	42	5	f
+127	42	6	t
+128	43	5	f
+129	43	6	t
+130	43	7	f
+131	44	6	t
+132	44	7	f
+133	44	5	f
+134	121	5	t
+135	121	6	f
+136	121	7	f
+137	46	5	f
+138	46	6	t
+139	46	7	f
+140	47	5	f
+141	47	6	t
+142	47	7	f
+143	421	5	t
+144	421	6	f
+145	421	7	f
+146	120	5	t
+147	120	6	f
+148	120	7	f
+152	51	5	f
+153	51	6	t
+154	51	7	f
+155	249	5	t
+156	249	6	f
+157	249	7	f
+158	394	5	t
+159	394	6	f
+160	394	7	f
+161	54	5	f
+162	54	6	t
+163	54	7	f
+164	55	5	f
+165	55	6	t
+166	55	7	f
+167	368	5	t
+168	368	6	f
+169	368	7	f
+170	108	5	t
+171	108	6	f
+172	108	7	f
+173	85	5	t
+174	85	6	f
+175	85	7	f
+176	59	5	f
+177	59	6	t
+178	59	7	f
+179	335	5	t
+180	335	6	f
+181	335	7	f
+182	428	5	t
+183	428	6	f
+184	428	7	f
+185	62	5	f
+186	62	6	t
+5	2	5	f
+11	4	5	f
+7	2	7	f
+6	2	6	t
+17	6	5	f
+13	4	7	f
+23	8	5	f
+19	6	7	f
+18	6	6	t
+26	9	5	f
+25	8	7	f
+24	8	6	t
+53	18	5	f
+28	9	7	f
+27	9	6	t
+36	13	6	f
+37	13	7	f
+45	15	7	f
+46	15	5	f
+44	15	6	t
+48	16	7	f
+49	16	5	f
+47	16	6	t
+59	20	5	f
+55	18	7	f
+65	22	5	f
+61	20	7	f
+60	20	6	t
+150	21	6	f
+151	21	7	f
+149	21	5	t
+80	27	5	f
+67	22	7	f
+66	22	6	t
+72	24	7	f
+73	24	5	f
+2	1	5	f
+82	27	7	f
+81	27	6	t
+83	28	6	f
+9	3	7	f
+10	3	5	f
+85	28	5	f
+4	1	7	f
+84	28	7	t
+187	62	7	f
+188	435	5	t
+189	435	6	f
+190	435	7	f
+191	64	5	f
+192	64	6	t
+193	64	7	f
+194	187	5	t
+195	187	6	f
+196	187	7	f
+197	66	6	t
+198	66	7	f
+199	66	5	f
+200	67	5	f
+201	67	6	t
+202	67	7	f
+203	359	5	t
+204	359	6	f
+205	359	7	f
+206	69	5	f
+207	69	6	t
+208	69	7	f
+209	70	5	f
+210	70	6	t
+211	70	7	f
+212	71	7	f
+213	71	5	f
+214	71	6	t
+218	73	5	f
+219	73	6	t
+220	73	7	f
+221	159	5	t
+222	159	6	f
+223	159	7	f
+224	75	5	f
+225	75	6	t
+226	75	7	f
+227	49	5	t
+228	49	6	f
+229	49	7	f
+230	77	7	f
+231	77	5	f
+232	77	6	t
+233	296	5	t
+234	296	6	f
+235	296	7	f
+236	79	5	f
+237	79	6	t
+238	79	7	f
+239	80	5	f
+240	80	6	t
+241	80	7	f
+242	81	5	f
+243	81	6	t
+244	81	7	f
+245	82	5	f
+246	82	6	t
+247	82	7	f
+251	84	7	f
+252	84	5	f
+253	84	6	t
+254	353	6	f
+255	353	7	f
+256	353	5	t
+257	86	5	f
+258	86	6	t
+259	86	7	f
+260	87	7	f
+261	87	5	f
+262	87	6	t
+266	297	5	t
+267	297	6	f
+268	297	7	f
+269	90	5	f
+270	90	6	t
+271	90	7	f
+272	91	5	f
+273	91	6	t
+274	91	7	f
+275	122	5	t
+276	122	6	f
+277	122	7	f
+278	290	6	f
+279	290	7	f
+280	290	5	t
+281	308	5	t
+282	308	6	f
+283	308	7	f
+284	95	5	f
+285	95	6	t
+286	95	7	f
+287	58	6	f
+288	58	7	f
+289	58	5	t
+290	97	5	f
+291	97	6	t
+292	97	7	f
+293	125	6	f
+294	125	7	t
+295	125	5	f
+296	99	5	f
+297	99	6	t
+298	99	7	f
+299	126	5	t
+300	126	6	f
+301	126	7	f
+302	248	7	f
+303	248	5	t
+304	248	6	f
+305	357	5	t
+306	357	6	f
+307	357	7	f
+308	103	5	f
+309	103	6	t
+310	103	7	f
+311	104	5	f
+312	104	6	t
+313	104	7	f
+314	105	5	f
+315	105	6	t
+316	105	7	f
+317	402	6	f
+318	402	7	f
+319	402	5	t
+320	68	6	f
+321	68	7	f
+322	68	5	t
+323	315	5	t
+324	315	6	f
+325	315	7	f
+329	110	5	f
+330	110	6	t
+331	110	7	f
+332	111	7	f
+333	111	5	f
+334	111	6	t
+335	112	6	t
+336	112	7	f
+337	112	5	f
+338	242	5	t
+339	242	6	f
+340	242	7	f
+341	365	5	t
+342	365	6	f
+343	365	7	f
+344	115	7	f
+345	115	5	f
+346	115	6	t
+347	116	5	f
+348	116	6	t
+349	116	7	f
+350	117	5	f
+351	117	6	t
+352	117	7	f
+353	118	5	f
+354	118	6	t
+355	118	7	f
+356	420	5	t
+357	420	6	f
+358	420	7	f
+359	48	5	t
+360	48	6	f
+361	48	7	f
+362	60	6	f
+363	60	7	f
+364	60	5	t
+365	65	7	f
+366	65	5	t
+367	65	6	f
+368	123	5	f
+369	123	6	t
+370	123	7	f
+371	124	5	f
+248	88	5	f
+249	88	6	f
+215	72	6	f
+263	98	6	f
+217	72	5	f
+216	72	7	t
+265	98	5	f
+372	124	6	t
+373	124	7	f
+374	145	7	t
+375	145	5	f
+376	145	6	f
+377	281	5	t
+378	281	6	f
+379	281	7	f
+380	429	5	t
+381	429	6	f
+382	429	7	f
+383	30	5	t
+384	30	6	f
+385	30	7	f
+386	398	5	t
+387	398	6	f
+388	398	7	f
+389	323	5	t
+390	323	6	f
+391	323	7	f
+392	128	5	t
+393	128	6	f
+394	128	7	f
+395	314	5	t
+396	314	6	f
+397	314	7	f
+398	133	6	t
+399	133	7	f
+400	133	5	f
+401	40	5	t
+402	40	6	f
+403	40	7	f
+404	131	5	t
+405	131	6	f
+406	131	7	f
+407	186	5	t
+408	186	6	f
+409	186	7	f
+410	137	5	f
+411	137	6	t
+412	137	7	f
+413	241	6	f
+414	241	7	f
+415	241	5	t
+416	276	5	t
+417	276	6	f
+418	276	7	f
+419	140	5	f
+420	140	6	t
+421	140	7	f
+422	300	5	t
+423	300	6	f
+424	300	7	f
+428	263	6	f
+429	263	7	f
+430	263	5	t
+431	431	7	f
+432	431	5	t
+433	431	6	f
+437	31	5	t
+438	31	6	f
+439	31	7	f
+440	373	5	t
+441	373	6	f
+442	373	7	f
+443	148	5	f
+444	148	6	t
+445	148	7	f
+446	149	5	f
+447	149	6	t
+448	149	7	f
+449	147	5	t
+450	147	6	f
+451	147	7	f
+452	107	5	t
+453	107	6	f
+454	107	7	f
+455	144	7	f
+456	144	5	t
+457	144	6	f
+458	153	5	f
+459	153	6	t
+460	153	7	f
+461	45	6	f
+462	45	7	f
+463	45	5	t
+464	106	6	f
+465	106	7	f
+466	106	5	t
+467	364	5	t
+468	364	6	f
+469	364	7	f
+470	157	5	f
+471	157	6	t
+472	157	7	f
+473	158	5	f
+474	158	6	t
+475	158	7	f
+476	382	5	t
+477	382	6	f
+478	382	7	f
+479	160	6	t
+480	160	7	f
+481	160	5	f
+482	161	7	f
+483	161	5	f
+484	161	6	t
+485	340	5	t
+486	340	6	f
+487	340	7	f
+488	163	5	f
+489	163	6	t
+490	163	7	f
+491	171	5	t
+492	171	6	f
+493	171	7	f
+494	268	6	f
+495	268	7	f
+496	268	5	t
+500	167	5	f
+501	167	6	t
+502	167	7	f
+503	168	5	f
+504	168	6	t
+505	168	7	f
+506	92	5	t
+507	92	6	f
+508	92	7	f
+509	197	5	t
+510	197	6	f
+511	197	7	f
+512	34	5	t
+513	34	6	f
+514	34	7	f
+515	172	5	f
+516	172	6	t
+517	172	7	f
+518	173	5	f
+519	173	6	t
+520	173	7	f
+521	174	5	f
+522	174	6	t
+523	174	7	f
+524	175	5	f
+525	175	6	t
+526	175	7	f
+527	96	5	t
+528	96	6	f
+529	96	7	f
+530	412	5	t
+531	412	6	f
+532	412	7	f
+533	178	5	f
+534	178	6	t
+535	178	7	f
+536	179	5	f
+537	179	6	t
+538	179	7	f
+539	180	7	f
+540	180	5	f
+541	180	6	t
+542	181	5	f
+543	181	6	t
+544	181	7	f
+545	89	5	t
+546	89	6	f
+547	89	7	f
+548	183	7	f
+549	183	5	f
+550	183	6	t
+551	142	5	t
+552	142	6	f
+553	142	7	f
+554	217	5	t
+555	217	6	f
+556	217	7	f
+434	214	5	f
+426	26	6	f
+427	26	7	f
+435	214	6	f
+436	214	7	t
+557	223	7	f
+558	223	5	t
+559	223	6	f
+560	408	5	t
+561	408	6	f
+562	408	7	f
+563	188	5	f
+564	188	6	t
+565	188	7	f
+566	189	5	f
+567	189	6	t
+568	189	7	f
+569	190	5	f
+570	190	6	t
+571	190	7	f
+572	191	5	f
+573	191	6	t
+574	191	7	f
+575	192	5	f
+576	192	6	t
+577	192	7	f
+578	415	7	f
+579	415	5	t
+580	415	6	f
+581	194	5	f
+582	194	6	t
+583	194	7	f
+584	389	6	f
+585	389	7	f
+586	389	5	t
+587	452	5	t
+588	452	6	f
+589	452	7	f
+593	151	5	t
+594	151	6	f
+595	151	7	f
+596	230	7	t
+597	230	5	f
+598	230	6	f
+599	200	5	f
+600	200	6	t
+601	200	7	f
+602	201	5	f
+603	201	6	t
+604	201	7	f
+605	165	5	t
+606	165	6	f
+607	165	7	f
+608	203	5	f
+609	203	6	t
+610	203	7	f
+611	139	5	t
+612	139	6	f
+613	139	7	f
+614	205	5	f
+615	205	6	t
+616	205	7	f
+617	132	6	f
+618	132	7	f
+619	132	5	t
+620	76	5	t
+621	76	6	f
+622	76	7	f
+623	349	5	t
+624	349	6	f
+625	349	7	f
+626	209	5	f
+627	209	6	t
+628	209	7	f
+629	210	5	f
+630	210	6	t
+631	210	7	f
+632	211	5	f
+633	211	6	t
+634	211	7	f
+635	212	5	f
+636	212	6	t
+637	212	7	f
+638	38	5	t
+639	38	6	f
+640	38	7	f
+641	288	5	f
+642	288	6	f
+643	288	7	t
+644	284	5	t
+645	284	6	f
+646	284	7	f
+647	390	6	f
+648	390	7	f
+649	390	5	t
+650	413	5	t
+651	413	6	f
+652	413	7	f
+656	129	5	t
+657	129	6	f
+658	129	7	f
+659	220	5	f
+660	220	6	t
+661	220	7	f
+662	221	5	f
+663	221	6	t
+664	221	7	f
+665	61	5	t
+666	61	6	f
+667	61	7	f
+668	74	5	t
+669	74	6	f
+670	74	7	f
+671	154	6	f
+672	154	7	f
+673	154	5	t
+674	195	5	t
+675	195	6	f
+676	195	7	f
+677	352	6	f
+678	352	7	f
+679	352	5	t
+680	213	5	t
+681	213	6	f
+682	213	7	f
+683	101	5	t
+684	101	6	f
+685	101	7	f
+686	358	5	t
+687	358	6	f
+688	358	7	f
+689	292	5	f
+690	292	6	f
+691	292	7	t
+692	231	6	t
+693	231	7	f
+694	231	5	f
+695	232	5	f
+696	232	6	t
+697	232	7	f
+698	233	5	f
+699	233	6	t
+700	233	7	f
+701	234	5	f
+702	234	6	t
+703	234	7	f
+704	235	7	f
+705	235	5	t
+706	235	6	f
+707	309	7	t
+708	309	5	f
+709	309	6	f
+710	279	5	t
+711	279	6	f
+712	279	7	f
+713	348	5	t
+714	348	6	f
+715	348	7	f
+716	239	5	f
+717	239	6	t
+718	239	7	f
+719	240	6	t
+720	240	7	f
+721	240	5	f
+722	152	6	f
+723	152	7	f
+724	152	5	t
+725	177	5	t
+726	177	6	f
+727	177	7	f
+728	206	6	f
+729	206	7	f
+730	206	5	t
+731	318	5	f
+732	318	6	f
+733	318	7	t
+734	245	7	f
+735	245	5	f
+736	245	6	t
+737	246	5	f
+738	246	6	t
+739	246	7	f
+740	321	5	t
+741	321	6	f
+590	25	6	f
+591	25	7	f
+742	321	7	f
+743	443	7	f
+744	443	5	t
+745	443	6	f
+746	273	6	f
+747	273	7	f
+748	273	5	t
+749	277	7	f
+750	277	5	t
+751	277	6	f
+752	251	5	f
+753	251	6	t
+754	251	7	f
+755	93	5	t
+756	93	6	f
+757	93	7	f
+758	283	5	t
+759	283	6	f
+760	283	7	f
+761	63	5	t
+762	63	6	f
+763	63	7	f
+764	156	5	t
+765	156	6	f
+766	156	7	f
+770	282	5	t
+771	282	6	f
+772	282	7	f
+773	347	5	t
+774	347	6	f
+775	347	7	f
+776	259	5	f
+777	259	6	t
+778	259	7	f
+779	260	5	f
+780	260	6	t
+781	260	7	f
+782	261	5	f
+783	261	6	t
+784	261	7	f
+785	216	5	t
+786	216	6	f
+787	216	7	f
+788	224	5	t
+789	224	6	f
+790	224	7	f
+791	264	5	f
+792	264	6	t
+793	264	7	f
+794	265	5	f
+795	265	6	t
+796	265	7	f
+797	266	5	f
+798	266	6	t
+799	266	7	f
+800	267	7	f
+801	267	5	f
+802	267	6	t
+803	414	5	t
+804	414	6	f
+805	414	7	f
+806	269	5	f
+807	269	6	t
+808	269	7	f
+809	291	5	t
+810	291	6	f
+811	291	7	f
+815	227	5	t
+816	227	6	f
+817	227	7	f
+818	253	5	t
+819	253	6	f
+820	253	7	f
+821	57	5	t
+822	57	6	f
+823	57	7	f
+824	169	5	t
+825	169	6	f
+826	169	7	f
+827	271	5	t
+828	271	6	f
+829	271	7	f
+830	289	5	t
+831	289	6	f
+832	289	7	f
+833	410	5	t
+834	410	6	f
+835	410	7	f
+836	425	5	t
+837	425	6	f
+838	425	7	f
+839	146	5	t
+840	146	6	f
+841	146	7	f
+842	150	5	t
+843	150	6	f
+844	150	7	f
+845	403	5	t
+846	403	6	f
+847	403	7	f
+848	424	5	t
+849	424	6	f
+850	424	7	f
+851	250	5	t
+852	250	6	f
+853	250	7	f
+854	285	5	f
+855	285	6	t
+856	285	7	f
+857	367	5	t
+858	367	6	f
+859	367	7	f
+860	287	5	f
+861	287	6	t
+862	287	7	f
+863	372	6	f
+864	372	7	t
+865	372	5	f
+866	229	6	f
+867	229	7	f
+868	229	5	t
+872	155	5	t
+873	155	6	f
+874	155	7	f
+875	433	6	f
+876	433	7	t
+877	433	5	f
+878	448	5	t
+879	448	6	f
+880	448	7	f
+881	434	5	f
+882	434	6	f
+883	434	7	t
+884	295	5	f
+885	295	6	t
+886	295	7	f
+887	78	5	t
+888	78	6	f
+889	78	7	f
+890	280	5	t
+891	280	6	f
+892	280	7	f
+893	298	5	f
+894	298	6	t
+895	298	7	f
+896	299	5	f
+897	299	6	t
+898	299	7	f
+899	162	5	t
+900	162	6	f
+901	162	7	f
+902	301	6	t
+903	301	7	f
+904	301	5	f
+905	207	7	f
+906	207	5	t
+907	207	6	f
+908	256	5	t
+909	256	6	f
+910	256	7	f
+911	342	5	t
+912	342	6	f
+913	342	7	f
+914	391	6	f
+915	391	7	f
+916	391	5	t
+917	255	5	t
+918	255	6	f
+919	255	7	f
+920	193	5	t
+921	193	6	f
+922	193	7	f
+923	252	6	f
+924	252	7	f
+925	252	5	t
+926	313	6	t
+768	12	6	f
+769	12	7	f
+813	19	6	f
+814	19	7	f
+812	19	5	t
+927	313	7	f
+928	313	5	f
+929	310	5	f
+930	310	6	t
+931	310	7	f
+932	444	6	f
+933	444	7	f
+934	444	5	t
+935	312	5	f
+936	312	6	t
+937	312	7	f
+938	294	5	f
+939	294	6	t
+940	294	7	f
+941	304	5	t
+942	304	6	f
+943	304	7	f
+944	272	5	t
+945	272	6	f
+946	272	7	f
+947	198	7	f
+948	198	5	t
+949	198	6	f
+950	317	5	f
+951	317	6	t
+952	317	7	f
+953	83	5	f
+954	83	6	t
+955	83	7	f
+956	258	5	t
+957	258	6	f
+958	258	7	f
+959	56	5	t
+960	56	6	f
+961	56	7	f
+962	218	5	t
+963	218	6	f
+964	218	7	f
+965	164	5	t
+966	164	6	f
+967	164	7	f
+968	399	5	t
+969	399	6	f
+970	399	7	f
+971	324	5	f
+972	324	6	t
+973	324	7	f
+974	325	5	f
+975	325	6	t
+976	325	7	f
+977	326	5	f
+978	326	6	t
+979	326	7	f
+980	327	5	f
+981	327	6	t
+982	327	7	f
+983	328	5	f
+984	328	6	t
+985	328	7	f
+986	446	5	t
+987	446	6	f
+988	446	7	f
+989	330	5	f
+990	330	6	t
+991	330	7	f
+992	331	5	f
+993	331	6	t
+994	331	7	f
+995	262	5	t
+996	262	6	f
+997	262	7	f
+998	293	5	t
+999	293	6	f
+1000	293	7	f
+1001	334	5	f
+1002	334	6	t
+1003	334	7	f
+1004	143	5	t
+1005	143	6	f
+1006	143	7	f
+1007	336	5	f
+1008	336	6	t
+1009	336	7	f
+1010	202	5	t
+1011	202	6	f
+1012	202	7	f
+1013	338	5	f
+1014	338	6	t
+1015	338	7	f
+1016	339	5	f
+1017	339	6	t
+1018	339	7	f
+1019	354	7	f
+1020	354	5	t
+1021	354	6	f
+1022	270	5	t
+1023	270	6	f
+1024	270	7	f
+1025	322	5	t
+1026	322	6	f
+1027	322	7	f
+1028	343	5	f
+1029	343	6	t
+1030	343	7	f
+1031	344	7	f
+1032	344	5	f
+1033	344	6	t
+1034	345	5	f
+1035	345	6	t
+1036	345	7	f
+1037	346	5	f
+1038	346	6	t
+1039	346	7	f
+1040	440	5	t
+1041	440	6	f
+1042	440	7	f
+1043	311	5	t
+1044	311	6	f
+1045	311	7	f
+1046	392	5	t
+1047	392	6	f
+1048	392	7	f
+1049	350	5	f
+1050	350	6	t
+1051	350	7	f
+1052	170	6	f
+1053	170	7	f
+1054	170	5	t
+1055	176	5	t
+1056	176	6	f
+1057	176	7	f
+1058	409	5	t
+1059	409	6	f
+1060	409	7	f
+1061	219	6	f
+1062	219	7	f
+1063	219	5	t
+1064	316	5	t
+1065	316	6	f
+1066	316	7	f
+1067	356	6	t
+1068	356	7	f
+1069	356	5	f
+1070	204	6	f
+1071	204	7	f
+1072	204	5	t
+1073	377	5	t
+1074	377	6	f
+1075	377	7	f
+1076	423	5	t
+1077	423	6	f
+1078	423	7	f
+1079	351	5	t
+1080	351	6	f
+1081	351	7	f
+1082	307	6	f
+1083	307	7	f
+1084	307	5	t
+1085	362	5	f
+1086	362	6	t
+1087	362	7	f
+1088	449	7	f
+1089	449	5	t
+1090	449	6	f
+1091	109	5	t
+1092	109	6	f
+1093	109	7	f
+1094	130	5	t
+1095	130	6	f
+1096	130	7	f
+1097	366	5	f
+1098	366	6	t
+1099	366	7	f
+1100	114	7	f
+1101	114	5	t
+1102	114	6	f
+1103	141	5	t
+1104	141	6	f
+1105	141	7	f
+1106	369	5	f
+1107	369	6	t
+1108	369	7	f
+1109	370	5	f
+1110	370	6	t
+1111	370	7	f
+1112	371	5	f
+1113	371	6	t
+1114	371	7	f
+1115	236	5	f
+1116	236	6	t
+1117	236	7	f
+1118	445	6	f
+1119	445	7	f
+1120	445	5	t
+1121	374	7	f
+1122	374	5	f
+1123	374	6	t
+1124	375	5	f
+1125	375	6	t
+1126	375	7	f
+1127	278	5	t
+1128	278	6	f
+1129	278	7	f
+1130	306	5	t
+1131	306	6	f
+1132	306	7	f
+1133	378	5	f
+1134	378	6	t
+1135	378	7	f
+1136	136	5	t
+1137	136	6	f
+1138	136	7	f
+1139	380	5	f
+1140	380	6	t
+1141	380	7	f
+1142	381	5	f
+1143	381	6	t
+1144	381	7	f
+1145	228	6	f
+1146	228	7	f
+1147	228	5	t
+1148	383	5	f
+1149	383	6	t
+1150	383	7	f
+1151	384	5	f
+1152	384	6	t
+1153	384	7	f
+1154	385	5	f
+1155	385	6	t
+1156	385	7	f
+1157	386	5	f
+1158	386	6	t
+1159	386	7	f
+1160	360	5	t
+1161	360	6	f
+1162	360	7	f
+1163	388	5	f
+1164	388	6	t
+1165	388	7	f
+1166	302	5	t
+1167	302	6	f
+1168	302	7	f
+1169	94	7	f
+1170	94	5	t
+1171	94	6	f
+1172	411	5	t
+1173	411	6	f
+1174	411	7	f
+1175	135	7	f
+1176	135	5	t
+1177	135	6	f
+1178	393	5	f
+1179	393	6	t
+1180	393	7	f
+1184	138	5	t
+1185	138	6	f
+1186	138	7	f
+1187	396	5	f
+1188	396	6	t
+1189	396	7	f
+1190	397	5	f
+1191	397	6	t
+1192	397	7	f
+1193	222	5	t
+1194	222	6	f
+1195	222	7	f
+1196	247	5	t
+1197	247	6	f
+1198	247	7	f
+1199	400	5	f
+1200	400	6	t
+1201	400	7	f
+1202	401	6	t
+1203	401	7	f
+1204	401	5	f
+1205	52	5	t
+1206	52	6	f
+1207	52	7	f
+1208	226	5	t
+1209	226	6	f
+1210	226	7	f
+1211	404	5	f
+1212	404	6	t
+1213	404	7	f
+1214	405	5	f
+1215	405	6	t
+1216	405	7	f
+1217	406	5	f
+1218	406	6	t
+1219	406	7	f
+1220	407	5	f
+1221	407	6	t
+1222	407	7	f
+1223	376	5	t
+1224	376	6	f
+1225	376	7	f
+1226	355	5	t
+1227	355	6	f
+1228	355	7	f
+1232	426	7	f
+1233	426	5	t
+1234	426	6	f
+1235	119	7	f
+1236	119	5	t
+1237	119	6	f
+1238	303	7	f
+1239	303	5	t
+1240	303	6	f
+1241	363	7	f
+1242	363	5	t
+1243	363	6	f
+1244	320	7	f
+1245	320	5	t
+1246	320	6	f
+1247	416	5	f
+1248	416	6	t
+1249	416	7	f
+1250	417	6	t
+1251	417	7	f
+1252	417	5	f
+1253	418	5	f
+1254	418	6	t
+1255	418	7	f
+1256	419	5	f
+1257	419	6	t
+1258	419	7	f
+1259	243	5	t
+1260	243	6	f
+1261	243	7	f
+1262	257	5	t
+1263	257	6	f
+1264	257	7	f
+1265	244	5	f
+1266	244	6	t
+1267	244	7	f
+1271	225	5	t
+1272	225	6	f
+1273	225	7	f
+1274	238	6	f
+1275	238	7	f
+1276	238	5	t
+1277	361	5	t
+1278	361	6	f
+1279	361	7	f
+1280	427	7	f
+1281	427	5	f
+1282	427	6	t
+1283	102	5	t
+1284	102	6	f
+1285	102	7	f
+1286	387	6	f
+1287	387	7	f
+1288	387	5	t
+1289	430	5	f
+1290	430	6	t
+1291	430	7	f
+1292	50	5	t
+1293	50	6	f
+1294	50	7	f
+1295	432	5	f
+1296	432	6	t
+1269	453	6	f
+1182	23	6	f
+1183	23	7	f
+1270	453	7	f
+1297	432	7	f
+1298	422	5	f
+1299	422	6	t
+1300	422	7	f
+1301	199	5	f
+1302	199	6	t
+1303	199	7	f
+1304	379	5	t
+1305	379	6	f
+1306	379	7	f
+1307	436	5	f
+1308	436	6	t
+1309	436	7	f
+1310	437	5	f
+1311	437	6	t
+1312	437	7	f
+1313	438	5	f
+1314	438	6	t
+1315	438	7	f
+1316	439	5	f
+1317	439	6	t
+1318	439	7	f
+1319	237	6	f
+1320	237	7	f
+1321	237	5	t
+1322	441	7	f
+1323	441	5	f
+1324	441	6	t
+1325	442	6	t
+1326	442	7	f
+1327	442	5	f
+1328	166	5	t
+1329	166	6	f
+1330	166	7	f
+1331	100	5	t
+1332	100	6	f
+1333	100	7	f
+1334	134	5	t
+1335	134	6	f
+1336	134	7	f
+1337	208	5	t
+1338	208	6	f
+1339	208	7	f
+1340	447	5	f
+1341	447	6	t
+1342	447	7	f
+1343	329	7	f
+1344	329	5	t
+1345	329	6	f
+1346	332	5	t
+1347	332	6	f
+1348	332	7	f
+1349	113	5	t
+1350	113	6	f
+1351	113	7	f
+1352	451	7	f
+1353	451	5	f
+1354	451	6	t
+1355	305	7	f
+1356	305	5	t
+1357	305	6	f
+1358	319	5	t
+1359	319	6	f
+1360	319	7	f
+1230	5	6	f
+1231	5	7	f
+1229	5	5	t
+12	4	6	t
+498	7	6	f
+499	7	7	f
+497	7	5	t
+29	10	5	f
+31	10	7	f
+30	10	6	t
+869	11	7	f
+871	11	6	f
+870	11	5	t
+767	12	5	t
+35	13	5	t
+326	14	7	f
+328	14	6	f
+327	14	5	t
+654	17	6	f
+655	17	7	f
+653	17	5	t
+54	18	6	t
+1181	23	5	t
+71	24	6	t
+592	25	5	t
+425	26	5	t
+1268	453	5	t
+250	88	7	t
+264	98	7	t
+8	3	6	t
+3	1	6	t
+\.
+
+
+--
+-- Data for Name: questions; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.questions (id, question, case_id, prediction_age, group_number) FROM stdin;
+41	Please try to predict the direction of facial growth at the age of	42	18	5
+42	Please try to predict the direction of facial growth at the age of	43	18	5
+43	Please try to predict the direction of facial growth at the age of	44	18	5
+44	Please try to predict the direction of facial growth at the age of	45	18	5
+45	Please try to predict the direction of facial growth at the age of	46	18	5
+46	Please try to predict the direction of facial growth at the age of	47	18	5
+47	Please try to predict the direction of facial growth at the age of	48	18	5
+48	Please try to predict the direction of facial growth at the age of	49	18	5
+49	Please try to predict the direction of facial growth at the age of	50	18	5
+50	Please try to predict the direction of facial growth at the age of	51	18	5
+51	Please try to predict the direction of facial growth at the age of	52	18	5
+52	Please try to predict the direction of facial growth at the age of	53	18	5
+53	Please try to predict the direction of facial growth at the age of	54	18	5
+54	Please try to predict the direction of facial growth at the age of	55	18	5
+55	Please try to predict the direction of facial growth at the age of	56	18	5
+56	Please try to predict the direction of facial growth at the age of	57	18	5
+57	Please try to predict the direction of facial growth at the age of	58	18	5
+58	Please try to predict the direction of facial growth at the age of	59	18	5
+59	Please try to predict the direction of facial growth at the age of	60	18	5
+100	Please try to predict the direction of facial growth at the age of	101	18	5
+101	Please try to predict the direction of facial growth at the age of	102	18	5
+102	Please try to predict the direction of facial growth at the age of	103	18	5
+103	Please try to predict the direction of facial growth at the age of	104	18	5
+104	Please try to predict the direction of facial growth at the age of	105	18	5
+105	Please try to predict the direction of facial growth at the age of	106	18	5
+106	Please try to predict the direction of facial growth at the age of	107	18	5
+107	Please try to predict the direction of facial growth at the age of	108	18	5
+108	Please try to predict the direction of facial growth at the age of	109	18	5
+109	Please try to predict the direction of facial growth at the age of	110	18	5
+110	Please try to predict the direction of facial growth at the age of	111	18	5
+60	Please try to predict the direction of facial growth at the age of	61	18	6
+80	Please try to predict the direction of facial growth at the age of	81	18	8
+81	Please try to predict the direction of facial growth at the age of	82	18	8
+82	Please try to predict the direction of facial growth at the age of	83	18	8
+84	Please try to predict the direction of facial growth at the age of	85	18	8
+85	Please try to predict the direction of facial growth at the age of	86	18	8
+86	Please try to predict the direction of facial growth at the age of	87	18	8
+87	Please try to predict the direction of facial growth at the age of	88	18	8
+89	Please try to predict the direction of facial growth at the age of	90	18	8
+90	Please try to predict the direction of facial growth at the age of	91	18	9
+70	Please try to predict the direction of facial growth at the age of	71	18	7
+71	Please try to predict the direction of facial growth at the age of	72	18	7
+73	Please try to predict the direction of facial growth at the age of	74	18	7
+74	Please try to predict the direction of facial growth at the age of	75	18	7
+75	Please try to predict the direction of facial growth at the age of	76	18	7
+76	Please try to predict the direction of facial growth at the age of	77	18	7
+77	Please try to predict the direction of facial growth at the age of	78	18	7
+78	Please try to predict the direction of facial growth at the age of	79	18	7
+91	Please try to predict the direction of facial growth at the age of	92	18	9
+92	Please try to predict the direction of facial growth at the age of	93	18	9
+93	Please try to predict the direction of facial growth at the age of	94	18	9
+94	Please try to predict the direction of facial growth at the age of	95	18	9
+95	Please try to predict the direction of facial growth at the age of	96	18	9
+96	Please try to predict the direction of facial growth at the age of	97	18	9
+97	Please try to predict the direction of facial growth at the age of	98	18	9
+99	Please try to predict the direction of facial growth at the age of	100	18	9
+88	Please try to predict the direction of facial growth at the age of	89	18	1
+72	Please try to predict the direction of facial growth at the age of	73	18	1
+98	Please try to predict the direction of facial growth at the age of	99	18	1
+111	Please try to predict the direction of facial growth at the age of	112	18	5
+112	Please try to predict the direction of facial growth at the age of	113	18	5
+113	Please try to predict the direction of facial growth at the age of	114	18	5
+114	Please try to predict the direction of facial growth at the age of	115	18	5
+115	Please try to predict the direction of facial growth at the age of	116	18	5
+116	Please try to predict the direction of facial growth at the age of	117	18	5
+117	Please try to predict the direction of facial growth at the age of	118	18	5
+118	Please try to predict the direction of facial growth at the age of	119	18	5
+119	Please try to predict the direction of facial growth at the age of	120	18	5
+120	Please try to predict the direction of facial growth at the age of	121	18	5
+121	Please try to predict the direction of facial growth at the age of	122	18	5
+122	Please try to predict the direction of facial growth at the age of	123	18	5
+123	Please try to predict the direction of facial growth at the age of	124	18	5
+124	Please try to predict the direction of facial growth at the age of	125	18	5
+125	Please try to predict the direction of facial growth at the age of	126	18	5
+126	Please try to predict the direction of facial growth at the age of	127	18	5
+127	Please try to predict the direction of facial growth at the age of	128	18	5
+128	Please try to predict the direction of facial growth at the age of	129	18	5
+129	Please try to predict the direction of facial growth at the age of	130	18	5
+130	Please try to predict the direction of facial growth at the age of	131	18	5
+131	Please try to predict the direction of facial growth at the age of	132	18	5
+132	Please try to predict the direction of facial growth at the age of	133	18	5
+133	Please try to predict the direction of facial growth at the age of	134	18	5
+134	Please try to predict the direction of facial growth at the age of	135	18	5
+135	Please try to predict the direction of facial growth at the age of	136	18	5
+136	Please try to predict the direction of facial growth at the age of	137	18	5
+137	Please try to predict the direction of facial growth at the age of	138	18	5
+138	Please try to predict the direction of facial growth at the age of	139	18	5
+139	Please try to predict the direction of facial growth at the age of	140	18	5
+140	Please try to predict the direction of facial growth at the age of	141	18	5
+141	Please try to predict the direction of facial growth at the age of	142	18	5
+142	Please try to predict the direction of facial growth at the age of	143	18	5
+143	Please try to predict the direction of facial growth at the age of	144	18	5
+144	Please try to predict the direction of facial growth at the age of	145	18	5
+145	Please try to predict the direction of facial growth at the age of	146	18	5
+146	Please try to predict the direction of facial growth at the age of	147	18	5
+147	Please try to predict the direction of facial growth at the age of	148	18	5
+148	Please try to predict the direction of facial growth at the age of	149	18	5
+149	Please try to predict the direction of facial growth at the age of	150	18	5
+150	Please try to predict the direction of facial growth at the age of	151	18	5
+151	Please try to predict the direction of facial growth at the age of	152	18	5
+152	Please try to predict the direction of facial growth at the age of	153	18	5
+153	Please try to predict the direction of facial growth at the age of	154	18	5
+154	Please try to predict the direction of facial growth at the age of	155	18	5
+155	Please try to predict the direction of facial growth at the age of	156	18	5
+156	Please try to predict the direction of facial growth at the age of	157	18	5
+157	Please try to predict the direction of facial growth at the age of	158	18	5
+158	Please try to predict the direction of facial growth at the age of	159	18	5
+159	Please try to predict the direction of facial growth at the age of	160	18	5
+160	Please try to predict the direction of facial growth at the age of	161	18	5
+161	Please try to predict the direction of facial growth at the age of	162	18	5
+162	Please try to predict the direction of facial growth at the age of	163	18	5
+163	Please try to predict the direction of facial growth at the age of	164	18	5
+164	Please try to predict the direction of facial growth at the age of	165	18	5
+165	Please try to predict the direction of facial growth at the age of	166	18	5
+166	Please try to predict the direction of facial growth at the age of	167	18	5
+167	Please try to predict the direction of facial growth at the age of	168	18	5
+168	Please try to predict the direction of facial growth at the age of	169	18	5
+169	Please try to predict the direction of facial growth at the age of	170	18	5
+170	Please try to predict the direction of facial growth at the age of	171	18	5
+171	Please try to predict the direction of facial growth at the age of	172	18	5
+172	Please try to predict the direction of facial growth at the age of	173	18	5
+173	Please try to predict the direction of facial growth at the age of	174	18	5
+174	Please try to predict the direction of facial growth at the age of	175	18	5
+175	Please try to predict the direction of facial growth at the age of	176	18	5
+176	Please try to predict the direction of facial growth at the age of	177	18	5
+177	Please try to predict the direction of facial growth at the age of	178	18	5
+178	Please try to predict the direction of facial growth at the age of	179	18	5
+179	Please try to predict the direction of facial growth at the age of	180	18	5
+180	Please try to predict the direction of facial growth at the age of	181	18	5
+181	Please try to predict the direction of facial growth at the age of	182	18	5
+182	Please try to predict the direction of facial growth at the age of	183	18	5
+183	Please try to predict the direction of facial growth at the age of	184	18	5
+184	Please try to predict the direction of facial growth at the age of	185	18	5
+185	Please try to predict the direction of facial growth at the age of	186	18	5
+186	Please try to predict the direction of facial growth at the age of	187	18	5
+187	Please try to predict the direction of facial growth at the age of	188	18	5
+188	Please try to predict the direction of facial growth at the age of	189	18	5
+189	Please try to predict the direction of facial growth at the age of	190	18	5
+190	Please try to predict the direction of facial growth at the age of	191	18	5
+191	Please try to predict the direction of facial growth at the age of	192	18	5
+192	Please try to predict the direction of facial growth at the age of	193	18	5
+193	Please try to predict the direction of facial growth at the age of	194	18	5
+194	Please try to predict the direction of facial growth at the age of	195	18	5
+195	Please try to predict the direction of facial growth at the age of	196	18	5
+196	Please try to predict the direction of facial growth at the age of	197	18	5
+197	Please try to predict the direction of facial growth at the age of	198	18	5
+198	Please try to predict the direction of facial growth at the age of	199	18	5
+200	Please try to predict the direction of facial growth at the age of	201	18	5
+201	Please try to predict the direction of facial growth at the age of	202	18	5
+202	Please try to predict the direction of facial growth at the age of	203	18	5
+203	Please try to predict the direction of facial growth at the age of	204	18	5
+204	Please try to predict the direction of facial growth at the age of	205	18	5
+205	Please try to predict the direction of facial growth at the age of	206	18	5
+206	Please try to predict the direction of facial growth at the age of	207	18	5
+207	Please try to predict the direction of facial growth at the age of	208	18	5
+208	Please try to predict the direction of facial growth at the age of	209	18	5
+209	Please try to predict the direction of facial growth at the age of	210	18	5
+210	Please try to predict the direction of facial growth at the age of	211	18	5
+211	Please try to predict the direction of facial growth at the age of	212	18	5
+212	Please try to predict the direction of facial growth at the age of	213	18	5
+213	Please try to predict the direction of facial growth at the age of	214	18	5
+215	Please try to predict the direction of facial growth at the age of	216	18	5
+216	Please try to predict the direction of facial growth at the age of	217	18	5
+217	Please try to predict the direction of facial growth at the age of	218	18	5
+218	Please try to predict the direction of facial growth at the age of	219	18	5
+219	Please try to predict the direction of facial growth at the age of	220	18	5
+220	Please try to predict the direction of facial growth at the age of	221	18	5
+221	Please try to predict the direction of facial growth at the age of	222	18	5
+222	Please try to predict the direction of facial growth at the age of	223	18	5
+223	Please try to predict the direction of facial growth at the age of	224	18	5
+224	Please try to predict the direction of facial growth at the age of	225	18	5
+225	Please try to predict the direction of facial growth at the age of	226	18	5
+226	Please try to predict the direction of facial growth at the age of	227	18	5
+227	Please try to predict the direction of facial growth at the age of	228	18	5
+228	Please try to predict the direction of facial growth at the age of	229	18	5
+229	Please try to predict the direction of facial growth at the age of	230	18	5
+230	Please try to predict the direction of facial growth at the age of	231	18	5
+231	Please try to predict the direction of facial growth at the age of	232	18	5
+232	Please try to predict the direction of facial growth at the age of	233	18	5
+233	Please try to predict the direction of facial growth at the age of	234	18	5
+234	Please try to predict the direction of facial growth at the age of	235	18	5
+235	Please try to predict the direction of facial growth at the age of	236	18	5
+237	Please try to predict the direction of facial growth at the age of	238	18	5
+238	Please try to predict the direction of facial growth at the age of	239	18	5
+239	Please try to predict the direction of facial growth at the age of	240	18	5
+240	Please try to predict the direction of facial growth at the age of	241	18	5
+241	Please try to predict the direction of facial growth at the age of	242	18	5
+242	Please try to predict the direction of facial growth at the age of	243	18	5
+243	Please try to predict the direction of facial growth at the age of	244	18	5
+245	Please try to predict the direction of facial growth at the age of	246	18	5
+246	Please try to predict the direction of facial growth at the age of	247	18	5
+247	Please try to predict the direction of facial growth at the age of	248	18	5
+248	Please try to predict the direction of facial growth at the age of	249	18	5
+249	Please try to predict the direction of facial growth at the age of	250	18	5
+250	Please try to predict the direction of facial growth at the age of	251	18	5
+214	Please try to predict the direction of facial growth at the age of	215	18	1
+251	Please try to predict the direction of facial growth at the age of	252	18	5
+252	Please try to predict the direction of facial growth at the age of	253	18	5
+253	Please try to predict the direction of facial growth at the age of	254	18	5
+254	Please try to predict the direction of facial growth at the age of	255	18	5
+255	Please try to predict the direction of facial growth at the age of	256	18	5
+256	Please try to predict the direction of facial growth at the age of	257	18	5
+257	Please try to predict the direction of facial growth at the age of	258	18	5
+258	Please try to predict the direction of facial growth at the age of	259	18	5
+259	Please try to predict the direction of facial growth at the age of	260	18	5
+260	Please try to predict the direction of facial growth at the age of	261	18	5
+261	Please try to predict the direction of facial growth at the age of	262	18	5
+262	Please try to predict the direction of facial growth at the age of	263	18	5
+263	Please try to predict the direction of facial growth at the age of	264	18	5
+264	Please try to predict the direction of facial growth at the age of	265	18	5
+265	Please try to predict the direction of facial growth at the age of	266	18	5
+266	Please try to predict the direction of facial growth at the age of	267	18	5
+267	Please try to predict the direction of facial growth at the age of	268	18	5
+268	Please try to predict the direction of facial growth at the age of	269	18	5
+269	Please try to predict the direction of facial growth at the age of	270	18	5
+270	Please try to predict the direction of facial growth at the age of	271	18	5
+271	Please try to predict the direction of facial growth at the age of	272	18	5
+272	Please try to predict the direction of facial growth at the age of	273	18	5
+273	Please try to predict the direction of facial growth at the age of	274	18	5
+274	Please try to predict the direction of facial growth at the age of	275	18	5
+275	Please try to predict the direction of facial growth at the age of	276	18	5
+276	Please try to predict the direction of facial growth at the age of	277	18	5
+277	Please try to predict the direction of facial growth at the age of	278	18	5
+278	Please try to predict the direction of facial growth at the age of	279	18	5
+279	Please try to predict the direction of facial growth at the age of	280	18	5
+280	Please try to predict the direction of facial growth at the age of	281	18	5
+281	Please try to predict the direction of facial growth at the age of	282	18	5
+282	Please try to predict the direction of facial growth at the age of	283	18	5
+283	Please try to predict the direction of facial growth at the age of	284	18	5
+284	Please try to predict the direction of facial growth at the age of	285	18	5
+285	Please try to predict the direction of facial growth at the age of	286	18	5
+286	Please try to predict the direction of facial growth at the age of	287	18	5
+287	Please try to predict the direction of facial growth at the age of	288	18	5
+288	Please try to predict the direction of facial growth at the age of	289	18	5
+289	Please try to predict the direction of facial growth at the age of	290	18	5
+290	Please try to predict the direction of facial growth at the age of	291	18	5
+291	Please try to predict the direction of facial growth at the age of	292	18	5
+292	Please try to predict the direction of facial growth at the age of	293	18	5
+293	Please try to predict the direction of facial growth at the age of	294	18	5
+295	Please try to predict the direction of facial growth at the age of	296	18	5
+296	Please try to predict the direction of facial growth at the age of	297	18	5
+297	Please try to predict the direction of facial growth at the age of	298	18	5
+298	Please try to predict the direction of facial growth at the age of	299	18	5
+299	Please try to predict the direction of facial growth at the age of	300	18	5
+300	Please try to predict the direction of facial growth at the age of	301	18	5
+301	Please try to predict the direction of facial growth at the age of	302	18	5
+302	Please try to predict the direction of facial growth at the age of	303	18	5
+303	Please try to predict the direction of facial growth at the age of	304	18	5
+304	Please try to predict the direction of facial growth at the age of	305	18	5
+305	Please try to predict the direction of facial growth at the age of	306	18	5
+306	Please try to predict the direction of facial growth at the age of	307	18	5
+307	Please try to predict the direction of facial growth at the age of	308	18	5
+308	Please try to predict the direction of facial growth at the age of	309	18	5
+309	Please try to predict the direction of facial growth at the age of	310	18	5
+310	Please try to predict the direction of facial growth at the age of	311	18	5
+311	Please try to predict the direction of facial growth at the age of	312	18	5
+312	Please try to predict the direction of facial growth at the age of	313	18	5
+314	Please try to predict the direction of facial growth at the age of	315	18	5
+315	Please try to predict the direction of facial growth at the age of	316	18	5
+316	Please try to predict the direction of facial growth at the age of	317	18	5
+317	Please try to predict the direction of facial growth at the age of	318	18	5
+318	Please try to predict the direction of facial growth at the age of	319	18	5
+319	Please try to predict the direction of facial growth at the age of	320	18	5
+320	Please try to predict the direction of facial growth at the age of	321	18	5
+321	Please try to predict the direction of facial growth at the age of	322	18	5
+322	Please try to predict the direction of facial growth at the age of	323	18	5
+323	Please try to predict the direction of facial growth at the age of	324	18	5
+324	Please try to predict the direction of facial growth at the age of	325	18	5
+325	Please try to predict the direction of facial growth at the age of	326	18	5
+326	Please try to predict the direction of facial growth at the age of	327	18	5
+327	Please try to predict the direction of facial growth at the age of	328	18	5
+328	Please try to predict the direction of facial growth at the age of	329	18	5
+329	Please try to predict the direction of facial growth at the age of	330	18	5
+330	Please try to predict the direction of facial growth at the age of	331	18	5
+331	Please try to predict the direction of facial growth at the age of	332	18	5
+332	Please try to predict the direction of facial growth at the age of	333	18	5
+333	Please try to predict the direction of facial growth at the age of	334	18	5
+334	Please try to predict the direction of facial growth at the age of	335	18	5
+335	Please try to predict the direction of facial growth at the age of	336	18	5
+336	Please try to predict the direction of facial growth at the age of	337	18	5
+337	Please try to predict the direction of facial growth at the age of	338	18	5
+338	Please try to predict the direction of facial growth at the age of	339	18	5
+339	Please try to predict the direction of facial growth at the age of	340	18	5
+340	Please try to predict the direction of facial growth at the age of	341	18	5
+341	Please try to predict the direction of facial growth at the age of	342	18	5
+342	Please try to predict the direction of facial growth at the age of	343	18	5
+343	Please try to predict the direction of facial growth at the age of	344	18	5
+344	Please try to predict the direction of facial growth at the age of	345	18	5
+345	Please try to predict the direction of facial growth at the age of	346	18	5
+346	Please try to predict the direction of facial growth at the age of	347	18	5
+347	Please try to predict the direction of facial growth at the age of	348	18	5
+348	Please try to predict the direction of facial growth at the age of	349	18	5
+349	Please try to predict the direction of facial growth at the age of	350	18	5
+350	Please try to predict the direction of facial growth at the age of	351	18	5
+351	Please try to predict the direction of facial growth at the age of	352	18	5
+352	Please try to predict the direction of facial growth at the age of	353	18	5
+353	Please try to predict the direction of facial growth at the age of	354	18	5
+354	Please try to predict the direction of facial growth at the age of	355	18	5
+355	Please try to predict the direction of facial growth at the age of	356	18	5
+356	Please try to predict the direction of facial growth at the age of	357	18	5
+357	Please try to predict the direction of facial growth at the age of	358	18	5
+358	Please try to predict the direction of facial growth at the age of	359	18	5
+359	Please try to predict the direction of facial growth at the age of	360	18	5
+360	Please try to predict the direction of facial growth at the age of	361	18	5
+361	Please try to predict the direction of facial growth at the age of	362	18	5
+362	Please try to predict the direction of facial growth at the age of	363	18	5
+363	Please try to predict the direction of facial growth at the age of	364	18	5
+364	Please try to predict the direction of facial growth at the age of	365	18	5
+365	Please try to predict the direction of facial growth at the age of	366	18	5
+366	Please try to predict the direction of facial growth at the age of	367	18	5
+367	Please try to predict the direction of facial growth at the age of	368	18	5
+368	Please try to predict the direction of facial growth at the age of	369	18	5
+369	Please try to predict the direction of facial growth at the age of	370	18	5
+370	Please try to predict the direction of facial growth at the age of	371	18	5
+371	Please try to predict the direction of facial growth at the age of	372	18	5
+372	Please try to predict the direction of facial growth at the age of	373	18	5
+373	Please try to predict the direction of facial growth at the age of	374	18	5
+374	Please try to predict the direction of facial growth at the age of	375	18	5
+375	Please try to predict the direction of facial growth at the age of	376	18	5
+376	Please try to predict the direction of facial growth at the age of	377	18	5
+377	Please try to predict the direction of facial growth at the age of	378	18	5
+378	Please try to predict the direction of facial growth at the age of	379	18	5
+379	Please try to predict the direction of facial growth at the age of	380	18	5
+380	Please try to predict the direction of facial growth at the age of	381	18	5
+381	Please try to predict the direction of facial growth at the age of	382	18	5
+382	Please try to predict the direction of facial growth at the age of	383	18	5
+383	Please try to predict the direction of facial growth at the age of	384	18	5
+384	Please try to predict the direction of facial growth at the age of	385	18	5
+385	Please try to predict the direction of facial growth at the age of	386	18	5
+386	Please try to predict the direction of facial growth at the age of	387	18	5
+387	Please try to predict the direction of facial growth at the age of	388	18	5
+388	Please try to predict the direction of facial growth at the age of	389	18	5
+389	Please try to predict the direction of facial growth at the age of	390	18	5
+390	Please try to predict the direction of facial growth at the age of	391	18	5
+391	Please try to predict the direction of facial growth at the age of	392	18	5
+392	Please try to predict the direction of facial growth at the age of	393	18	5
+393	Please try to predict the direction of facial growth at the age of	394	18	5
+394	Please try to predict the direction of facial growth at the age of	395	18	5
+395	Please try to predict the direction of facial growth at the age of	396	18	5
+396	Please try to predict the direction of facial growth at the age of	397	18	5
+397	Please try to predict the direction of facial growth at the age of	398	18	5
+398	Please try to predict the direction of facial growth at the age of	399	18	5
+399	Please try to predict the direction of facial growth at the age of	400	18	5
+400	Please try to predict the direction of facial growth at the age of	401	18	5
+401	Please try to predict the direction of facial growth at the age of	402	18	5
+402	Please try to predict the direction of facial growth at the age of	403	18	5
+403	Please try to predict the direction of facial growth at the age of	404	18	5
+404	Please try to predict the direction of facial growth at the age of	405	18	5
+405	Please try to predict the direction of facial growth at the age of	406	18	5
+406	Please try to predict the direction of facial growth at the age of	407	18	5
+407	Please try to predict the direction of facial growth at the age of	408	18	5
+408	Please try to predict the direction of facial growth at the age of	409	18	5
+409	Please try to predict the direction of facial growth at the age of	410	18	5
+410	Please try to predict the direction of facial growth at the age of	411	18	5
+411	Please try to predict the direction of facial growth at the age of	412	18	5
+412	Please try to predict the direction of facial growth at the age of	413	18	5
+413	Please try to predict the direction of facial growth at the age of	414	18	5
+414	Please try to predict the direction of facial growth at the age of	415	18	5
+415	Please try to predict the direction of facial growth at the age of	416	18	5
+416	Please try to predict the direction of facial growth at the age of	417	18	5
+417	Please try to predict the direction of facial growth at the age of	418	18	5
+418	Please try to predict the direction of facial growth at the age of	419	18	5
+419	Please try to predict the direction of facial growth at the age of	420	18	5
+420	Please try to predict the direction of facial growth at the age of	421	18	5
+421	Please try to predict the direction of facial growth at the age of	422	18	5
+423	Please try to predict the direction of facial growth at the age of	424	18	5
+424	Please try to predict the direction of facial growth at the age of	425	18	5
+425	Please try to predict the direction of facial growth at the age of	426	18	5
+426	Please try to predict the direction of facial growth at the age of	427	18	5
+427	Please try to predict the direction of facial growth at the age of	428	18	5
+428	Please try to predict the direction of facial growth at the age of	429	18	5
+429	Please try to predict the direction of facial growth at the age of	430	18	5
+430	Please try to predict the direction of facial growth at the age of	431	18	5
+431	Please try to predict the direction of facial growth at the age of	432	18	5
+432	Please try to predict the direction of facial growth at the age of	433	18	5
+433	Please try to predict the direction of facial growth at the age of	434	18	5
+434	Please try to predict the direction of facial growth at the age of	435	18	5
+435	Please try to predict the direction of facial growth at the age of	436	18	5
+436	Please try to predict the direction of facial growth at the age of	437	18	5
+437	Please try to predict the direction of facial growth at the age of	438	18	5
+438	Please try to predict the direction of facial growth at the age of	439	18	5
+439	Please try to predict the direction of facial growth at the age of	440	18	5
+440	Please try to predict the direction of facial growth at the age of	441	18	5
+441	Please try to predict the direction of facial growth at the age of	442	18	5
+442	Please try to predict the direction of facial growth at the age of	443	18	5
+443	Please try to predict the direction of facial growth at the age of	444	18	5
+444	Please try to predict the direction of facial growth at the age of	445	18	5
+445	Please try to predict the direction of facial growth at the age of	446	18	5
+446	Please try to predict the direction of facial growth at the age of	447	18	5
+447	Please try to predict the direction of facial growth at the age of	448	18	5
+448	Please try to predict the direction of facial growth at the age of	449	18	5
+449	Please try to predict the direction of facial growth at the age of	450	18	5
+450	Please try to predict the direction of facial growth at the age of	451	18	5
+451	Please try to predict the direction of facial growth at the age of	452	18	5
+452	Please try to predict the direction of facial growth at the age of	453	18	5
+30	Please try to predict the direction of facial growth at the age of	31	18	3
+37	Please try to predict the direction of facial growth at the age of	38	18	4
+39	Please try to predict the direction of facial growth at the age of	40	18	4
+11	Please try to predict the direction of facial growth at the age of	12	18	2
+9	Please try to predict the direction of facial growth at the age of	10	18	1
+10	Please try to predict the direction of facial growth at the age of	11	18	4
+12	Please try to predict the direction of facial growth at the age of	13	18	2
+453	Please try to predict the direction of facial growth at the age of	454	18	5
+38	Please try to predict the direction of facial growth at the age of	39	18	4
+29	Please try to predict the direction of facial growth at the age of	30	18	3
+35	Please try to predict the direction of facial growth at the age of	36	18	4
+40	Please try to predict the direction of facial growth at the age of	41	18	4
+31	Please try to predict the direction of facial growth at the age of	32	18	4
+34	Please try to predict the direction of facial growth at the age of	35	18	4
+36	Please try to predict the direction of facial growth at the age of	37	18	4
+32	Please try to predict the direction of facial growth at the age of	33	18	4
+33	Please try to predict the direction of facial growth at the age of	34	18	4
+61	Please try to predict the direction of facial growth at the age of	62	18	6
+62	Please try to predict the direction of facial growth at the age of	63	18	6
+63	Please try to predict the direction of facial growth at the age of	64	18	6
+64	Please try to predict the direction of facial growth at the age of	65	18	6
+65	Please try to predict the direction of facial growth at the age of	66	18	6
+66	Please try to predict the direction of facial growth at the age of	67	18	6
+67	Please try to predict the direction of facial growth at the age of	68	18	6
+68	Please try to predict the direction of facial growth at the age of	69	18	6
+69	Please try to predict the direction of facial growth at the age of	70	18	6
+79	Please try to predict the direction of facial growth at the age of	80	18	7
+6	Please try to predict the direction of facial growth at the age of	7	18	1
+199	Please try to predict the direction of facial growth at the age of	200	18	-1
+236	Please try to predict the direction of facial growth at the age of	237	18	-1
+244	Please try to predict the direction of facial growth at the age of	245	18	-1
+294	Please try to predict the direction of facial growth at the age of	295	18	-1
+313	Please try to predict the direction of facial growth at the age of	314	18	-1
+422	Please try to predict the direction of facial growth at the age of	423	18	-1
+83	Please try to predict the direction of facial growth at the age of	84	18	-1
+8	Please try to predict the direction of facial growth at the age of	9	18	1
+7	Please try to predict the direction of facial growth at the age of	8	18	1
+5	Please try to predict the direction of facial growth at the age of	6	18	1
+3	Please try to predict the direction of facial growth at the age of	4	18	1
+2	Please try to predict the direction of facial growth at the age of	3	18	1
+4	Please try to predict the direction of facial growth at the age of	5	18	1
+13	Please try to predict the direction of facial growth at the age of	14	18	2
+14	Please try to predict the direction of facial growth at the age of	15	18	2
+15	Please try to predict the direction of facial growth at the age of	16	18	2
+16	Please try to predict the direction of facial growth at the age of	17	18	2
+17	Please try to predict the direction of facial growth at the age of	18	18	2
+18	Please try to predict the direction of facial growth at the age of	19	18	2
+19	Please try to predict the direction of facial growth at the age of	20	18	2
+20	Please try to predict the direction of facial growth at the age of	21	18	2
+21	Please try to predict the direction of facial growth at the age of	22	18	3
+22	Please try to predict the direction of facial growth at the age of	23	18	3
+23	Please try to predict the direction of facial growth at the age of	24	18	3
+24	Please try to predict the direction of facial growth at the age of	25	18	3
+25	Please try to predict the direction of facial growth at the age of	26	18	3
+26	Please try to predict the direction of facial growth at the age of	27	18	3
+27	Please try to predict the direction of facial growth at the age of	28	18	3
+1	Please try to predict the direction of facial growth at the age of	2	18	1
+28	Please try to predict the direction of facial growth at the age of	29	18	1
+\.
+
+
+--
+-- Data for Name: quiz_sessions; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.quiz_sessions (id, user_id, status, mode, current_question, created_at, updated_at, finished_at, group_order, current_group, screen_size, question_requested_time, test_id, test_code) FROM stdin;
+12	20	finished	classic	7	2024-11-09 18:04:33.717624	2024-11-09 19:09:44.573769	2024-11-09 18:15:24.762567	{9,4,3,5,7,10,8,1,6,2}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+9	19	finished	educational	6	2024-11-09 17:55:28.335024	2024-11-10 09:46:19.256269	2024-11-09 17:55:28.335024	{10,6,1,4,9,8,7,5,2,3}	1	1440x812	2024-11-23 22:01:05.321856	\N	\N
+3	18	finished	educational	5	2024-11-09 16:19:27.367112	2024-11-09 16:37:20.977909	2024-11-09 16:19:39.572105	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+18	18	finished	classic	19	2024-11-09 18:41:19.869381	2024-11-09 18:54:08.579954	2024-11-09 18:47:48.991124	{13,17,11,18,12,14,19,20,15,16}	2	1230x988	2024-11-23 22:01:05.321856	\N	\N
+4	19	finished	classic	6	2024-11-09 16:37:13.566263	2024-11-09 16:42:45.058297	2024-11-09 16:37:37.542412	{10,6,1,4,9,8,7,5,2,3}	1	1440x812	2024-11-23 22:01:05.321856	\N	\N
+5	18	finished	educational	5	2024-11-09 16:37:20.979097	2024-11-09 17:42:34.43372	2024-11-09 16:37:20.979097	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+7	18	finished	educational	5	2024-11-09 17:42:34.435288	2024-11-09 17:49:51.397035	2024-11-09 17:42:34.435288	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+6	19	finished	classic	6	2024-11-09 16:42:45.059476	2024-11-09 17:55:28.332643	2024-11-09 16:42:45.059476	{10,6,1,4,9,8,7,5,2,3}	1	1440x812	2024-11-23 22:01:05.321856	\N	\N
+8	18	finished	educational	5	2024-11-09 17:49:51.399594	2024-11-09 17:58:11.810934	2024-11-09 17:49:51.399594	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+112	53	finished	classic	1	2024-11-24 21:56:37.129593	2024-11-24 22:00:21.470133	2024-11-24 21:56:39.899582	{6,8,2,7,9,10,3,1,4,5}	1	1920x992	0001-01-01 00:00:00	\N	\N
+11	20	finished	educational	3	2024-11-09 18:00:33.049763	2024-11-09 18:04:33.71635	2024-11-09 18:03:33.890987	{9,4,3,5,7,10,8,1,6,2}	1	1071x988	2024-11-23 22:01:05.321856	\N	\N
+94	17	finished	classic	16	2024-11-22 20:50:20.578194	2024-11-22 20:50:48.921141	2024-11-22 20:50:48.920885	{11,16,15,12,20,18,17,14,19,13}	2	1056x772	2024-11-23 22:01:05.321856	\N	\N
+10	18	finished	educational	2	2024-11-09 17:58:11.813903	2024-11-09 18:24:12.156399	2024-11-09 17:58:24.495468	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+13	18	finished	classic	2	2024-11-09 18:24:12.158454	2024-11-09 18:25:06.82379	2024-11-09 18:24:12.158454	{10,8,5,2,6,1,4,3,7,9}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+14	18	finished	classic	2	2024-11-09 18:25:06.824778	2024-11-09 18:28:49.826598	2024-11-09 18:25:06.824778	{10,8,5,2,6,1,4,3,7,9}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+15	18	finished	classic	2	2024-11-09 18:28:49.828872	2024-11-09 18:30:36.045203	2024-11-09 18:28:49.828872	{10,8,5,2,6,1,4,3,7,9}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+16	18	finished	classic	2	2024-11-09 18:30:36.048007	2024-11-09 18:36:41.767102	2024-11-09 18:30:36.048007	{10,8,5,2,6,1,4,3,7,9}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+17	18	finished	classic	2	2024-11-09 18:36:41.769651	2024-11-09 18:41:19.866634	2024-11-09 18:36:41.769651	{10,8,5,2,6,1,4,3,7,9}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+96	53	finished	classic	6	2024-11-23 21:58:20.166304	2024-11-23 22:01:12.541719	2024-11-23 21:58:20.166304	{6,8,2,7,9,10,3,1,4,5}	1	1728x992	0001-01-01 00:00:00	\N	\N
+98	53	finished	classic	6	2024-11-23 22:06:54.257373	2024-11-23 22:07:04.298534	2024-11-23 22:06:54.309809	{6,8,2,7,9,10,3,1,4,5}	1	1728x992	0001-01-01 00:00:00	\N	\N
+122	53	finished	classic	11	2024-11-24 22:39:18.663996	2024-11-25 11:27:45.387525	2024-11-24 22:39:21.635832	{14,16,13,11,15,17,19,18,12,20}	2	1368x992	0001-01-01 00:00:00	\N	\N
+99	53	finished	classic	6	2024-11-23 22:07:04.299859	2024-11-23 22:07:15.676325	2024-11-23 22:07:04.362558	{6,8,2,7,9,10,3,1,4,5}	1	1728x992	0001-01-01 00:00:00	\N	\N
+103	19	finished	classic	13	2024-11-24 18:36:29.283784	2024-11-24 22:08:17.550297	2024-11-24 18:37:08.385131	{16,20,13,14,12,19,18,15,11,17}	2	375x629	0001-01-01 00:00:00	\N	\N
+100	53	finished	classic	6	2024-11-23 22:07:15.677382	2024-11-23 22:10:26.979141	2024-11-23 22:07:15.713595	{6,8,2,7,9,10,3,1,4,5}	1	1036x992	0001-01-01 00:00:00	\N	\N
+104	53	finished	classic	3	2024-11-24 21:17:40.202632	2024-11-24 21:44:33.068722	2024-11-24 21:17:44.938501	{6,8,2,7,9,10,3,1,4,5}	1	1920x992	0001-01-01 00:00:00	\N	\N
+113	53	finished	classic	4	2024-11-24 22:00:21.471979	2024-11-24 22:17:46.766345	2024-11-24 22:00:24.758695	{6,8,2,7,9,10,3,1,4,5}	1	599x992	0001-01-01 00:00:00	\N	\N
+109	53	finished	classic	3	2024-11-24 21:44:33.071052	2024-11-24 21:44:55.844085	2024-11-24 21:44:36.40321	{6,8,2,7,9,10,3,1,4,5}	1	1920x992	0001-01-01 00:00:00	\N	\N
+110	53	finished	classic	3	2024-11-24 21:44:55.844934	2024-11-24 21:45:10.679405	2024-11-24 21:44:55.88689	{6,8,2,7,9,10,3,1,4,5}	1	1920x992	0001-01-01 00:00:00	\N	\N
+101	53	finished	classic	7	2024-11-23 22:10:26.980992	2024-11-23 22:11:04.354448	2024-11-23 22:10:36.632507	{6,8,2,7,9,10,3,1,4,5}	1	1036x992	0001-01-01 00:00:00	\N	\N
+123	65	finished	classic	7	2024-11-25 07:53:29.567827	2024-11-25 07:53:33.184205	2024-11-25 07:53:33.18375	{4,7,10,1,2,5,9,6,3,8}	1	375x628	2024-11-25 07:53:32.301533	\N	\N
+163	72	finished	classic	40	2024-11-26 14:03:17.160858	2024-11-26 14:04:00.858705	2024-11-26 14:03:52.151843	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+111	53	finished	classic	3	2024-11-24 21:45:10.680301	2024-11-24 21:56:37.126412	2024-11-24 21:45:14.103883	{6,8,2,7,9,10,3,1,4,5}	1	1920x992	0001-01-01 00:00:00	\N	\N
+160	72	finished	classic	25	2024-11-26 14:02:14.122096	2024-11-26 14:02:22.987035	2024-11-26 14:02:20.731646	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+158	72	finished	classic	26	2024-11-26 14:00:29.018897	2024-11-26 14:01:50.569432	2024-11-26 14:01:32.386315	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+162	72	finished	classic	39	2024-11-26 14:02:32.158847	2024-11-26 14:03:17.159395	2024-11-26 14:03:06.260664	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+159	72	finished	classic	30	2024-11-26 14:01:50.570572	2024-11-26 14:02:14.120736	2024-11-26 14:02:06.026709	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+183	53	finished	educational	38	2025-01-08 23:23:47.705415	2025-01-08 23:25:15.16848	2025-01-08 23:24:25.658624	{39,32,31,40,35,36,37,33,38,34}	4	1920x992	0001-01-01 00:00:00	\N	\N
+161	72	finished	classic	37	2024-11-26 14:02:22.987839	2024-11-26 14:02:32.157584	2024-11-26 14:02:28.880138	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+176	79	finished	classic	8	2024-12-17 21:16:14.2955	2024-12-17 21:16:42.444605	2024-12-17 21:16:42.444419	{4,2,1,3,9,5,6,7,10,8}	1	1920x911	2024-12-17 21:16:41.68395	\N	\N
+178	53	finished	classic	21	2025-01-02 12:24:12.677471	2025-01-02 21:42:34.652338	2025-01-02 12:31:41.393319	{27,24,23,28,21,22,26,25,30,29}	3	991x772	0001-01-01 00:00:00	\N	\N
+180	53	finished	classic	30	2025-01-03 10:04:29.395136	2025-01-05 18:55:34.657812	2025-01-03 10:05:17.598505	{27,24,23,28,21,22,26,25,30,29}	3	1728x992	0001-01-01 00:00:00	\N	\N
+211	19	finished	classic	27	2025-01-14 14:53:31.185309	2025-01-14 14:55:03.987675	2025-01-14 14:53:39.805918	{28,30,24,25,26,21,22,23,27,29}	3	1440x812	0001-01-01 00:00:00	\N	\N
+299	114	finished	classic	19	2025-06-24 05:53:17.898113	2025-06-24 06:05:57.024875	2025-06-24 05:57:07.588643	{11,13,19,20,15,17,12,14,18,16}	2	430x853	0001-01-01 00:00:00	\N	\N
+319	83	finished	educational	21	2025-07-10 19:05:52.219313	2025-07-10 19:06:17.416741	2025-07-10 19:06:17.416386	{28,21,29,22,26,25,23,24,27,30}	3	1600x902	2025-07-10 19:06:08.462056	\N	\N
+315	117	finished	classic	9	2025-07-10 17:39:15.758204	2025-08-23 20:29:33.963182	2025-07-10 17:39:25.251953	{5,9,6,7,1,4,2,8,3}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+537	101	finished	classic	81	2025-09-18 14:10:59.754818	2025-09-18 14:33:04.122524	2025-09-18 14:12:01.623536	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+538	101	finished	educational	81	2025-09-18 14:33:04.127402	2025-09-18 14:33:11.360283	2025-09-18 14:33:07.907494	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+539	101	finished	classic	81	2025-09-18 14:33:11.361941	2025-09-18 14:33:59.787541	2025-09-18 14:33:56.706386	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+97	53	finished	classic	6	2024-11-23 22:01:12.542912	2024-11-23 22:06:54.256153	2024-11-23 22:01:12.587988	{6,8,2,7,9,10,3,1,4,5}	1	1728x992	0001-01-01 00:00:00	\N	\N
+124	72	finished	classic	8	2024-11-25 09:58:50.240744	2024-11-25 10:50:09.597912	2024-11-25 09:58:50.37378	{8,3,7,2,10,9,1,4,5,6}	1	375x634	0001-01-01 00:00:00	\N	\N
+145	69	finished	classic	225	2024-11-25 11:08:51.023826	2024-11-25 11:09:41.721643	2024-11-25 11:09:41.7214	{311,225,235,405,229,378,124,321,263,423,274,209,420,450,249,390,182,255,277,208,452,419,159,443,403,410,270,299,105,129,434,379,442,286,444,385,106,358,293,204,228,374,240,133,190,391,339,43,380,276,409,292,261,304,362,57,160,352,398,157,102,406,282,210,260,354,148,290,429,134,137,153,367,449,439,55,365,214,136,401,332,334,338,373,56,319,283,179,396,170,453,302,120,243,188,416,222,267,185,231,227,431,135,427,203,226,424,281,53,314,414,433,417,372,196,108,201,103,399,245,402,152,415,219,430,411,394,397,52,151,114,42,211,344,393,216,395,48,142,377,147,388,342,174,322,112,257,426,233,336,412,331,242,237,111,195,262,205,256,200,382,45,122,369,117,346,280,100,324,59,180,306,384,158,258,345,189,191,198,140,123,418,359,178,370,285,389,197,173,333,288,116,265,312,323,356,168,121,141,241,309,268,361,246,125,355,232,259,448,253,250,51,438,340,207,247,307,156,113,49,127,177,234,437,291,381,155,451,320,287,50,118,330,110,54,289,161,407,150,284,447,351,171,404,221,107,215,305,368,184,213,325,217,295,315,298,387,143,193,428,445,46,239,328,383,435,271,273,149,337,130,172,335,300,341,181,363,146,441,425,366,275,138,269,101,58,329,392,206,202,272,41,376,183,131,109,327,176,279,254,166,432,224,47,194,296,413,104,308,301,310,126,408,144,223,353,162,248,164,187,119,165,360,128,364,349,175,386,400,251,326,238,139,154,440,316,303,145,167,348,169,220,278,264,132,318,44,357,252,230,350,192,421,186,317,297,347,436,218,375,115,266,343,446,371,163,212}	5	375x628	2024-11-25 11:09:41.330946	\N	\N
+95	19	finished	classic	13	2024-11-23 19:55:00.034466	2024-11-24 18:36:29.282442	2024-11-23 19:55:00.034466	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+102	53	finished	classic	9	2024-11-23 22:11:04.355689	2024-11-24 21:17:40.199961	2024-11-23 22:11:16.658929	{6,8,2,7,9,10,3,1,4,5}	1	1036x992	0001-01-01 00:00:00	\N	\N
+105	56	finished	classic	8	2024-11-24 21:31:10.106661	2024-11-24 21:31:19.189806	2024-11-24 21:31:19.189645	{8,5,7,3,4,1,2,9,10,6}	1	390x669	2024-11-24 21:31:10.140543	\N	\N
+114	19	finished	classic	13	2024-11-24 22:08:17.552964	2024-11-24 22:15:28.377256	2024-11-24 22:08:17.582877	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+177	27	finished	classic	3	2024-12-30 16:20:26.376313	2025-01-14 09:59:23.202591	2024-12-30 16:20:26.403671	{8,9,10,4,3,7,5,6,2,1}	1	2560x1305	0001-01-01 00:00:00	\N	\N
+164	72	finished	classic	34	2024-11-26 14:04:00.859813	2024-11-26 14:05:02.547288	2024-11-26 14:04:50.81768	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+179	53	finished	classic	22	2025-01-02 21:42:34.65591	2025-01-03 10:04:29.39212	2025-01-02 22:08:09.619154	{27,24,23,28,21,22,26,25,30,29}	3	1301x992	0001-01-01 00:00:00	\N	\N
+165	72	finished	classic	36	2024-11-26 14:05:02.548356	2024-11-26 14:05:42.691709	2024-11-26 14:05:34.806018	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+320	101	finished	classic	6	2025-07-10 21:05:36.393721	2025-07-10 21:17:21.934934	2025-07-10 21:05:36.428304	{7,6,9,8,4,2,5,1,3}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+330	101	finished	classic	57	2025-08-05 14:00:48.86958	2025-08-05 14:29:25.822524	2025-08-05 14:29:20.138184	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+166	72	finished	classic	32	2024-11-26 14:05:42.692882	2024-11-26 14:06:46.57193	2024-11-26 14:06:27.611218	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+181	53	finished	classic	40	2025-01-05 18:55:34.661363	2025-01-08 23:23:47.702161	2025-01-05 20:27:33.813012	{39,32,31,40,35,36,37,33,38,34}	4	1152x661	0001-01-01 00:00:00	\N	\N
+300	114	finished	classic	15	2025-06-24 06:05:57.028718	2025-06-24 06:07:01.494342	2025-06-24 06:06:45.464216	{11,13,19,20,15,17,12,14,18,16}	2	430x739	0001-01-01 00:00:00	\N	\N
+167	72	finished	classic	33	2024-11-26 14:06:46.572956	2024-11-26 14:09:03.27126	2024-11-26 14:08:01.280235	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+212	19	finished	educational	40	2025-01-14 14:55:03.988807	2025-01-14 15:05:19.494975	2025-01-14 14:55:19.659442	{36,38,40,39,31,32,34,37,35,33}	4	1440x812	0001-01-01 00:00:00	\N	\N
+540	101	finished	time_limited	86	2025-09-18 14:33:59.788534	2025-09-18 14:45:04.904845	2025-09-18 14:34:14.790164	{81,86,80,87,89,88,84,85,82}	8	2509x515	0001-01-01 00:00:00	\N	\N
+316	101	finished	classic	6	2025-07-10 18:15:57.902969	2025-07-10 19:05:16.92511	2025-07-10 19:01:05.627411	{7,6,9,8,4,2,5,1,3}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+684	101	finished	educational	67	2025-09-28 09:57:11.742711	2025-09-28 10:33:57.954517	2025-09-28 09:57:16.913708	{64,63,67,60,61,65,66,69,62,68}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+840	182	finished	educational	65	2025-10-13 07:27:33.152658	2025-10-13 19:54:30.08336	2025-10-13 07:33:58.13102	{67,62,60,69,63,64,66,68,65,61}	6	393x665	0001-01-01 00:00:00	\N	\N
+106	55	finished	classic	8	2024-11-24 21:37:45.177186	2024-11-24 21:38:55.622158	2024-11-24 21:38:55.621686	{8,4,7,9,1,2,5,3,10,6}	1	375x628	2024-11-24 21:37:45.213203	\N	\N
+125	54	finished	classic	3	2024-11-25 10:28:38.992796	2024-11-25 10:50:07.477751	2024-11-25 10:28:39.06234	{3,7,10,1,6,4,9,8,2,5}	1	1920x947	0001-01-01 00:00:00	\N	\N
+107	27	finished	classic	9	2024-11-24 21:40:01.668243	2024-11-24 21:40:20.558175	2024-11-24 21:40:09.461227	{8,9,10,4,3,7,5,6,2,1}	1	390x669	0001-01-01 00:00:00	\N	\N
+182	19	finished	classic	24	2025-01-07 14:23:10.323419	2025-01-14 14:52:44.48425	2025-01-07 14:23:39.022253	{28,30,24,25,26,21,22,23,27,29}	3	375x628	0001-01-01 00:00:00	\N	\N
+168	72	finished	classic	35	2024-11-26 14:09:03.27287	2024-11-26 14:12:46.387656	2024-11-26 14:09:47.452153	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+317	83	finished	classic	12	2025-07-10 19:03:39.277768	2025-07-10 19:05:52.217329	2025-07-10 19:04:35.593048	{19,15,17,14,16,20,18,11,12,13}	2	1600x902	0001-01-01 00:00:00	\N	\N
+279	19	finished	classic	225	2025-04-14 09:31:05.104265	2025-04-16 18:59:19.306985	2025-04-14 09:34:03.481853	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1920x947	0001-01-01 00:00:00	\N	\N
+115	19	finished	classic	13	2024-11-24 22:15:28.380976	2024-11-24 22:17:11.890715	2024-11-24 22:15:28.420244	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+108	27	finished	classic	4	2024-11-24 21:40:20.559373	2024-11-25 11:34:08.874166	2024-11-24 21:40:30.681859	{8,9,10,4,3,7,5,6,2,1}	1	390x669	0001-01-01 00:00:00	\N	\N
+146	53	finished	classic	17	2024-11-25 11:27:45.391214	2024-11-25 13:51:05.410957	2024-11-25 11:27:52.687236	{14,16,13,11,15,17,19,18,12,20}	2	1176x992	0001-01-01 00:00:00	\N	\N
+169	72	finished	classic	38	2024-11-26 14:12:46.388987	2024-11-26 14:17:10.821935	2024-11-26 14:17:02.767397	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+301	114	finished	classic	17	2025-06-24 06:07:01.495408	2025-06-24 06:07:55.667549	2025-06-24 06:07:55.667373	{11,13,19,20,15,17,12,14,18,16}	2	430x739	2025-06-24 06:07:01.599555	\N	\N
+321	101	finished	classic	6	2025-07-10 21:17:21.937681	2025-07-16 17:14:00.633287	2025-07-10 21:17:21.966199	{7,6,9,8,4,2,5,1,3}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+116	19	finished	classic	18	2024-11-24 22:17:11.893569	2024-11-24 22:21:03.609183	2024-11-24 22:17:52.268305	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+213	85	finished	classic	10	2025-01-14 15:00:49.924188	2025-01-14 15:02:58.278061	2025-01-14 15:01:06.38176	{4,8,3,5,10,1,6,9,2,7}	1	1440x812	0001-01-01 00:00:00	\N	\N
+549	101	finished	classic	94	2025-09-20 17:03:10.503813	2025-09-21 10:03:54.380841	2025-09-20 17:03:11.946564	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+559	101	finished	educational	90	2025-09-21 12:09:12.230736	2025-09-21 12:09:17.691849	2025-09-21 12:09:14.813059	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+541	101	finished	classic	80	2025-09-18 14:45:04.907336	2025-09-18 14:45:12.567183	2025-09-18 14:45:08.799465	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+544	101	finished	time_limited	85	2025-09-18 14:45:31.842654	2025-09-18 14:45:43.226001	2025-09-18 14:45:35.12636	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+551	101	finished	time_limited	96	2025-09-21 10:49:31.082532	2025-09-21 11:05:30.116165	2025-09-21 10:49:33.66499	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+547	101	finished	classic	99	2025-09-18 14:46:47.013287	2025-09-18 14:48:39.438228	2025-09-18 14:46:54.65948	{91,97,99,92,94,98,95,96,93,90}	9	2509x1037	0001-01-01 00:00:00	\N	\N
+542	101	finished	classic	87	2025-09-18 14:45:12.568933	2025-09-18 14:45:18.323027	2025-09-18 14:45:15.254621	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+550	101	finished	classic	98	2025-09-21 10:03:54.385065	2025-09-21 10:49:31.079073	2025-09-21 10:03:55.790989	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+545	101	finished	classic	91	2025-09-18 14:45:43.22774	2025-09-18 14:46:36.436748	2025-09-18 14:45:58.974128	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+548	101	finished	educational	92	2025-09-18 14:48:39.439907	2025-09-20 17:03:10.49812	2025-09-18 14:48:43.669113	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+543	101	finished	educational	84	2025-09-18 14:45:18.325823	2025-09-18 14:45:31.841402	2025-09-18 14:45:28.322265	{81,86,80,87,89,88,84,85,82}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+546	101	finished	classic	91	2025-09-18 14:46:36.438324	2025-09-18 14:46:47.012052	2025-09-18 14:46:36.469925	{91,97,99,92,94,98,95,96,93,90}	9	2509x1037	0001-01-01 00:00:00	\N	\N
+553	101	finished	classic	90	2025-09-21 12:01:48.663497	2025-09-21 12:03:57.421765	2025-09-21 12:02:41.560712	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+556	101	finished	classic	90	2025-09-21 12:04:52.745669	2025-09-21 12:07:15.75488	2025-09-21 12:04:52.765114	{91,97,99,92,94,98,95,96,93,90}	9	2509x852	0001-01-01 00:00:00	\N	\N
+552	101	finished	classic	93	2025-09-21 11:05:30.118689	2025-09-21 12:01:48.661086	2025-09-21 11:05:31.692647	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+554	101	finished	classic	90	2025-09-21 12:03:57.422879	2025-09-21 12:04:12.501311	2025-09-21 12:03:57.44841	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+558	101	finished	classic	90	2025-09-21 12:08:27.268585	2025-09-21 12:09:12.228969	2025-09-21 12:08:27.293395	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+555	101	finished	classic	90	2025-09-21 12:04:12.50389	2025-09-21 12:04:52.744467	2025-09-21 12:04:12.524764	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+557	101	finished	classic	90	2025-09-21 12:07:15.757438	2025-09-21 12:08:27.267343	2025-09-21 12:07:15.787826	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+561	101	finished	educational	90	2025-09-21 12:09:26.026939	2025-09-21 12:10:33.204992	2025-09-21 12:09:41.48007	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+560	101	finished	time_limited	90	2025-09-21 12:09:17.69362	2025-09-21 12:09:26.024576	2025-09-21 12:09:17.719836	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+566	161	in_progress	classic	1	2025-09-21 12:16:15.715702	2025-09-21 12:16:22.875946	\N	{4,6,9,5,3,1,2,7,8}	1	2509x852	2025-09-21 12:16:22.875785	\N	\N
+565	101	finished	classic	90	2025-09-21 12:14:20.18587	2025-09-21 13:13:31.789788	2025-09-21 12:14:20.21777	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+567	101	finished	classic	90	2025-09-21 13:13:31.792904	2025-09-21 14:13:07.207373	2025-09-21 13:13:31.869231	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+19	18	finished	classic	223	2024-11-09 18:54:08.582334	2024-11-09 19:06:53.425499	2024-11-09 18:57:03.940559	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1230x988	2024-11-23 22:01:05.321856	\N	\N
+117	53	finished	classic	5	2024-11-24 22:17:46.768411	2024-11-24 22:21:55.241771	2024-11-24 22:19:03.104141	{6,8,2,7,9,10,3,1,4,5}	1	1464x992	0001-01-01 00:00:00	\N	\N
+147	27	finished	classic	3	2024-11-25 11:34:08.87632	2024-12-30 16:20:26.363911	2024-11-25 11:34:14.009418	{8,9,10,4,3,7,5,6,2,1}	1	2560x1305	0001-01-01 00:00:00	\N	\N
+318	101	finished	classic	6	2025-07-10 19:05:16.927547	2025-07-10 21:05:36.389459	2025-07-10 19:05:16.954594	{7,6,9,8,4,2,5,1,3}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+134	54	in_progress	classic	7	2024-11-25 10:50:07.478779	2024-11-25 10:50:39.672899	\N	{3,7,10,1,6,4,9,8,2,5}	1	1920x947	2024-11-25 10:50:39.67273	\N	\N
+136	72	finished	classic	13	2024-11-25 10:50:09.600128	2024-11-25 22:22:03.19288	2024-11-25 11:09:28.464804	{19,14,13,15,18,20,16,12,17,11}	2	375x634	0001-01-01 00:00:00	\N	\N
+184	53	finished	classic	395	2025-01-08 23:25:15.169735	2025-01-08 23:25:27.813884	2025-01-08 23:25:23.131874	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+128	70	finished	classic	14	2024-11-25 10:49:30.108268	2024-11-25 11:04:54.837316	2024-11-25 11:04:45.231726	{13,16,20,15,12,17,14,19,18,11}	2	393x661	0001-01-01 00:00:00	\N	\N
+127	74	finished	classic	1	2024-11-25 10:49:27.908123	2024-11-25 10:50:02.298643	2024-11-25 10:49:28.01508	{1,2,7,10,9,3,8,4,6,5}	1	320x522	0001-01-01 00:00:00	\N	\N
+133	73	finished	classic	36	2024-11-25 10:50:06.555312	2024-11-25 11:09:12.004048	2024-11-25 11:09:12.003749	{32,39,34,37,36,38,40,35,33,31}	4	393x659	2024-11-25 11:09:09.718846	\N	\N
+170	72	finished	classic	31	2024-11-26 14:17:10.823808	2025-02-04 14:03:06.582843	2024-11-26 14:17:31.986136	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+129	73	finished	classic	10	2024-11-25 10:49:35.910768	2024-11-25 10:50:06.554477	2024-11-25 10:49:36.039014	{10,8,1,3,2,4,9,7,5,6}	1	393x659	0001-01-01 00:00:00	\N	\N
+303	105	finished	classic	10	2025-06-28 13:32:02.251876	2025-06-28 13:34:34.620559	2025-06-28 13:34:34.620204	{2,3,8,5,1,10,9,6,7,4}	1	390x663	2025-06-28 13:32:02.292548	\N	\N
+132	75	finished	classic	3	2024-11-25 10:50:03.161758	2024-11-25 10:50:45.100214	2024-11-25 10:50:03.310654	{3,5,8,10,4,1,9,6,2,7}	1	384x731	0001-01-01 00:00:00	\N	\N
+126	67	finished	classic	30	2024-11-25 10:49:21.372963	2024-11-25 11:09:17.810135	2024-11-25 11:09:17.809952	{21,22,28,30,24,26,27,29,23,25}	3	390x663	2024-11-25 11:09:13.815048	\N	\N
+130	69	finished	classic	10	2024-11-25 10:49:58.650972	2024-11-25 10:51:14.522753	2024-11-25 10:49:58.721637	{10,4,3,2,5,1,6,8,7,9}	1	375x628	0001-01-01 00:00:00	\N	\N
+131	74	finished	classic	26	2024-11-25 10:50:02.299865	2024-11-25 11:09:18.679812	2024-11-25 11:09:18.679397	{22,29,27,24,30,21,23,28,25,26}	3	320x522	2024-11-25 11:09:16.00819	\N	\N
+302	105	finished	classic	1	2025-06-28 13:29:14.814287	2025-06-28 13:32:02.249584	2025-06-28 13:31:36.245313	{2,3,8,5,1,10,9,6,7,4}	1	390x664	0001-01-01 00:00:00	\N	\N
+138	69	finished	classic	7	2024-11-25 10:51:14.526145	2024-11-25 10:58:50.912818	2024-11-25 10:58:18.062769	{10,4,3,2,5,1,6,8,7,9}	1	375x628	0001-01-01 00:00:00	\N	\N
+137	75	finished	classic	11	2024-11-25 10:50:45.101276	2024-11-25 11:09:26.626411	2024-11-25 11:09:26.626222	{13,17,19,15,12,16,20,18,14,11}	2	384x723	2024-11-25 11:09:24.794863	\N	\N
+563	101	finished	classic	90	2025-09-21 12:11:01.494081	2025-09-21 12:11:23.421741	2025-09-21 12:11:01.516279	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+562	101	finished	classic	90	2025-09-21 12:10:33.206296	2025-09-21 12:11:01.492306	2025-09-21 12:10:33.235347	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+135	71	finished	classic	8	2024-11-25 10:50:08.878244	2024-11-25 10:52:49.932916	2024-11-25 10:52:10.738535	{6,8,9,3,1,7,2,4,5,10}	1	393x659	0001-01-01 00:00:00	\N	\N
+564	101	finished	classic	90	2025-09-21 12:11:23.423558	2025-09-21 12:14:20.183099	2025-09-21 12:11:23.447029	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+568	162	finished	classic	7	2025-09-21 13:15:52.761109	2025-09-22 13:23:59.702107	2025-09-21 13:16:00.074819	{5,7,8,6,3,9,1,2,4}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+685	101	finished	educational	60	2025-09-28 10:33:57.957666	2025-09-28 10:34:09.10301	2025-09-28 10:34:00.518419	{64,63,67,60,61,65,66,69,62,68}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+686	101	finished	classic	-1	2025-09-28 10:34:09.104408	2025-09-28 10:34:28.460552	2025-09-28 10:34:13.639848	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+118	19	finished	classic	15	2024-11-24 22:21:03.610277	2024-11-24 22:21:41.41611	2024-11-24 22:21:08.144554	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+121	19	finished	classic	17	2024-11-24 22:22:32.823203	2025-01-07 14:23:10.319513	2024-11-24 22:22:44.001247	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+139	71	finished	classic	11	2024-11-25 10:52:49.934611	2024-11-25 11:02:30.802306	2024-11-25 11:00:53.513509	{17,20,12,15,11,19,14,13,16,18}	2	393x659	0001-01-01 00:00:00	\N	\N
+185	53	finished	time_limited	230	2025-01-08 23:25:27.816103	2025-01-08 23:26:40.920483	2025-01-08 23:25:39.635498	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+214	85	finished	educational	254	2025-01-14 15:02:58.279609	2025-01-14 15:04:21.277625	2025-01-14 15:04:21.277396	{170,273,410,254,334,322,353,176,286,213,162,413,345,392,397,302,172,347,202,112,336,399,402,261,44,398,344,438,341,189,208,131,385,110,223,383,377,275,225,439,427,379,355,441,129,116,113,335,135,216,297,381,278,246,331,234,230,295,245,137,268,339,449,306,175,218,400,326,101,436,296,426,217,287,193,214,452,346,349,143,53,242,188,309,187,160,373,409,130,166,106,133,150,134,207,171,298,453,219,440,105,50,212,140,253,401,367,354,351,118,271,220,267,378,308,312,357,250,260,191,424,47,147,109,205,43,324,323,442,59,358,359,435,390,57,266,45,204,124,279,183,437,103,408,311,289,310,404,161,55,145,451,240,128,391,428,325,388,146,195,365,342,340,108,192,303,221,363,315,148,332,412,157,431,343,333,368,300,46,348,270,307,434,321,120,164,319,352,282,305,314,448,284,179,235,430,125,115,394,107,364,396,151,249,174,371,132,327,58,248,167,447,42,231,41,259,362,123,281,209,330,420,168,48,320,290,155,446,416,201,104,384,444,152,173,421,418,276,153,149,156,450,258,366,198,432,111,127,405,255,165,425,197,407,269,232,241,374,288,419,403,100,264,285,229,283,126,102,181,203,215,386,445,56,119,190,393,121,277,238,443,265,138,163,338,411,52,280,211,328,243,395,317,415,206,142,159,423,136,429,433,247,274,252,54,51,194,329,154,316,272,182,291,263,237,356,380,178,257,262,169,114,185,304,144,256,318,122,226,141,233,49,350,337,210,177,184,389,196,292,387,117,370,376,186,222,158,224,200,227,414,361,239,299,360,372,417,301,139,406,251,293,375,369,180,228,382}	5	1440x812	2025-01-14 15:04:17.355775	\N	\N
+226	53	finished	classic	197	2025-01-19 19:56:09.732778	2025-01-20 16:08:27.31184	2025-01-19 19:56:27.547841	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1285x992	0001-01-01 00:00:00	\N	\N
+296	19	finished	classic	243	2025-06-23 19:46:31.119744	2025-06-28 14:09:47.131013	2025-06-23 19:46:38.76933	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+119	19	finished	classic	11	2024-11-24 22:21:41.418064	2024-11-24 22:22:32.822151	2024-11-24 22:21:46.499697	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	0001-01-01 00:00:00	\N	\N
+569	101	finished	classic	90	2025-09-21 14:13:07.210788	2025-09-22 13:22:23.78098	2025-09-21 14:13:07.255965	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+687	101	finished	classic	212	2025-09-28 10:34:28.462695	2025-09-28 10:34:34.304918	2025-09-28 10:34:30.01961	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+120	53	finished	classic	13	2024-11-24 22:21:55.244278	2024-11-24 22:39:18.661564	2024-11-24 22:22:01.025208	{14,16,13,11,15,17,19,18,12,20}	2	1521x992	0001-01-01 00:00:00	\N	\N
+171	78	finished	classic	5	2024-11-27 17:38:22.137096	2024-11-27 18:17:55.402692	2024-11-27 17:38:31.721497	{1,6,4,2,5,8,10,7,9,3}	1	1728x992	0001-01-01 00:00:00	\N	\N
+148	53	finished	classic	19	2024-11-25 13:51:05.413456	2024-11-29 18:35:52.600555	2024-11-25 15:20:31.43165	{14,16,13,11,15,17,19,18,12,20}	2	1176x992	0001-01-01 00:00:00	\N	\N
+20	18	finished	classic	325	2024-11-09 19:06:53.426917	2024-11-09 19:08:21.492949	2024-11-09 19:07:50.638584	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1230x988	2024-11-23 22:01:05.321856	\N	\N
+140	69	finished	classic	7	2024-11-25 10:58:50.915538	2024-11-25 10:59:05.62397	2024-11-25 10:58:51.090854	{10,4,3,2,5,1,6,8,7,9}	1	375x628	0001-01-01 00:00:00	\N	\N
+217	19	finished	educational	32	2025-01-14 15:06:06.463586	2025-03-23 19:35:36.48597	2025-01-14 15:06:10.201785	{36,38,40,39,31,32,34,37,35,33}	4	375x710	0001-01-01 00:00:00	\N	\N
+215	19	finished	classic	39	2025-01-14 15:05:19.497079	2025-01-14 15:05:45.892353	2025-01-14 15:05:23.102665	{36,38,40,39,31,32,34,37,35,33}	4	1440x812	0001-01-01 00:00:00	\N	\N
+227	53	finished	classic	204	2025-01-20 16:08:27.315362	2025-01-20 16:14:16.678757	2025-01-20 16:08:42.282232	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1920x992	0001-01-01 00:00:00	\N	\N
+263	19	finished	classic	119	2025-04-08 22:26:34.612314	2025-04-08 22:32:48.939631	2025-04-08 22:29:27.955887	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x629	0001-01-01 00:00:00	\N	\N
+280	19	finished	classic	225	2025-04-16 18:59:19.309657	2025-04-16 20:38:08.987073	2025-04-16 18:59:19.357095	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+216	19	finished	classic	31	2025-01-14 15:05:45.894475	2025-01-14 15:06:06.46254	2025-01-14 15:05:49.227262	{36,38,40,39,31,32,34,37,35,33}	4	375x628	0001-01-01 00:00:00	\N	\N
+172	78	finished	classic	7	2024-11-27 18:17:55.406054	2024-11-27 18:18:11.709778	2024-11-27 18:18:11.709474	{1,6,4,2,5,8,10,7,9,3}	1	1920x992	2024-11-27 18:18:08.911595	\N	\N
+688	101	finished	classic	79	2025-09-28 10:34:34.306395	2025-09-28 10:34:51.811456	2025-09-28 10:34:35.844354	{75,79,76,78,77,70,74,71,73}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+149	72	finished	classic	12	2024-11-25 22:22:03.196474	2024-11-26 13:22:29.969561	2024-11-25 22:27:11.108055	{19,14,13,15,18,20,16,12,17,11}	2	375x634	0001-01-01 00:00:00	\N	\N
+141	69	finished	classic	34	2024-11-25 10:59:05.625569	2024-11-25 11:05:33.930314	2024-11-25 11:04:14.645705	{31,37,34,40,38,32,36,39,33,35}	4	375x710	0001-01-01 00:00:00	\N	\N
+21	18	finished	classic	278	2024-11-09 19:08:21.495121	2024-11-09 19:08:36.306901	2024-11-09 19:08:25.831164	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+150	72	finished	classic	12	2024-11-26 13:22:29.973656	2024-11-26 13:33:44.010379	2024-11-26 13:22:30.075074	{19,14,13,15,18,20,16,12,17,11}	2	1440x820	0001-01-01 00:00:00	\N	\N
+281	19	finished	classic	225	2025-04-16 20:38:09.079292	2025-04-25 18:14:49.866983	2025-04-16 20:38:09.124008	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+142	71	finished	classic	28	2024-11-25 11:02:30.803398	2024-11-30 09:46:13.51036	2024-11-25 11:09:42.656375	{28,22,30,25,29,21,26,23,24,27}	3	393x659	0001-01-01 00:00:00	\N	\N
+173	53	finished	classic	12	2024-11-29 18:35:52.608644	2024-12-06 03:23:13.446519	2024-11-29 18:35:57.393598	{14,16,13,11,15,17,19,18,12,20}	2	1728x992	0001-01-01 00:00:00	\N	\N
+689	101	finished	time_limited	78	2025-09-28 10:34:51.813039	2025-09-28 10:35:04.392016	2025-09-28 10:34:53.735324	{75,79,76,78,77,70,74,71,73}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+218	87	finished	classic	11	2025-01-14 16:04:40.698363	2025-01-14 20:38:50.717401	2025-01-14 16:06:39.898374	{15,11,13,14,19,16,12,17,18,20}	2	2560x1305	0001-01-01 00:00:00	\N	\N
+22	18	finished	classic	328	2024-11-09 19:08:36.308385	2024-11-09 19:08:48.16354	2024-11-09 19:08:42.4831	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+228	53	finished	classic	113	2025-01-20 16:14:16.681473	2025-01-22 13:07:47.142187	2025-01-20 16:14:25.398103	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1920x992	0001-01-01 00:00:00	\N	\N
+151	72	finished	classic	17	2024-11-26 13:33:44.011722	2024-11-26 13:39:51.665916	2024-11-26 13:39:35.782059	{19,14,13,15,18,20,16,12,17,11}	2	1440x820	0001-01-01 00:00:00	\N	\N
+174	71	finished	classic	22	2024-11-30 09:46:13.522835	2024-12-01 12:24:35.499627	2024-12-01 12:24:35.499465	{28,22,30,25,29,21,26,23,24,27}	3	1440x837	2024-12-01 12:24:32.089056	\N	\N
+322	19	finished	classic	58	2025-07-11 11:19:43.902416	2025-07-11 11:19:58.986082	2025-07-11 11:19:43.971616	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+144	69	finished	classic	36	2024-11-25 11:05:33.932211	2024-11-25 11:08:51.022601	2024-11-25 11:08:42.127958	{31,37,34,40,38,32,36,39,33,35}	4	375x628	0001-01-01 00:00:00	\N	\N
+219	87	finished	educational	14	2025-01-14 20:38:50.729118	2025-01-14 20:39:23.481029	2025-01-14 20:39:23.480851	{15,11,13,14,19,16,12,17,18,20}	2	390x669	2025-01-14 20:39:03.394763	\N	\N
+264	19	finished	educational	408	2025-04-08 22:32:48.941059	2025-04-08 22:37:00.370147	2025-04-08 22:36:54.380522	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+690	101	finished	time_limited	70	2025-09-28 10:35:04.396788	2025-09-28 10:37:07.255075	2025-09-28 10:35:06.45191	{75,79,76,78,77,70,74,71,73}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+143	70	finished	classic	32	2024-11-25 11:04:54.838685	2024-11-25 11:11:46.658603	2024-11-25 11:11:46.658395	{32,35,37,38,34,39,31,40,33,36}	4	393x661	2024-11-25 11:11:44.614425	\N	\N
+28	18	finished	classic	55	2024-11-09 19:31:53.800363	2024-11-09 19:32:28.878787	2024-11-09 19:32:15.866152	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+27	20	finished	classic	29	2024-11-09 19:21:12.100362	2024-11-09 21:09:06.054015	2024-11-09 19:21:45.156429	{26,28,24,21,22,30,25,23,29,27}	3	1362x988	2024-11-23 22:01:05.321856	\N	\N
+29	18	finished	classic	141	2024-11-09 19:32:28.880002	2024-11-09 19:34:11.073689	2024-11-09 19:32:36.851086	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+24	20	finished	classic	8	2024-11-09 19:09:44.575984	2024-11-09 19:13:13.770587	2024-11-09 19:09:54.57825	{9,4,3,5,7,10,8,1,6,2}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+175	53	finished	classic	24	2024-12-06 03:23:13.457617	2025-01-02 12:24:12.666754	2024-12-06 03:23:26.455781	{27,24,23,28,21,22,26,25,30,29}	3	1728x992	0001-01-01 00:00:00	\N	\N
+25	20	finished	classic	6	2024-11-09 19:13:13.77286	2024-11-09 19:19:13.558654	2024-11-09 19:13:18.722476	{9,4,3,5,7,10,8,1,6,2}	1	1118x988	2024-11-23 22:01:05.321856	\N	\N
+153	72	finished	classic	28	2024-11-26 13:42:18.944547	2024-11-26 13:46:16.877134	2024-11-26 13:44:39.480576	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+152	72	finished	classic	11	2024-11-26 13:39:51.667278	2024-11-26 13:42:18.943471	2024-11-26 13:41:49.481473	{19,14,13,15,18,20,16,12,17,11}	2	1440x820	0001-01-01 00:00:00	\N	\N
+26	20	finished	classic	13	2024-11-09 19:19:13.561419	2024-11-09 19:21:12.097669	2024-11-09 19:19:19.782856	{18,13,11,19,12,20,15,17,16,14}	2	1118x988	2024-11-23 22:01:05.321856	\N	\N
+23	18	finished	classic	402	2024-11-09 19:08:48.165754	2024-11-09 19:31:53.797318	2024-11-09 19:08:54.206147	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+693	101	finished	classic	-1	2025-09-28 11:07:00.302333	2025-09-28 11:17:51.303998	2025-09-28 11:07:03.127106	{3,4,5}	0	2509x1279	0001-01-01 00:00:00	\N	9999
+691	101	finished	time_limited	70	2025-09-28 10:37:07.258066	2025-09-28 10:53:45.225566	2025-09-28 10:37:07.283696	{75,79,76,78,77,70,74,71,73}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+220	88	finished	classic	18	2025-01-14 20:48:16.932852	2025-01-14 20:51:02.749552	2025-01-14 20:48:40.055229	{13,18,16,19,17,14,20,15,11,12}	2	2560x1305	0001-01-01 00:00:00	\N	\N
+692	101	finished	time_limited	74	2025-09-28 10:53:45.227432	2025-09-28 11:07:00.29977	2025-09-28 10:53:47.231191	{75,79,76,78,77,70,74,71,73}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+698	101	finished	classic	40	2025-09-28 12:54:50.669749	2025-09-28 12:55:35.506164	2025-09-28 12:54:53.211608	{36,10,31,40,39,37,33,38,35,34,32}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+700	101	finished	educational	89	2025-09-28 13:08:38.284775	2025-09-28 13:09:14.105378	2025-09-28 13:08:44.866353	{81,82,89,86,84,80,87,85}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+705	101	finished	educational	313	2025-09-28 13:27:50.036506	2025-09-28 13:28:47.84205	2025-09-28 13:27:55.463651	{83,236,313,294,422,199,244}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+186	53	finished	educational	273	2025-01-08 23:26:40.921588	2025-01-08 23:40:53.108317	2025-01-08 23:38:36.081502	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+704	160	finished	classic	-1	2025-09-28 13:10:48.902511	2025-09-28 15:54:53.887733	2025-09-28 13:10:50.995475	{1}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+323	19	finished	classic	58	2025-07-11 11:19:58.988959	2025-08-22 11:22:01.140888	2025-07-11 11:19:59.058626	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+154	72	finished	classic	24	2024-11-26 13:46:16.879844	2024-11-26 13:49:40.456258	2024-11-26 13:48:05.852045	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+694	101	finished	educational	98	2025-09-28 11:17:51.305331	2025-09-28 11:20:54.08177	2025-09-28 11:17:52.651582	{2,98,88,214,7,5,28,72,1,3,6,8,4,9}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+221	88	finished	time_limited	20	2025-01-14 20:51:02.751719	2025-01-14 20:51:12.431906	2025-01-14 20:51:12.431613	{13,18,16,19,17,14,20,15,11,12}	2	2560x1305	2025-01-14 20:51:10.350173	\N	\N
+706	101	finished	classic	294	2025-09-28 13:28:47.843133	2025-09-28 13:30:15.577238	2025-09-28 13:28:49.410028	{83,236,313,294,422,199,244}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+701	101	finished	classic	86	2025-09-28 13:09:14.106697	2025-09-28 13:10:04.434215	2025-09-28 13:09:18.780453	{81,82,89,86,84,80,87,85}	8	2509x852	0001-01-01 00:00:00	\N	\N
+699	101	finished	classic	-1	2025-09-28 12:55:35.50764	2025-09-28 13:08:38.269203	2025-09-28 12:55:37.981297	{3,2}	0	2509x1279	0001-01-01 00:00:00	\N	1234
+702	101	finished	classic	-1	2025-09-28 13:10:04.435807	2025-09-28 13:10:11.504403	2025-09-28 13:10:06.0092	{1}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+707	101	finished	classic	-1	2025-09-28 13:30:15.578191	2025-09-28 13:31:14.992315	2025-09-28 13:30:17.003183	{1}	0	2509x852	0001-01-01 00:00:00	\N	1111
+703	101	finished	classic	-1	2025-09-28 13:10:11.506104	2025-09-28 13:27:50.032163	2025-09-28 13:10:12.645054	{1}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+229	53	finished	classic	290	2025-01-22 13:07:47.14547	2025-01-22 13:09:01.074761	2025-01-22 13:08:35.016936	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1728x992	0001-01-01 00:00:00	\N	\N
+222	27	finished	classic	1	2025-01-14 21:39:19.268526	2025-03-25 09:39:15.334807	2025-01-14 21:39:27.643715	{8,9,10,4,3,7,5,6,2,1}	1	2560x1305	0001-01-01 00:00:00	\N	\N
+155	72	finished	classic	23	2024-11-26 13:49:40.457485	2024-11-26 13:51:58.212686	2024-11-26 13:51:00.311043	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+31	21	finished	classic	6	2024-11-09 19:50:51.192802	2024-11-09 19:54:06.109969	2024-11-09 19:52:58.969215	{7,4,8,1,5,6,10,9,3,2}	1	1904x1000	2024-11-23 22:01:05.321856	\N	\N
+265	19	finished	classic	445	2025-04-08 22:37:00.372967	2025-04-08 22:37:53.504575	2025-04-08 22:37:21.728057	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+282	19	finished	classic	123	2025-04-25 18:14:49.869298	2025-04-25 18:24:03.791471	2025-04-25 18:18:59.624418	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+156	72	finished	classic	27	2024-11-26 13:51:58.214127	2024-11-26 13:59:00.320118	2024-11-26 13:52:23.047241	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+32	21	finished	classic	12	2024-11-09 19:54:06.112367	2024-11-09 19:56:28.126472	2024-11-09 19:54:16.791425	{20,11,13,12,16,15,14,18,17,19}	2	1904x1000	2024-11-23 22:01:05.321856	\N	\N
+33	21	in_progress	educational	16	2024-11-09 19:56:28.127484	2024-11-09 20:03:48.196919	\N	{20,11,13,12,16,15,14,18,17,19}	2	580x1000	2024-11-23 22:01:05.321856	\N	\N
+695	101	finished	classic	-1	2025-09-28 11:20:54.08418	2025-09-28 11:30:40.663508	2025-09-28 11:20:57.391996	{2,3}	0	2509x1279	0001-01-01 00:00:00	\N	1234
+30	18	finished	classic	70	2024-11-09 19:34:11.07841	2024-11-09 20:33:11.13093	2024-11-09 19:34:25.210767	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1172x988	2024-11-23 22:01:05.321856	\N	\N
+35	20	finished	classic	29	2024-11-09 21:09:06.056508	2024-11-09 21:18:13.918674	2024-11-09 21:09:06.056508	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+36	20	finished	classic	29	2024-11-09 21:18:13.921146	2024-11-09 21:20:25.107632	2024-11-09 21:18:13.921146	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+37	20	finished	classic	29	2024-11-09 21:20:25.110471	2024-11-09 21:25:36.897963	2024-11-09 21:20:25.110471	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+38	20	finished	classic	29	2024-11-09 21:25:36.901226	2024-11-09 21:43:29.296988	2024-11-09 21:25:36.901226	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+39	20	finished	classic	29	2024-11-09 21:43:29.2992	2024-11-09 21:44:24.603535	2024-11-09 21:43:29.2992	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+40	20	finished	classic	29	2024-11-09 21:44:24.606618	2024-11-09 23:40:53.410772	2024-11-09 21:44:24.606618	{26,28,24,21,22,30,25,23,29,27}	3	1222x988	2024-11-23 22:01:05.321856	\N	\N
+157	72	finished	classic	29	2024-11-26 13:59:00.322333	2024-11-26 14:00:29.017936	2024-11-26 14:00:19.375429	{28,22,24,23,21,27,29,26,30,25}	3	1440x820	0001-01-01 00:00:00	\N	\N
+187	53	finished	educational	248	2025-01-08 23:40:53.110927	2025-01-08 23:41:12.256512	2025-01-08 23:41:01.557465	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+230	53	finished	classic	255	2025-01-22 13:09:01.077063	2025-01-22 13:21:25.988537	2025-01-22 13:09:05.576599	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1728x992	0001-01-01 00:00:00	\N	\N
+223	89	finished	classic	10	2025-01-14 22:11:39.12743	2025-01-14 22:11:42.509871	2025-01-14 22:11:42.509592	{9,6,10,7,8,3,4,2,5,1}	1	1920x992	2025-01-14 22:11:40.94202	\N	\N
+696	101	finished	classic	-1	2025-09-28 11:30:40.666907	2025-09-28 12:03:22.501757	2025-09-28 11:30:42.839853	{2,3}	0	2509x1279	0001-01-01 00:00:00	\N	1234
+34	18	finished	classic	261	2024-11-09 20:33:11.134317	2024-11-09 22:36:43.088627	2024-11-09 22:29:05.683233	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+41	18	finished	educational	261	2024-11-09 22:36:43.091351	2024-11-09 22:36:55.420526	2024-11-09 22:36:43.091351	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+224	90	in_progress	classic	10	2025-01-16 18:49:41.281214	2025-01-16 18:50:06.171312	\N	{3,10,4,6,2,1,9,7,5,8}	1	390x663	2025-01-16 18:50:06.170877	\N	\N
+697	101	finished	classic	10	2025-09-28 12:03:22.509759	2025-09-28 12:54:50.6651	2025-09-28 12:03:23.875936	{36,10,31,40,39,37,33,38,35,34,32}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+43	22	finished	classic	7	2024-11-09 22:39:07.591113	2024-11-10 02:14:50.012776	2024-11-09 22:39:07.591113	{7,5,8,4,1,3,2,9,10,6}	1	360x705	2024-11-23 22:01:05.321856	\N	\N
+189	53	finished	time_limited	101	2025-01-08 23:41:34.526014	2025-01-09 00:18:02.152054	2025-01-08 23:41:50.500272	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+188	53	finished	classic	58	2025-01-08 23:41:12.25825	2025-01-08 23:41:34.52317	2025-01-08 23:41:17.799284	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+231	53	finished	time_limited	268	2025-01-22 13:21:25.992177	2025-01-30 20:56:00.547684	2025-01-22 13:21:30.342915	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1728x992	0001-01-01 00:00:00	\N	\N
+708	101	finished	classic	448	2025-09-28 13:31:14.993992	2025-09-28 13:48:43.283285	2025-09-28 13:31:18.450822	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x852	0001-01-01 00:00:00	\N	\N
+225	91	finished	classic	3	2025-01-18 19:51:27.033534	2025-01-18 19:51:43.080141	2025-01-18 19:51:43.07972	{10,7,6,3,2,5,8,1,4,9}	1	1728x968	2025-01-18 19:51:38.718422	\N	\N
+190	53	finished	classic	114	2025-01-09 00:18:02.164542	2025-01-13 02:19:31.259947	2025-01-09 00:18:08.486511	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+232	93	finished	classic	10	2025-01-23 09:36:33.168353	2025-01-23 09:36:58.1211	2025-01-23 09:36:33.219146	{10,7,6,3,2,1,9,8,5,4}	1	1728x906	0001-01-01 00:00:00	\N	\N
+197	53	finished	classic	177	2025-01-13 02:19:31.263587	2025-01-13 19:23:16.631367	2025-01-13 02:19:34.568652	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1482x772	0001-01-01 00:00:00	\N	\N
+283	19	finished	classic	264	2025-04-25 18:24:03.793418	2025-04-25 18:25:03.385722	2025-04-25 18:24:47.857076	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+234	53	finished	classic	272	2025-01-30 20:56:00.550863	2025-02-02 15:57:15.09172	2025-01-30 20:56:06.560848	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	866x772	0001-01-01 00:00:00	\N	\N
+191	81	finished	classic	10	2025-01-09 00:24:24.523611	2025-01-09 00:26:09.847937	2025-01-09 00:24:46.491086	{1,2,10,7,4,5,8,9,6,3}	1	1329x992	0001-01-01 00:00:00	\N	\N
+193	81	finished	educational	5	2025-01-09 00:27:34.358962	2025-01-09 00:27:51.28151	2025-01-09 00:27:38.41734	{1,2,10,7,4,5,8,9,6,3}	1	1329x992	0001-01-01 00:00:00	\N	\N
+194	81	finished	time_limited	9	2025-01-09 00:27:51.282521	2025-01-09 00:30:51.424809	2025-01-09 00:27:56.462704	{1,2,10,7,4,5,8,9,6,3}	1	1329x992	0001-01-01 00:00:00	\N	\N
+42	18	finished	classic	314	2024-11-09 22:36:55.422433	2024-11-09 23:00:20.288113	2024-11-09 22:56:04.161716	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+233	93	in_progress	time_limited	404	2025-01-23 09:36:58.122685	2025-01-23 18:35:11.752483	\N	{312,150,176,404,206,180,432,386,330,49,316,333,419,152,358,192,367,220,132,47,337,263,323,260,416,397,158,131,292,302,222,195,219,208,129,269,353,234,348,166,383,262,139,155,315,391,442,410,148,450,409,160,177,204,125,264,169,122,100,157,400,371,447,439,248,227,362,407,54,101,124,186,271,117,345,275,423,336,242,322,245,305,250,324,170,451,218,102,138,443,228,46,295,187,274,107,382,408,311,361,338,424,389,43,398,203,57,200,341,163,283,142,259,238,241,310,224,237,379,174,50,120,112,253,375,284,291,51,154,196,393,444,207,270,448,164,411,141,441,205,327,266,329,415,373,449,59,357,121,427,151,255,178,403,306,55,189,232,387,243,342,309,276,401,278,412,258,304,116,453,153,405,318,285,53,185,209,214,184,58,140,168,128,364,190,339,374,297,349,267,365,191,265,240,167,105,369,317,249,133,293,418,147,175,414,257,399,212,308,156,380,402,181,45,372,183,172,211,194,406,109,388,113,314,286,143,437,413,215,246,346,135,144,210,104,430,179,162,159,436,355,103,149,231,110,230,182,366,350,188,268,198,235,376,298,123,161,377,223,421,56,134,288,420,118,332,343,111,254,281,301,435,347,385,277,368,431,197,289,229,106,417,300,334,326,173,319,438,233,307,384,44,193,48,392,325,425,344,137,226,216,440,335,378,145,356,136,452,201,221,119,445,363,370,171,279,108,127,126,359,331,202,256,282,290,390,115,213,434,303,261,251,165,354,381,52,428,426,146,320,296,280,239,272,328,340,217,360,287,433,41,396,429,395,446,130,351,273,42,299,352,394,225,114,252,321,247}	5	1728x906	2025-01-23 18:35:11.751716	\N	\N
+713	162	finished	time_limited	65	2025-09-28 15:53:10.882595	2025-09-28 15:53:18.54685	2025-09-28 15:53:14.511702	{63,61,65,67,66,64,68,69,60,62}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+709	101	finished	classic	56	2025-09-28 13:48:43.288457	2025-09-29 15:11:34.084536	2025-09-28 13:48:46.154258	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+192	81	finished	classic	4	2025-01-09 00:26:09.84933	2025-01-09 00:27:34.357922	2025-01-09 00:26:29.559415	{1,2,10,7,4,5,8,9,6,3}	1	1329x992	0001-01-01 00:00:00	\N	\N
+710	162	finished	educational	39	2025-09-28 15:52:44.862434	2025-09-28 15:52:49.272974	2025-09-28 15:52:46.480491	{35,32,34,10,38,40,36,31,39,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+711	162	finished	classic	33	2025-09-28 15:52:49.275035	2025-09-28 15:53:04.691186	2025-09-28 15:52:51.4607	{35,32,34,10,38,40,36,31,39,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+712	162	finished	time_limited	63	2025-09-28 15:53:04.692241	2025-09-28 15:53:10.880641	2025-09-28 15:53:06.625723	{63,61,65,67,66,64,68,69,60,62}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+44	18	finished	classic	314	2024-11-09 23:00:20.290161	2024-11-09 23:38:07.861019	2024-11-09 23:00:20.290161	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+48	20	finished	classic	37	2024-11-10 00:16:41.146773	2024-11-10 00:17:03.51468	2024-11-10 00:16:41.146773	{31,33,36,38,40,39,37,32,34,35}	4	1319x988	2024-11-23 22:01:05.321856	\N	\N
+235	53	finished	time_limited	269	2025-02-02 15:57:15.094675	2025-02-02 15:57:18.602611	2025-02-02 15:57:18.602091	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1285x992	2025-02-02 15:57:15.174698	\N	\N
+45	18	finished	classic	98	2024-11-09 23:38:07.863865	2024-11-10 02:13:07.206313	2024-11-10 00:43:03.156017	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+284	19	finished	classic	162	2025-04-25 18:25:03.402075	2025-04-25 18:25:30.892275	2025-04-25 18:25:26.865047	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+46	20	finished	classic	38	2024-11-09 23:40:53.412379	2024-11-10 00:01:44.939668	2024-11-09 23:41:14.279347	{31,33,36,38,40,39,37,32,34,35}	4	795x988	2024-11-23 22:01:05.321856	\N	\N
+195	81	finished	educational	3	2025-01-09 00:30:51.425932	2025-01-09 00:31:32.488237	2025-01-09 00:31:13.281402	{1,2,10,7,4,5,8,9,6,3}	1	1329x992	0001-01-01 00:00:00	\N	\N
+715	160	finished	time_limited	4	2025-09-28 15:54:53.888844	2025-09-28 15:54:55.243741	2025-09-28 15:54:55.243446	{8,4,214,1,3,6,9,28,5,7,2,88,72,98}	1	2509x1279	2025-09-28 15:54:53.91729	\N	\N
+47	20	finished	classic	37	2024-11-10 00:01:44.942257	2024-11-10 00:16:41.144158	2024-11-10 00:01:51.364441	{31,33,36,38,40,39,37,32,34,35}	4	1436x988	2024-11-23 22:01:05.321856	\N	\N
+714	162	finished	educational	64	2025-09-28 15:53:18.548326	2025-09-29 15:58:58.667347	2025-09-28 15:53:24.058178	{63,61,65,67,66,64,68,69,60,62}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+49	20	finished	classic	235	2024-11-10 00:17:03.51591	2024-11-10 00:43:46.758705	2024-11-10 00:17:13.850243	{235,217,317,282,305,368,320,145,384,90,221,237,267,244,150,374,277,41,330,121,395,393,329,385,206,115,402,246,440,161,311,336,415,444,303,183,109,338,446,167,132,96,238,144,127,95,404,61,219,397,409,360,70,350,86,113,310,175,270,94,298,223,435,194,256,279,148,294,224,398,169,55,130,381,107,323,187,418,207,289,173,296,255,124,157,143,433,436,434,273,287,285,84,358,257,188,364,348,315,216,443,98,327,128,170,445,180,332,449,58,137,197,101,214,403,230,427,430,447,408,199,82,241,160,448,278,74,401,309,276,81,77,269,76,328,54,119,50,226,104,365,359,379,215,208,91,60,53,438,205,344,318,428,439,49,204,377,220,399,181,366,453,232,164,351,355,367,239,407,99,412,195,339,168,392,343,245,423,419,159,225,264,154,416,268,259,425,286,176,75,243,422,390,429,316,292,380,357,212,178,69,66,334,450,120,301,201,229,406,413,227,185,43,198,312,290,414,370,337,67,92,190,116,118,196,394,261,247,100,133,251,271,97,382,110,134,228,200,376,57,437,249,184,135,252,103,65,400,174,71,139,192,158,369,352,362,186,420,147,396,72,421,209,283,48,213,179,155,46,141,262,297,324,431,102,191,250,253,356,391,275,117,258,424,202,142,62,340,45,182,47,371,156,87,314,138,335,293,125,426,89,325,78,233,152,326,383,442,42,64,108,260,300,304,166,210,122,80,73,126,346,345,231,432,234,149,378,281,254,59,441,123,131,136,272,341,129,112,114,411,162,218,306,410,347,172,284,93,333,308,106,373,307,248,372,389,140,388,386,236,353,302,321,313,451,361,299,354,291,88,288,68,146,240,111,319,56,349,171,85,79,387,274,363,63,83,375,295,322,165,331,242,203,222,52,151,177,263,153,163,44,189,280,265,342,193,405,51,211,266,452,105,417}	5	1319x988	2024-11-23 22:01:05.321856	\N	\N
+198	53	finished	classic	151	2025-01-13 19:23:16.634208	2025-01-13 21:17:15.321515	2025-01-13 19:23:32.079408	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+196	81	finished	classic	19	2025-01-09 00:31:32.48948	2025-01-13 21:35:22.982451	2025-01-09 00:32:25.22934	{17,19,15,14,18,12,11,13,20,16}	2	1329x992	0001-01-01 00:00:00	\N	\N
+236	95	not_started	classic	10	2025-02-03 09:31:57.462316	2025-02-03 09:31:57.529073	\N	{10,8,4,9,3,7,5,6,2,1}	1	360x721	2025-02-03 09:31:57.528893	\N	\N
+50	20	finished	classic	282	2024-11-10 00:43:46.76162	2024-11-10 00:52:48.528578	2024-11-10 00:44:31.268966	{235,217,317,282,305,368,320,145,384,90,221,237,267,244,150,374,277,41,330,121,395,393,329,385,206,115,402,246,440,161,311,336,415,444,303,183,109,338,446,167,132,96,238,144,127,95,404,61,219,397,409,360,70,350,86,113,310,175,270,94,298,223,435,194,256,279,148,294,224,398,169,55,130,381,107,323,187,418,207,289,173,296,255,124,157,143,433,436,434,273,287,285,84,358,257,188,364,348,315,216,443,98,327,128,170,445,180,332,449,58,137,197,101,214,403,230,427,430,447,408,199,82,241,160,448,278,74,401,309,276,81,77,269,76,328,54,119,50,226,104,365,359,379,215,208,91,60,53,438,205,344,318,428,439,49,204,377,220,399,181,366,453,232,164,351,355,367,239,407,99,412,195,339,168,392,343,245,423,419,159,225,264,154,416,268,259,425,286,176,75,243,422,390,429,316,292,380,357,212,178,69,66,334,450,120,301,201,229,406,413,227,185,43,198,312,290,414,370,337,67,92,190,116,118,196,394,261,247,100,133,251,271,97,382,110,134,228,200,376,57,437,249,184,135,252,103,65,400,174,71,139,192,158,369,352,362,186,420,147,396,72,421,209,283,48,213,179,155,46,141,262,297,324,431,102,191,250,253,356,391,275,117,258,424,202,142,62,340,45,182,47,371,156,87,314,138,335,293,125,426,89,325,78,233,152,326,383,442,42,64,108,260,300,304,166,210,122,80,73,126,346,345,231,432,234,149,378,281,254,59,441,123,131,136,272,341,129,112,114,411,162,218,306,410,347,172,284,93,333,308,106,373,307,248,372,389,140,388,386,236,353,302,321,313,451,361,299,354,291,88,288,68,146,240,111,319,56,349,171,85,79,387,274,363,63,83,375,295,322,165,331,242,203,222,52,151,177,263,153,163,44,189,280,265,342,193,405,51,211,266,452,105,417}	5	1361x988	2024-11-23 22:01:05.321856	\N	\N
+285	19	finished	educational	439	2025-04-25 18:25:30.894595	2025-04-27 13:50:12.3653	2025-04-25 18:25:34.890165	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+199	82	in_progress	classic	2	2025-01-13 21:13:14.287568	2025-01-13 21:13:37.139157	\N	{2,8,4,10,6,9,1,5,7,3}	1	2560x1271	2025-01-13 21:13:37.138644	\N	\N
+200	53	finished	classic	151	2025-01-13 21:17:15.327247	2025-01-13 21:17:26.540202	2025-01-13 21:17:22.144738	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1920x992	0001-01-01 00:00:00	\N	\N
+201	53	finished	classic	151	2025-01-13 21:17:26.541423	2025-01-13 21:20:23.650781	2025-01-13 21:17:37.923277	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1920x992	0001-01-01 00:00:00	\N	\N
+237	94	finished	classic	356	2025-02-03 09:32:39.220868	2025-02-03 14:13:58.42569	2025-02-03 14:07:44.460111	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	0001-01-01 00:00:00	\N	\N
+266	19	finished	classic	164	2025-04-08 22:37:53.505958	2025-04-14 09:18:44.271744	2025-04-08 22:38:29.18081	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x628	0001-01-01 00:00:00	\N	\N
+570	19	finished	educational	288	2025-09-22 07:14:50.23182	2025-09-22 07:18:07.197774	2025-09-22 07:16:50.547032	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+51	20	finished	classic	145	2024-11-10 00:52:48.531068	2024-11-10 01:37:35.460332	2024-11-10 00:53:04.13163	{235,217,317,282,305,368,320,145,384,90,221,237,267,244,150,374,277,41,330,121,395,393,329,385,206,115,402,246,440,161,311,336,415,444,303,183,109,338,446,167,132,96,238,144,127,95,404,61,219,397,409,360,70,350,86,113,310,175,270,94,298,223,435,194,256,279,148,294,224,398,169,55,130,381,107,323,187,418,207,289,173,296,255,124,157,143,433,436,434,273,287,285,84,358,257,188,364,348,315,216,443,98,327,128,170,445,180,332,449,58,137,197,101,214,403,230,427,430,447,408,199,82,241,160,448,278,74,401,309,276,81,77,269,76,328,54,119,50,226,104,365,359,379,215,208,91,60,53,438,205,344,318,428,439,49,204,377,220,399,181,366,453,232,164,351,355,367,239,407,99,412,195,339,168,392,343,245,423,419,159,225,264,154,416,268,259,425,286,176,75,243,422,390,429,316,292,380,357,212,178,69,66,334,450,120,301,201,229,406,413,227,185,43,198,312,290,414,370,337,67,92,190,116,118,196,394,261,247,100,133,251,271,97,382,110,134,228,200,376,57,437,249,184,135,252,103,65,400,174,71,139,192,158,369,352,362,186,420,147,396,72,421,209,283,48,213,179,155,46,141,262,297,324,431,102,191,250,253,356,391,275,117,258,424,202,142,62,340,45,182,47,371,156,87,314,138,335,293,125,426,89,325,78,233,152,326,383,442,42,64,108,260,300,304,166,210,122,80,73,126,346,345,231,432,234,149,378,281,254,59,441,123,131,136,272,341,129,112,114,411,162,218,306,410,347,172,284,93,333,308,106,373,307,248,372,389,140,388,386,236,353,302,321,313,451,361,299,354,291,88,288,68,146,240,111,319,56,349,171,85,79,387,274,363,63,83,375,295,322,165,331,242,203,222,52,151,177,263,153,163,44,189,280,265,342,193,405,51,211,266,452,105,417}	5	1361x988	2024-11-23 22:01:05.321856	\N	\N
+202	53	finished	classic	151	2025-01-13 21:20:23.653104	2025-01-13 21:30:34.72949	2025-01-13 21:20:30.224232	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1920x992	0001-01-01 00:00:00	\N	\N
+286	19	finished	classic	439	2025-04-27 13:50:12.367941	2025-06-23 08:59:19.059883	2025-04-27 13:50:12.514847	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x629	0001-01-01 00:00:00	\N	\N
+304	19	finished	classic	216	2025-06-28 14:09:47.133827	2025-06-28 16:00:23.702603	2025-06-28 16:00:19.17774	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+203	53	finished	classic	425	2025-01-13 21:30:34.732812	2025-01-19 19:56:09.72961	2025-01-13 21:30:59.442095	{333,395,212,140,230,138,267,273,293,248,341,206,58,231,130,101,388,114,177,409,125,234,118,265,120,151,249,55,52,425,223,355,368,411,197,386,283,204,54,113,387,241,155,290,421,255,268,272,269,178,440,350,360,179,41,352,430,141,379,407,436,216,260,170,418,210,382,202,359,166,243,192,277,251,44,121,191,426,148,147,306,354,104,237,235,48,224,250,288,376,161,434,389,128,405,301,453,356,143,349,157,182,186,451,396,254,445,221,47,165,372,242,297,57,370,448,308,384,363,424,343,397,132,435,111,122,256,346,403,357,209,327,317,428,139,329,233,298,394,198,158,375,398,175,211,117,257,208,112,323,274,392,412,295,410,438,173,296,217,345,291,442,419,300,335,194,284,252,220,377,326,56,258,278,406,253,439,215,314,264,124,126,109,361,318,105,437,137,365,449,289,201,107,46,228,373,176,378,309,322,404,229,385,275,142,286,203,328,390,115,181,43,270,340,131,321,222,103,423,227,180,307,164,331,310,207,218,116,374,279,169,366,344,400,364,420,188,383,381,163,152,399,369,214,42,315,239,336,213,338,311,299,146,168,144,159,156,413,416,187,280,337,431,59,408,342,266,427,347,348,238,330,415,195,127,452,129,271,232,247,171,189,432,262,135,305,292,53,183,417,134,190,324,136,446,184,433,51,162,133,371,200,119,149,50,150,225,193,316,219,367,304,282,110,325,353,450,145,441,414,287,281,261,429,246,447,185,334,263,167,106,259,205,245,102,332,100,154,226,358,108,302,172,160,393,444,380,285,174,196,320,303,153,123,362,443,391,402,240,339,49,319,312,351,276,401,45}	5	1329x992	0001-01-01 00:00:00	\N	\N
+238	94	finished	educational	356	2025-02-03 14:13:58.428139	2025-02-03 14:14:06.729146	2025-02-03 14:13:58.480128	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	0001-01-01 00:00:00	\N	\N
+239	94	finished	educational	356	2025-02-03 14:14:06.731949	2025-02-03 14:14:19.964165	2025-02-03 14:14:06.77078	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	0001-01-01 00:00:00	\N	\N
+240	94	finished	classic	49	2025-02-03 14:14:19.965959	2025-02-03 15:42:19.670206	2025-02-03 14:14:26.633421	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	0001-01-01 00:00:00	\N	\N
+267	19	finished	classic	189	2025-04-14 09:18:44.281203	2025-04-14 09:21:08.00691	2025-04-14 09:19:47.255949	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1920x947	0001-01-01 00:00:00	\N	\N
+241	94	finished	classic	453	2025-02-03 15:42:19.672025	2025-02-05 10:24:56.867905	2025-02-03 15:42:27.302294	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	0001-01-01 00:00:00	\N	\N
+287	19	finished	classic	439	2025-06-23 08:59:19.062727	2025-06-23 18:53:39.907505	2025-06-23 08:59:19.102316	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+305	19	finished	educational	195	2025-06-28 16:00:23.704464	2025-06-28 20:01:57.098002	2025-06-28 16:01:51.495142	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+204	81	finished	classic	12	2025-01-13 21:35:22.984996	2025-01-13 21:43:15.726221	2025-01-13 21:35:33.54213	{17,19,15,14,18,12,11,13,20,16}	2	1920x992	0001-01-01 00:00:00	\N	\N
+716	101	finished	classic	316	2025-09-29 15:11:34.091182	2025-09-29 15:11:48.851487	2025-09-29 15:11:38.914663	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+268	19	finished	educational	144	2025-04-14 09:21:08.00942	2025-04-14 09:31:05.100908	2025-04-14 09:21:29.436751	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1920x947	0001-01-01 00:00:00	\N	\N
+242	72	finished	educational	31	2025-02-04 14:03:06.586521	2025-08-25 16:34:04.165002	2025-02-04 14:03:06.667992	{37,39,40,34,36,32,33,35,38,31}	4	1440x820	0001-01-01 00:00:00	\N	\N
+306	19	finished	classic	195	2025-06-28 20:01:57.100851	2025-06-29 11:53:53.714651	2025-06-28 20:01:57.142642	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+205	81	finished	classic	30	2025-01-13 21:43:15.727634	2025-01-13 21:43:26.854935	2025-01-13 21:43:26.854706	{30,24,25,27,28,26,22,23,29,21}	3	1920x992	2025-01-13 21:43:24.993047	\N	\N
+269	102	finished	classic	9	2025-04-14 09:23:32.073304	2025-04-14 09:26:00.528307	2025-04-14 09:24:48.688634	{3,1,9,5,10,8,4,2,6,7}	1	411x813	0001-01-01 00:00:00	\N	\N
+270	103	finished	classic	2	2025-04-14 09:24:24.27299	2025-04-14 09:28:03.47269	2025-04-14 09:28:03.472516	{6,5,3,1,4,10,2,9,7,8}	1	414x705	2025-04-14 09:27:33.854787	\N	\N
+288	108	finished	classic	295	2025-06-23 10:32:57.970574	2025-06-23 10:45:49.78568	2025-06-23 10:45:49.784916	{42,416,139,127,167,280,283,238,319,211,430,180,397,357,320,233,198,119,100,260,439,400,440,190,436,174,295,193,410,396,128,452,346,197,54,451,47,245,299,131,293,281,301,228,223,166,285,206,111,379,308,417,177,388,362,389,398,255,391,352,356,347,427,386,399,298,334,385,134,282,216,384,450,338,142,169,143,141,303,423,165,387,383,227,109,44,103,442,117,300,183,163,217,133,188,129,104,265,132,394,189,322,445,114,210,372,205,52,278,215,230,390,377,179,380,156,361,171,115,181,256,121,329,324,144,176,262,342,254,323,191,412,184,125,431,315,349,48,275,164,213,277,170,443,339,218,204,366,149,222,157,147,240,173,354,208,203,192,328,414,101,153,335,448,359,297,194,419,201,219,375,225,185,235,407,116,118,271,424,124,239,367,178,55,378,437,175,287,257,441,381,41,332,421,434,426,57,112,340,360,105,155,316,345,292,327,403,312,248,408,420,159,120,107,309,162,306,429,161,409,289,371,135,449,251,307,102,290,350,311,152,250,51,305,273,123,148,392,113,276,146,195,231,376,226,237,234,382,267,433,168,232,268,355,393,314,333,368,369,274,172,261,138,296,363,247,317,110,56,46,318,43,263,150,200,272,253,264,182,45,212,229,321,348,158,418,130,446,435,59,160,284,331,406,137,49,432,243,374,145,50,395,344,187,326,447,154,220,108,252,404,258,402,207,279,373,453,425,214,202,364,196,140,151,269,401,58,370,413,186,224,126,246,122,259,291,411,405,444,288,337,304,343,270,209,325,330,336,341,358,428,302,53,286,242,353,136,221,241,351,415,438,266,249,365,310,106}	5	402x792	2025-06-23 10:45:37.149111	\N	\N
+243	94	finished	classic	453	2025-02-05 10:24:56.870335	2025-02-05 10:33:08.467604	2025-02-05 10:24:56.918484	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1912x1040	0001-01-01 00:00:00	\N	\N
+273	104	finished	classic	7	2025-04-14 09:26:11.163269	2025-04-14 09:31:00.446667	2025-04-14 09:31:00.446487	{2,6,9,4,5,1,8,7,3,10}	1	390x663	2025-04-14 09:29:16.772243	\N	\N
+206	83	finished	time_limited	10	2025-01-14 09:40:14.527356	2025-01-14 09:43:12.072634	2025-01-14 09:41:49.852552	{7,8,4,10,5,9,3,6,1,2}	1	375x628	0001-01-01 00:00:00	\N	\N
+275	107	finished	classic	1	2025-04-14 09:26:54.029078	2025-04-14 09:32:01.44002	2025-04-14 09:32:01.43963	{10,8,3,1,6,9,7,4,5,2}	1	375x642	2025-04-14 09:29:38.879116	\N	\N
+272	102	finished	classic	9	2025-04-14 09:26:00.529771	2025-04-14 09:26:16.696607	2025-04-14 09:26:00.596212	{3,1,9,5,10,8,4,2,6,7}	1	411x757	0001-01-01 00:00:00	\N	\N
+271	105	finished	classic	5	2025-04-14 09:25:46.409551	2025-06-28 13:29:14.812011	2025-04-14 09:30:00.349295	{2,3,8,5,1,10,9,6,7,4}	1	390x663	0001-01-01 00:00:00	\N	\N
+307	19	finished	classic	233	2025-06-29 11:53:53.723581	2025-07-06 20:32:46.910271	2025-06-29 11:54:07.630158	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+274	102	finished	educational	10	2025-04-14 09:26:16.698313	2025-04-14 09:28:10.609918	2025-04-14 09:27:59.968969	{3,1,9,5,10,8,4,2,6,7}	1	411x757	0001-01-01 00:00:00	\N	\N
+276	102	in_progress	educational	4	2025-04-14 09:28:10.610846	2025-04-14 09:30:35.582058	\N	{3,1,9,5,10,8,4,2,6,7}	1	411x757	2025-04-14 09:29:46.539089	\N	\N
+324	101	finished	classic	321	2025-07-16 17:14:00.636182	2025-07-27 16:34:47.994423	2025-07-16 17:59:44.390613	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+331	101	finished	classic	117	2025-08-05 14:29:25.825077	2025-08-05 14:30:00.419641	2025-08-05 14:29:50.530208	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+278	106	finished	classic	10	2025-04-14 09:30:04.933387	2025-04-14 09:31:04.871191	2025-04-14 09:31:04.870853	{1,6,4,10,9,7,5,2,3,8}	1	265x504	2025-04-14 09:30:48.048034	\N	\N
+277	106	finished	educational	6	2025-04-14 09:28:42.579457	2025-04-14 09:30:04.931976	2025-04-14 09:29:56.905009	{1,6,4,10,9,7,5,2,3,8}	1	390x744	0001-01-01 00:00:00	\N	\N
+717	101	finished	classic	316	2025-09-29 15:11:48.854808	2025-09-29 15:57:50.307612	2025-09-29 15:11:48.882106	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+207	83	finished	educational	2	2025-01-14 09:43:12.073909	2025-01-14 09:47:09.716184	2025-01-14 09:44:40.487209	{7,8,4,10,5,9,3,6,1,2}	1	375x628	0001-01-01 00:00:00	\N	\N
+332	101	finished	classic	333	2025-08-05 14:30:00.421866	2025-08-11 10:57:46.253209	2025-08-05 14:30:17.54049	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+289	111	finished	classic	10	2025-06-23 18:47:00.046362	2025-06-23 18:55:14.123351	2025-06-23 18:53:53.470839	{1,2,3,9,6,4,5,8,7,10}	1	820x1073	0001-01-01 00:00:00	\N	\N
+308	100	finished	classic	3	2025-06-29 21:21:29.614742	2025-06-29 21:22:51.758954	2025-06-29 21:21:50.166183	{2,5,3,4,7,6,8,9,1}	1	375x628	0001-01-01 00:00:00	\N	\N
+325	101	finished	classic	321	2025-07-27 16:34:47.997031	2025-08-04 06:43:15.064866	2025-07-27 16:34:48.028109	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+309	100	finished	classic	4	2025-06-29 21:22:51.76072	2025-06-29 21:23:09.411118	2025-06-29 21:23:09.410948	{2,5,3,4,7,6,8,9,1}	1	375x628	2025-06-29 21:22:51.787813	\N	\N
+208	83	finished	educational	16	2025-01-14 09:47:09.717632	2025-07-10 19:03:39.275916	2025-01-14 09:47:46.276204	{19,15,17,14,16,20,18,11,12,13}	2	375x710	0001-01-01 00:00:00	\N	\N
+363	140	not_started	classic	3	2025-08-20 22:08:29.004808	2025-08-20 22:08:29.067731	\N	{3,7,2,5,9,4,1,8,6}	1	1869x919	2025-08-20 22:08:29.067284	\N	\N
+209	27	finished	classic	5	2025-01-14 09:59:23.204675	2025-01-14 21:39:19.266103	2025-01-14 09:59:33.178708	{8,9,10,4,3,7,5,6,2,1}	1	2560x1305	0001-01-01 00:00:00	\N	\N
+244	94	finished	classic	312	2025-02-05 10:33:08.469964	2025-02-05 14:54:44.167557	2025-02-05 10:44:03.854748	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1912x1040	0001-01-01 00:00:00	\N	\N
+290	19	finished	classic	266	2025-06-23 18:53:39.910044	2025-06-23 19:38:32.218483	2025-06-23 18:59:46.531339	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+326	127	finished	classic	9	2025-07-28 14:56:17.004767	2025-07-28 14:56:52.472444	2025-07-28 14:56:17.03464	{9,2,3,5,7,8,4,6,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+310	27	finished	classic	17	2025-06-30 08:40:31.922944	2025-06-30 08:42:33.678838	2025-06-30 08:41:23.429783	{14,20,17,19,12,15,11,18,16,13}	2	2560x1305	0001-01-01 00:00:00	\N	\N
+571	19	finished	classic	446	2025-09-22 07:18:07.20037	2025-09-22 07:18:26.487008	2025-09-22 07:18:20.65874	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+375	142	finished	classic	4	2025-08-21 17:42:28.838604	2025-08-21 17:42:55.902118	2025-08-21 17:42:33.143835	{9,4,1,3,8,7,2,6,5}	1	1869x919	0001-01-01 00:00:00	\N	\N
+327	127	finished	classic	7	2025-07-28 14:56:52.474487	2025-07-28 14:56:58.455636	2025-07-28 14:56:58.455317	{9,2,3,5,7,8,4,6,1}	1	2509x738	2025-07-28 14:56:56.757565	\N	\N
+378	143	finished	classic	2	2025-08-21 18:07:39.286664	2025-08-21 18:07:47.040976	2025-08-21 18:07:47.040786	{8,5,7,2,4,1,9,3,6}	1	1869x919	2025-08-21 18:07:44.701966	\N	\N
+372	141	finished	classic	6	2025-08-21 13:30:08.539631	2025-08-23 19:44:24.251928	2025-08-21 13:30:10.112987	{2,6,8,1,4,7,3,5,9}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+376	142	finished	classic	7	2025-08-21 17:42:55.903639	2025-08-21 17:49:20.393837	2025-08-21 17:43:06.195392	{9,4,1,3,8,7,2,6,5}	1	1869x919	0001-01-01 00:00:00	\N	\N
+377	142	not_started	classic	7	2025-08-21 17:49:20.396319	2025-08-21 17:49:20.458471	\N	{9,4,1,3,8,7,2,6,5}	1	1869x919	2025-08-21 17:49:20.457862	\N	\N
+210	19	finished	classic	22	2025-01-14 14:52:44.485252	2025-01-14 14:53:31.184168	2025-01-14 14:53:01.312284	{28,30,24,25,26,21,22,23,27,29}	3	1440x812	0001-01-01 00:00:00	\N	\N
+245	94	in_progress	classic	181	2025-02-05 14:54:44.170391	2025-02-05 14:58:51.071801	\N	{344,130,318,226,186,260,141,228,205,429,277,309,300,391,253,382,193,166,206,340,162,366,388,248,168,173,258,392,337,232,208,295,302,100,325,398,342,158,183,310,247,131,319,291,159,397,417,368,428,373,446,211,416,122,410,209,156,383,167,316,224,214,341,415,188,115,345,315,447,47,425,123,355,190,357,321,372,140,356,49,453,144,303,127,239,413,312,281,421,164,225,181,220,43,114,307,113,154,348,128,409,201,287,250,399,59,285,284,443,44,163,276,436,332,338,370,249,452,286,149,390,51,361,222,311,129,350,257,202,401,440,135,411,187,235,445,367,426,182,375,147,343,203,240,365,329,126,405,242,108,437,262,432,403,327,360,280,362,293,359,175,412,324,177,55,282,283,142,116,145,400,148,335,170,191,396,133,120,354,301,408,155,349,53,109,297,112,271,438,237,146,233,306,110,264,172,179,275,139,132,157,305,304,234,41,448,393,272,379,151,223,404,288,323,424,169,381,369,119,326,243,118,171,207,352,269,266,270,442,52,434,103,364,376,161,185,346,331,336,308,212,363,138,395,380,298,160,268,273,105,136,230,241,216,189,176,245,386,263,229,111,221,251,394,451,180,150,385,334,358,261,200,217,152,353,204,265,107,290,121,125,279,238,102,431,255,256,134,430,143,184,252,104,351,227,414,278,402,314,57,58,196,449,137,48,347,197,56,444,219,378,419,42,407,101,254,406,165,441,215,289,450,210,423,174,435,45,178,231,384,371,198,259,322,267,433,106,320,50,124,54,195,418,330,374,194,389,427,213,339,377,117,328,46,296,246,333,274,153,439,420,299,218,317,192,292,387}	5	1872x932	2025-02-05 14:58:51.071068	\N	\N
+572	19	finished	classic	220	2025-09-22 07:18:26.488282	2025-09-22 07:18:50.540849	2025-09-22 07:18:32.856596	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+291	111	finished	educational	17	2025-06-23 18:55:14.126253	2025-06-23 19:07:18.711675	2025-06-23 19:07:18.711407	{17,12,16,18,15,19,13,20,11,14}	2	820x1073	2025-06-23 18:55:14.170711	\N	\N
+328	101	finished	classic	321	2025-08-04 06:43:15.067511	2025-08-04 11:41:05.520401	2025-08-04 06:43:15.118782	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+311	27	finished	classic	19	2025-06-30 08:42:33.681774	2025-06-30 11:51:20.364841	2025-06-30 11:51:20.364382	{14,20,17,19,12,15,11,18,16,13}	2	2560x1305	2025-06-30 08:42:33.706419	\N	\N
+387	145	finished	classic	1	2025-08-23 19:32:28.64926	2025-08-23 20:24:10.78628	2025-08-23 19:32:28.683992	{1,4,9,3,8,6,7,5,2}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+257	99	finished	classic	6	2025-03-24 19:45:41.257779	2025-09-03 20:46:53.635448	2025-03-24 19:45:47.655565	{4,10,6,3,7,9,5,1,8,2}	1	1482x772	0001-01-01 00:00:00	\N	\N
+404	145	finished	classic	1	2025-08-23 20:24:10.789388	2025-08-23 20:24:25.863598	2025-08-23 20:24:10.818988	{1,4,9,3,8,6,7,5,2}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+405	145	finished	classic	1	2025-08-23 20:24:25.865074	2025-08-23 20:24:32.156033	2025-08-23 20:24:25.891623	{1,4,9,3,8,6,7,5,2}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+410	145	finished	classic	25	2025-08-23 20:25:30.348297	2025-08-23 20:25:46.727093	2025-08-23 20:25:43.17181	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+406	145	finished	classic	20	2025-08-23 20:24:32.157407	2025-08-23 20:24:48.942878	2025-08-23 20:24:46.200946	{14,11,20,13,16,15,12,18,17,19}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+407	145	finished	classic	16	2025-08-23 20:24:48.943881	2025-08-23 20:24:55.487679	2025-08-23 20:24:53.086717	{14,11,20,13,16,15,12,18,17,19}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+52	20	finished	classic	132	2024-11-10 01:37:35.462381	2024-11-10 01:45:17.988	2024-11-10 01:45:17.987763	{235,217,317,282,305,368,320,145,384,90,221,237,267,244,150,374,277,41,330,121,395,393,329,385,206,115,402,246,440,161,311,336,415,444,303,183,109,338,446,167,132,96,238,144,127,95,404,61,219,397,409,360,70,350,86,113,310,175,270,94,298,223,435,194,256,279,148,294,224,398,169,55,130,381,107,323,187,418,207,289,173,296,255,124,157,143,433,436,434,273,287,285,84,358,257,188,364,348,315,216,443,98,327,128,170,445,180,332,449,58,137,197,101,214,403,230,427,430,447,408,199,82,241,160,448,278,74,401,309,276,81,77,269,76,328,54,119,50,226,104,365,359,379,215,208,91,60,53,438,205,344,318,428,439,49,204,377,220,399,181,366,453,232,164,351,355,367,239,407,99,412,195,339,168,392,343,245,423,419,159,225,264,154,416,268,259,425,286,176,75,243,422,390,429,316,292,380,357,212,178,69,66,334,450,120,301,201,229,406,413,227,185,43,198,312,290,414,370,337,67,92,190,116,118,196,394,261,247,100,133,251,271,97,382,110,134,228,200,376,57,437,249,184,135,252,103,65,400,174,71,139,192,158,369,352,362,186,420,147,396,72,421,209,283,48,213,179,155,46,141,262,297,324,431,102,191,250,253,356,391,275,117,258,424,202,142,62,340,45,182,47,371,156,87,314,138,335,293,125,426,89,325,78,233,152,326,383,442,42,64,108,260,300,304,166,210,122,80,73,126,346,345,231,432,234,149,378,281,254,59,441,123,131,136,272,341,129,112,114,411,162,218,306,410,347,172,284,93,333,308,106,373,307,248,372,389,140,388,386,236,353,302,321,313,451,361,299,354,291,88,288,68,146,240,111,319,56,349,171,85,79,387,274,363,63,83,375,295,322,165,331,242,203,222,52,151,177,263,153,163,44,189,280,265,342,193,405,51,211,266,452,105,417}	5	380x988	2024-11-23 22:01:05.321856	\N	\N
+718	101	finished	classic	436	2025-09-29 15:57:50.313427	2025-09-29 15:58:13.806813	2025-09-29 15:57:52.302056	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+408	145	finished	classic	12	2025-08-23 20:24:55.488891	2025-08-23 20:25:30.346773	2025-08-23 20:24:59.69482	{14,11,20,13,16,15,12,18,17,19}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+411	145	finished	classic	22	2025-08-23 20:25:46.728	2025-08-23 20:46:59.866372	2025-08-23 20:25:48.359453	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+246	45	finished	educational	1	2025-02-17 09:53:46.542463	2025-02-17 11:54:15.603574	2025-02-17 09:57:37.462637	{2,6,9,8,7,3,4,5,10,1}	1	1920x947	0001-01-01 00:00:00	\N	\N
+63	19	finished	classic	13	2024-11-10 09:50:45.474351	2024-11-10 09:57:05.508323	2024-11-10 09:51:27.500877	{16,20,13,14,12,19,18,15,11,17}	2	375x628	2024-11-23 22:01:05.321856	\N	\N
+66	38	not_started	classic	6	2024-11-10 10:01:38.344843	2024-11-10 10:01:38.344843	\N	{6,4,8,10,1,3,2,9,7,5}	1	375x628	2024-11-23 22:01:05.321856	\N	\N
+68	37	finished	classic	1	2024-11-10 10:29:52.148175	2024-11-10 10:31:36.626268	2024-11-10 10:31:09.896403	{9,3,7,2,4,1,5,10,6,8}	1	1206x988	2024-11-23 22:01:05.321856	\N	\N
+77	44	finished	classic	7	2024-11-10 17:18:55.299199	2024-11-12 17:33:03.56347	2024-11-10 17:20:47.077609	{6,7,4,10,5,3,2,1,9,8}	1	432x872	2024-11-23 22:01:05.321856	\N	\N
+54	22	finished	classic	3	2024-11-10 02:14:50.014072	2024-11-10 02:15:47.400728	2024-11-10 02:15:47.400439	{7,5,8,4,1,3,2,9,10,6}	1	360x649	2024-11-23 22:01:05.321856	\N	\N
+53	18	finished	classic	147	2024-11-10 02:13:07.209161	2024-11-10 02:17:03.199317	2024-11-10 02:13:47.767481	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1222x988	2024-11-23 22:01:05.321856	\N	\N
+69	27	finished	classic	8	2024-11-10 10:31:34.217595	2024-11-24 21:40:01.665641	2024-11-10 10:31:34.217595	{8,9,10,4,3,7,5,6,2,1}	1	390x669	0001-01-01 00:00:00	\N	\N
+56	26	finished	classic	3	2024-11-10 08:22:39.287583	2024-11-10 08:45:34.200041	2024-11-10 08:22:39.287583	{3,9,6,5,8,7,4,2,1,10}	1	1865x988	2024-11-23 22:01:05.321856	\N	\N
+57	26	not_started	classic	3	2024-11-10 08:45:34.202312	2024-11-10 08:45:34.202312	\N	{3,9,6,5,8,7,4,2,1,10}	1	1865x988	2024-11-23 22:01:05.321856	\N	\N
+58	28	finished	classic	4	2024-11-10 08:48:06.080394	2024-11-10 08:48:23.249529	2024-11-10 08:48:06.080394	{4,5,8,10,9,7,1,6,3,2}	1	1206x988	2024-11-23 22:01:05.321856	\N	\N
+59	28	not_started	classic	4	2024-11-10 08:48:23.250566	2024-11-10 08:48:23.250566	\N	{4,5,8,10,9,7,1,6,3,2}	1	1865x988	2024-11-23 22:01:05.321856	\N	\N
+61	19	finished	classic	7	2024-11-10 09:46:19.258468	2024-11-10 09:50:03.42068	2024-11-10 09:49:41.652286	{10,6,1,4,9,8,7,5,2,3}	1	375x629	2024-11-23 22:01:05.321856	\N	\N
+67	37	finished	classic	2	2024-11-10 10:14:08.251161	2024-11-10 10:29:52.144769	2024-11-10 10:14:16.49214	{9,3,7,2,4,1,5,10,6,8}	1	1206x988	2024-11-23 22:01:05.321856	\N	\N
+73	37	finished	classic	15	2024-11-10 11:26:04.858025	2024-11-10 11:26:17.062933	2024-11-10 11:26:17.062633	{15,20,12,18,11,16,19,14,17,13}	2	1326x988	2024-11-23 22:01:05.321856	\N	\N
+62	19	finished	classic	13	2024-11-10 09:50:03.422423	2024-11-10 09:50:45.472558	2024-11-10 09:50:20.287956	{16,20,13,14,12,19,18,15,11,17}	2	375x628	2024-11-23 22:01:05.321856	\N	\N
+74	42	not_started	classic	2	2024-11-10 12:05:34.035227	2024-11-10 12:05:34.035227	\N	{2,10,1,7,4,5,8,3,9,6}	1	407x772	2024-11-23 22:01:05.321856	\N	\N
+60	27	finished	classic	8	2024-11-10 09:43:34.273934	2024-11-10 10:31:34.216452	2024-11-10 09:43:34.273934	{8,9,10,4,3,7,5,6,2,1}	1	390x669	2024-11-23 22:01:05.321856	\N	\N
+76	44	finished	classic	7	2024-11-10 17:15:17.11408	2024-11-10 17:18:55.29834	2024-11-10 17:17:43.101653	{6,7,4,10,5,3,2,1,9,8}	1	432x816	2024-11-23 22:01:05.321856	\N	\N
+71	40	finished	classic	3	2024-11-10 10:39:47.967061	2024-11-10 10:39:59.194969	2024-11-10 10:39:59.194571	{5,3,4,7,9,6,2,8,10,1}	1	360x655	2024-11-23 22:01:05.321856	\N	\N
+72	41	finished	classic	4	2024-11-10 10:55:11.649094	2024-11-10 10:56:11.187776	2024-11-10 10:56:11.18742	{5,8,9,1,3,4,10,2,7,6}	1	1792x1040	2024-11-23 22:01:05.321856	\N	\N
+70	37	finished	classic	8	2024-11-10 10:31:36.628024	2024-11-10 11:26:04.855504	2024-11-10 10:32:00.570067	{9,3,7,2,4,1,5,10,6,8}	1	1326x988	2024-11-23 22:01:05.321856	\N	\N
+75	43	finished	classic	5	2024-11-10 17:08:53.109591	2024-11-10 17:18:55.556946	2024-11-10 17:18:55.556783	{8,6,10,1,7,4,3,5,9,2}	1	390x663	2024-11-23 22:01:05.321856	\N	\N
+64	37	finished	classic	3	2024-11-10 09:56:37.772521	2024-11-10 22:25:25.13273	2024-11-10 22:25:25.131964	{9,3,7,2,4,1,5,10,6,8}	1	1206x988	2024-11-23 22:01:05.321856	\N	\N
+65	19	finished	classic	13	2024-11-10 09:57:05.509364	2024-11-22 16:24:00.346894	2024-11-10 09:57:05.509364	{16,20,13,14,12,19,18,15,11,17}	2	375x628	2024-11-23 22:01:05.321856	\N	\N
+248	45	finished	classic	19	2025-02-17 11:57:32.691	2025-02-17 12:00:48.847888	2025-02-17 12:00:48.847322	{16,18,12,11,19,15,20,17,13,14}	2	1920x947	2025-02-17 12:00:38.211667	\N	\N
+247	45	finished	educational	18	2025-02-17 11:54:15.611864	2025-02-17 11:57:32.689298	2025-02-17 11:57:19.396923	{16,18,12,11,19,15,20,17,13,14}	2	1920x947	0001-01-01 00:00:00	\N	\N
+55	18	finished	classic	147	2024-11-10 02:17:03.200731	2024-11-11 19:44:05.099164	2024-11-10 02:17:03.200731	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	375x895	2024-11-23 22:01:05.321856	\N	\N
+292	19	finished	classic	401	2025-06-23 19:38:32.222807	2025-06-23 19:41:48.70433	2025-06-23 19:38:45.494509	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+249	96	finished	educational	7	2025-02-18 10:56:24.059159	2025-02-18 17:33:23.608341	2025-02-18 10:56:24.152365	{7,6,3,4,5,10,9,2,1,8}	1	393x733	0001-01-01 00:00:00	\N	\N
+413	117	not_started	classic	9	2025-08-23 20:29:33.965651	2025-08-23 20:29:33.999365	\N	{5,9,6,7,1,4,2,8,3}	1	2509x1279	2025-08-23 20:29:33.998015	\N	\N
+250	96	not_started	educational	7	2025-02-18 17:33:23.611487	2025-02-18 17:33:23.790588	\N	{7,6,3,4,5,10,9,2,1,8}	1	1482x791	2025-02-18 17:33:23.790213	\N	\N
+78	18	finished	classic	132	2024-11-11 19:44:05.107646	2024-11-11 19:46:15.658308	2024-11-11 19:45:20.738791	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1865x988	2024-11-23 22:01:05.321856	\N	\N
+293	19	finished	classic	401	2025-06-23 19:41:48.706966	2025-06-23 19:44:41.665514	2025-06-23 19:41:48.743161	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+414	146	in_progress	classic	9	2025-08-23 20:30:41.755228	2025-08-23 20:30:51.5803	\N	{4,2,6,5,3,9,8,7,1}	1	2509x1279	2025-08-23 20:30:51.579929	\N	\N
+409	101	finished	classic	127	2025-08-23 20:25:08.012878	2025-08-23 20:31:01.10386	2025-08-23 20:25:15.185518	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+294	19	finished	classic	401	2025-06-23 19:44:41.6682	2025-06-23 19:46:17.013095	2025-06-23 19:44:41.699429	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+80	44	finished	classic	7	2024-11-12 17:33:03.566951	2024-11-12 17:33:09.273389	2024-11-12 17:33:03.566951	{6,7,4,10,5,3,2,1,9,8}	1	432x816	2024-11-23 22:01:05.321856	\N	\N
+81	44	finished	classic	7	2024-11-12 17:33:09.27452	2024-11-12 17:33:19.348575	2024-11-12 17:33:09.27452	{6,7,4,10,5,3,2,1,9,8}	1	432x816	2024-11-23 22:01:05.321856	\N	\N
+295	19	finished	classic	401	2025-06-23 19:46:17.014774	2025-06-23 19:46:31.117245	2025-06-23 19:46:17.046949	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+82	44	finished	classic	5	2024-11-12 17:33:19.350058	2024-11-12 17:37:39.192225	2024-11-12 17:37:39.192034	{6,7,4,10,5,3,2,1,9,8}	1	432x816	2024-11-23 22:01:05.321856	\N	\N
+417	101	finished	classic	330	2025-08-23 20:47:16.053258	2025-08-23 20:47:53.476224	2025-08-23 20:47:16.08486	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+416	145	finished	classic	22	2025-08-23 20:46:59.877813	2025-08-23 20:49:01.20671	2025-08-23 20:46:59.928463	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+251	97	finished	classic	6	2025-03-08 10:12:55.799588	2025-03-08 10:13:25.40659	2025-03-08 10:13:25.406325	{5,4,7,2,1,8,3,9,10,6}	1	1920x911	2025-03-08 10:13:22.123691	\N	\N
+79	18	finished	classic	224	2024-11-11 19:46:15.660132	2024-11-13 09:57:25.093605	2024-11-11 19:50:45.070947	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1865x988	2024-11-23 22:01:05.321856	\N	\N
+573	19	finished	classic	214	2025-09-22 07:18:50.542939	2025-09-22 07:21:02.340696	2025-09-22 07:19:01.20818	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+252	19	finished	classic	34	2025-03-23 19:35:36.496384	2025-03-23 21:18:01.285825	2025-03-23 19:37:51.569087	{36,38,40,39,31,32,34,37,35,33}	4	1440x812	0001-01-01 00:00:00	\N	\N
+258	19	finished	educational	105	2025-03-24 19:52:03.068966	2025-03-24 21:55:35.337327	2025-03-24 19:52:39.846428	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+427	147	finished	classic	8	2025-08-25 08:28:25.924135	2025-08-25 08:29:27.764561	2025-08-25 08:29:14.795372	{5,9,6,8,1,4,2,3,7}	1	1600x902	0001-01-01 00:00:00	\N	\N
+83	18	finished	classic	158	2024-11-13 09:57:25.100763	2024-11-17 09:37:58.37888	2024-11-13 09:58:34.811762	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	360x649	2024-11-23 22:01:05.321856	\N	\N
+312	19	finished	classic	58	2025-07-06 20:32:46.913024	2025-07-08 15:25:21.112334	2025-07-06 20:33:12.744011	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+253	19	finished	classic	35	2025-03-23 21:18:01.288144	2025-03-23 21:19:35.975254	2025-03-23 21:18:07.799204	{36,38,40,39,31,32,34,37,35,33}	4	1600x902	0001-01-01 00:00:00	\N	\N
+259	19	finished	classic	442	2025-03-24 21:55:35.340344	2025-03-24 21:56:05.730801	2025-03-24 21:55:56.731554	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+313	19	finished	classic	58	2025-07-08 15:25:21.114729	2025-07-11 11:19:43.897867	2025-07-08 15:25:21.153591	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+254	19	finished	classic	33	2025-03-23 21:19:35.976469	2025-03-23 21:24:51.220108	2025-03-23 21:24:51.219831	{36,38,40,39,31,32,34,37,35,33}	4	1600x902	0001-01-01 00:00:00	\N	\N
+255	19	finished	classic	35	2025-03-23 21:21:17.537061	2025-03-23 21:24:57.65153	2025-03-23 21:21:17.56668	{36,38,40,39,31,32,34,37,35,33}	4	375x629	0001-01-01 00:00:00	\N	\N
+720	162	finished	classic	60	2025-09-29 15:58:58.670405	2025-09-29 19:34:58.078184	2025-09-29 15:59:24.520448	{63,61,65,67,66,64,68,69,60,62}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+260	19	finished	educational	328	2025-03-24 21:56:05.733006	2025-04-08 22:26:34.609626	2025-03-24 21:56:47.08762	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+297	113	finished	classic	8	2025-06-23 20:41:27.63265	2025-06-23 20:49:39.165703	2025-06-23 20:45:44.128257	{3,7,9,6,2,8,1,4,5}	1	414x720	0001-01-01 00:00:00	\N	\N
+84	18	in_progress	classic	195	2024-11-17 09:37:58.381421	2024-11-17 09:38:12.521717	\N	{92,447,316,435,160,233,453,223,242,326,77,325,278,341,328,362,402,87,243,262,376,67,363,55,202,141,369,180,211,70,261,75,66,83,306,327,330,304,169,396,347,277,314,415,98,365,324,263,147,245,144,276,132,224,158,118,100,428,257,253,292,195,391,357,50,199,408,200,273,333,209,289,196,218,335,414,104,441,54,188,368,222,174,62,323,190,373,101,194,41,416,366,297,424,405,411,226,175,51,178,370,48,235,351,430,342,99,231,171,176,74,46,146,290,256,238,426,270,282,294,421,125,45,154,172,403,248,338,445,156,129,247,310,145,109,399,181,179,300,311,350,193,186,49,401,93,210,432,182,150,264,295,220,322,183,309,452,349,336,321,388,88,420,189,78,69,429,381,286,170,157,392,119,320,281,436,419,166,173,192,142,386,237,94,406,138,317,212,128,185,184,332,205,234,81,136,312,167,451,65,208,398,120,427,246,71,434,207,76,407,377,287,91,439,400,382,446,134,334,217,140,344,127,280,60,131,95,313,165,47,229,155,374,203,198,285,284,230,412,108,448,143,413,53,360,215,113,267,130,259,219,395,275,255,112,440,269,73,115,52,268,361,343,272,293,390,97,64,367,80,387,79,117,431,378,303,152,227,116,274,404,394,252,265,151,228,449,417,359,437,425,232,397,340,423,318,299,68,58,121,433,139,356,153,177,63,355,291,241,444,159,331,271,204,110,348,137,244,163,111,191,133,96,283,162,438,122,42,44,260,354,135,213,379,214,161,358,90,221,124,288,298,422,102,249,103,258,164,410,148,346,197,266,201,409,329,345,375,240,105,308,251,315,384,383,61,279,254,57,319,296,225,372,89,450,59,301,389,250,86,126,82,106,337,84,168,442,56,149,43,216,385,302,353,418,123,380,352,206,239,187,364,307,72,339,85,107,236,393,305,371,114,443}	5	1865x988	2024-11-23 22:01:05.321856	\N	\N
+85	45	finished	classic	2	2024-11-17 22:40:19.317917	2024-11-17 23:09:22.092162	2024-11-17 22:40:19.317917	{2,6,9,8,7,3,4,5,10,1}	1	1920x947	2024-11-23 22:01:05.321856	\N	\N
+91	45	finished	classic	6	2024-11-18 07:22:13.831695	2025-02-17 09:53:46.539892	2024-11-18 07:22:46.162606	{2,6,9,8,7,3,4,5,10,1}	1	1920x947	0001-01-01 00:00:00	\N	\N
+87	17	finished	classic	4	2024-11-17 23:18:15.084079	2024-11-17 23:55:46.845568	2024-11-17 23:18:20.522482	{5,4,3,9,2,6,8,1,10,7}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+93	17	finished	classic	1	2024-11-22 20:40:03.500378	2024-11-22 20:50:20.575682	2024-11-22 20:40:55.687181	{5,4,3,9,2,6,8,1,10,7}	1	882x772	2024-11-23 22:01:05.321856	\N	\N
+92	19	finished	classic	13	2024-11-22 16:24:00.349206	2024-11-23 19:55:00.024121	2024-11-22 16:24:00.349206	{16,20,13,14,12,19,18,15,11,17}	2	1440x812	2024-11-23 22:01:05.321856	\N	\N
+88	17	finished	classic	9	2024-11-17 23:55:46.847747	2024-11-17 23:57:22.553798	2024-11-17 23:55:52.627814	{5,4,3,9,2,6,8,1,10,7}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+298	113	not_started	educational	8	2025-06-23 20:49:39.167871	2025-06-23 20:49:39.24706	\N	{3,7,9,6,2,8,1,4,5}	1	414x720	2025-06-23 20:49:39.246892	\N	\N
+262	27	finished	educational	20	2025-03-25 09:39:58.398725	2025-06-30 08:40:31.920079	2025-03-25 09:40:54.327911	{14,20,17,19,12,15,11,18,16,13}	2	2560x1305	0001-01-01 00:00:00	\N	\N
+256	19	finished	classic	33	2025-03-23 21:24:57.652728	2025-03-24 19:52:03.066842	2025-03-23 21:25:01.124555	{36,38,40,39,31,32,34,37,35,33}	4	1600x902	0001-01-01 00:00:00	\N	\N
+86	45	finished	classic	2	2024-11-17 23:09:22.094414	2024-11-18 07:15:58.425511	2024-11-17 23:09:22.094414	{2,6,9,8,7,3,4,5,10,1}	1	1920x947	2024-11-23 22:01:05.321856	\N	\N
+90	45	finished	classic	6	2024-11-18 07:15:58.428107	2024-11-18 07:22:13.829854	2024-11-18 07:20:48.995862	{2,6,9,8,7,3,4,5,10,1}	1	1920x947	2024-11-23 22:01:05.321856	\N	\N
+329	101	finished	classic	379	2025-08-04 11:41:05.538564	2025-08-05 14:00:48.865602	2025-08-04 12:02:20.227336	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+89	17	finished	classic	6	2024-11-17 23:57:22.554979	2024-11-22 20:40:03.498363	2024-11-17 23:57:49.216929	{5,4,3,9,2,6,8,1,10,7}	1	1230x988	2024-11-23 22:01:05.321856	\N	\N
+261	27	finished	classic	14	2025-03-25 09:39:15.337448	2025-03-25 09:39:58.396946	2025-03-25 09:39:45.929965	{14,20,17,19,12,15,11,18,16,13}	2	2560x1305	0001-01-01 00:00:00	\N	\N
+442	99	finished	classic	6	2025-09-03 20:46:53.638922	2025-10-16 11:11:48.1505	2025-09-03 20:46:53.673706	{4,10,6,3,7,9,5,1,8,2}	1	1920x992	0001-01-01 00:00:00	\N	\N
+314	116	in_progress	classic	6	2025-07-10 14:13:48.559025	2025-07-10 14:14:36.52395	\N	{5,3,2,6,4,1,8,7,9}	1	1366x900	2025-07-10 14:14:36.523599	\N	\N
+522	101	finished	classic	60	2025-09-14 12:25:58.237028	2025-09-14 12:26:09.312962	2025-09-14 12:25:58.273604	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+525	101	finished	classic	63	2025-09-14 12:32:37.284668	2025-09-15 13:55:44.345643	2025-09-14 12:32:42.875217	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+523	101	finished	classic	68	2025-09-14 12:26:09.314076	2025-09-14 12:26:59.459056	2025-09-14 12:26:13.279256	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+500	156	finished	classic	1	2025-09-13 08:21:16.91687	2025-09-13 08:21:20.716904	2025-09-13 08:21:20.71642	{8,3,2,1,5,6,4,9,7}	1	2509x1279	2025-09-13 08:21:20.215952	\N	\N
+574	19	finished	classic	277	2025-09-22 07:21:02.342102	2025-09-22 07:24:28.499396	2025-09-22 07:21:11.090131	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+719	101	finished	classic	326	2025-09-29 15:58:13.810118	2025-09-29 16:00:31.681338	2025-09-29 15:59:38.344716	{333,448,56,172,316,436,356,343,44,137,326,209,358,441,128,150,125,363,257,410,141,168,450,147,57,160,135,46,277,430,206,220,420,444,309,421,134,200,229,123,279,388,192,431,327,111,242,282,53,270,344,314,304,354,306,352,253,237,359,133,303,262,438,156,350,311,249,175,451,274,247,268,415,347,223,59,331,334,298,305,447,445,145,202,226,264,103,184,207,449,446,408,396,288,159,176,273,416,395,222,157,49,205,325,41,240,185,190,367,113,108,392,255,402,452,371,246,216,320,405,425,372,379,217,348,218,322,258,106,54,213,280,283,442,357,390,126,296,119,353,340,45,374,55,345,381,355,287,210,115,435,158,439,301,391,227,179,195,122,361,228,203,102,335,297,144,235,155,409,341,211,377,116,328,453,299,225,180,315,51,362,289,234,290,300,181,121,177,384,312,186,196,239,231,423,433,400,241,250,204,48,419,254,112,148,143,329,107,47,424,281,233,432,154,276,365,120,189,383,317,163,232,171,198,201,149,399,337,251,375,302,393,131,140,170,407,295,182,256,153,429,224,332,197,351,318,401,338,142,139,404,127,308,110,165,266,215,243,378,272,178,194,271,245,52,138,412,417,169,394,124,386,191,398,321,387,323,252,385,50,414,261,284,426,263,307,164,418,267,330,440,360,389,376,411,117,151,146,221,248,382,130,118,42,293,212,58,286,319,275,219,285,366,43,269,188,324,105,132,238,278,397,437,100,428,174,104,183,346,162,364,129,109,187,373,101,166,208,380,443,265,427,259,349,136,336,434,260,230,342,291,403,167,310,370,413,406,161,368,152,114,369,292,193,339,173}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+333	101	finished	classic	311	2025-08-11 10:57:46.257826	2025-08-11 10:59:20.854669	2025-08-11 10:59:16.871017	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+721	101	finished	classic	3	2025-09-29 16:00:31.682814	2025-09-29 16:14:03.609707	2025-09-29 16:00:31.713456	{3,4,5}	0	2509x1279	0001-01-01 00:00:00	\N	2222
+524	101	finished	classic	64	2025-09-14 12:26:59.460859	2025-09-14 12:32:37.282435	2025-09-14 12:27:08.640322	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+526	158	finished	classic	3	2025-09-15 13:47:51.839726	2025-09-15 13:47:54.75189	2025-09-15 13:47:54.751191	{6,5,3,7,1,2,8,9,4}	1	2509x1279	2025-09-15 13:47:54.356289	\N	\N
+728	101	finished	classic	244	2025-09-29 16:36:51.498675	2025-09-29 17:21:12.131542	2025-09-29 16:37:11.996779	{199,313,422,236,294,244,83}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+334	101	finished	classic	45	2025-08-11 10:59:20.857423	2025-08-11 11:00:11.605173	2025-08-11 10:59:59.680003	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+730	101	finished	classic	-1	2025-09-29 17:22:46.495449	2025-09-29 17:41:28.212664	2025-09-29 17:22:54.027423	{3,4,5}	0	2509x1279	0001-01-01 00:00:00	\N	2222
+732	101	finished	classic	5	2025-09-29 17:50:05.44289	2025-09-29 17:50:38.694313	2025-09-29 17:50:33.525218	{72,214,1,6,28,9,98,3,4,2,5,8,88,7}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+731	101	finished	classic	214	2025-09-29 17:41:28.216515	2025-09-29 17:50:05.439791	2025-09-29 17:42:14.868845	{72,214,1,6,28,9,98,3,4,2,5,8,88,7}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+527	101	finished	classic	77	2025-09-15 13:55:44.348959	2025-09-15 13:56:01.51968	2025-09-15 13:55:55.29438	{70,72,73,77,74,78,79,71,76,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+722	101	in_progress	classic	24	2025-09-29 16:14:03.613615	2025-09-29 16:15:30.59332	2025-09-29 16:14:03.656659	{27,29,22,26,25,24,21,23,30}	3	2509x1279	2025-09-29 16:15:30.59313	\N	\N
+725	101	finished	classic	199	2025-09-29 16:24:50.260092	2025-09-29 16:29:16.732601	2025-09-29 16:24:50.304204	{199,313,422,236,294,244,83}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+528	101	finished	classic	79	2025-09-15 13:56:01.520752	2025-09-17 18:14:14.142815	2025-09-15 13:56:04.705241	{70,72,73,77,74,78,79,71,76,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+726	101	finished	classic	422	2025-09-29 16:29:16.736368	2025-09-29 16:29:23.614482	2025-09-29 16:29:18.87652	{199,313,422,236,294,244,83}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+729	101	finished	classic	70	2025-09-29 17:21:12.134938	2025-09-29 17:22:46.49427	2025-09-29 17:21:36.445042	{76,77,75,71,73,70,79,78,74}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+727	101	finished	classic	294	2025-09-29 16:29:23.616307	2025-09-29 16:36:51.492953	2025-09-29 16:29:26.60835	{199,313,422,236,294,244,83}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+336	101	finished	classic	45	2025-08-11 14:04:19.737474	2025-08-17 13:03:19.588172	2025-08-11 14:04:19.769998	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+335	101	finished	classic	45	2025-08-11 11:00:11.607355	2025-08-11 14:04:19.724117	2025-08-11 11:00:11.635626	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+337	101	finished	classic	45	2025-08-17 13:03:19.5914	2025-08-17 13:07:08.033417	2025-08-17 13:03:19.633664	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+338	101	finished	classic	431	2025-08-17 13:07:08.035491	2025-08-17 13:19:20.474524	2025-08-17 13:08:00.444492	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+532	159	finished	classic	2	2025-09-15 14:05:28.958521	2025-09-15 14:06:24.209508	2025-09-15 14:05:48.209172	{3,4,1,9,7,8,2,6,5}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+530	159	finished	classic	9	2025-09-15 14:03:06.690451	2025-09-15 14:04:30.53602	2025-09-15 14:04:25.174361	{3,4,1,9,7,8,2,6,5}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+529	159	finished	classic	4	2025-09-15 14:02:17.376514	2025-09-15 14:03:06.687848	2025-09-15 14:02:41.173152	{3,4,1,9,7,8,2,6,5}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+531	159	finished	educational	8	2025-09-15 14:04:30.53732	2025-09-15 14:05:28.956912	2025-09-15 14:05:12.418002	{3,4,1,9,7,8,2,6,5}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+533	159	finished	classic	16	2025-09-15 14:06:24.210791	2025-09-15 14:06:28.765512	2025-09-15 14:06:28.765051	{16,20,18,12,13,15,11,14,19,17}	2	2509x1279	2025-09-15 14:06:26.997223	\N	\N
+723	101	finished	classic	-1	2025-09-29 16:14:57.668197	2025-09-29 16:15:57.687538	2025-09-29 16:15:22.73976	{3,4,5}	0	2509x1279	0001-01-01 00:00:00	\N	2222
+733	101	finished	classic	96	2025-09-29 17:50:38.69557	2025-09-29 17:51:00.359307	2025-09-29 17:50:57.198397	{94,93,90,96,95,99,92,91,97}	9	1869x919	0001-01-01 00:00:00	\N	\N
+734	101	finished	classic	-1	2025-09-29 17:51:00.360034	2025-09-29 17:51:17.611554	2025-09-29 17:51:04.175054	{3,4,5}	0	1869x919	0001-01-01 00:00:00	\N	2222
+340	101	finished	classic	166	2025-08-17 13:19:27.169485	2025-08-17 13:27:49.653384	2025-08-17 13:19:43.935551	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+339	101	finished	classic	50	2025-08-17 13:19:20.477181	2025-08-17 13:19:27.166463	2025-08-17 13:19:24.381022	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+341	101	finished	classic	383	2025-08-17 13:27:49.656972	2025-08-17 13:39:13.909095	2025-08-17 13:28:14.577001	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+342	101	finished	classic	137	2025-08-17 13:39:13.911513	2025-08-17 13:45:36.733537	2025-08-17 13:39:31.017926	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+535	101	finished	educational	76	2025-09-17 18:14:24.344818	2025-09-18 14:07:41.713881	2025-09-17 18:14:25.628756	{70,72,73,77,74,78,79,71,76,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+724	101	finished	educational	199	2025-09-29 16:15:57.688813	2025-09-29 16:24:50.255532	2025-09-29 16:15:57.710201	{199,313,422,236,294,244,83}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+534	101	finished	classic	71	2025-09-17 18:14:14.145367	2025-09-17 18:14:24.343431	2025-09-17 18:14:18.928869	{70,72,73,77,74,78,79,71,76,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+536	101	finished	classic	75	2025-09-18 14:07:41.717325	2025-09-18 14:10:59.753462	2025-09-18 14:07:53.580344	{70,72,73,77,74,78,79,71,76,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+343	101	finished	classic	56	2025-08-17 13:45:36.735613	2025-08-17 13:45:59.78795	2025-08-17 13:45:39.922381	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+831	181	finished	educational	117	2025-10-13 07:18:21.444869	2025-10-13 07:33:14.221934	2025-10-13 07:33:14.221312	{339,257,141,391,312,175,329,117,268,161,284,270,443,260,215,151,276,448,446,219,351,201,146,347,349,188,434,137,269,100,230,319,252,354,435,334,283,392,206,404,427,420,356,209,249,131,58,130,438,121,361,184,102,397,325,123,306,259,54,155,442,304,198,358,337,48,418,377,180,164,399,177,133,224,202,267,336,301,343,220,258,169,168,253,247,293,292,101,173,142,417,330,424,324,266,298,254,322,250,362,274,352,344,300,299,158,153,421,373,287,185,122,430,256,127,338,174,105,246,242,52,110,389,376,413,176,149,225,428,196,111,286,405,378,381,387,311,223,44,160,167,318,217,145,291,452,172,374,53,120,56,108,125,126,271,243,49,342,353,170,386,307,403,414,238,440,241,179,207,154,189,450,441,323,118,372,314,235,282,107,51,375,425,364,371,406,278,412,116,47,335,163,273,262,194,411,263,245,197,383,157,444,426,50,309,398,317,195,112,165,221,124,115,135,390,449,277,368,303,279,226,348,143,210,129,295,355,275,237,132,193,233,401,384,156,433,227,190,204,231,382,439,327,320,240,400,216,316,302,43,410,370,251,432,136,109,408,419,152,119,305,162,332,147,289,357,138,213,394,191,409,415,140,297,296,128,261,218,272,228,281,290,264,265,200,234,437,340,365,148,308,45,280,229,192,104,55,134,203,369,41,451,211,183,367,416,113,423,345,447,239,379,363,255,222,407,328,321,208,331,360,46,288,144,285,106,114,445,59,396,346,181,212,186,431,395,187,171,139,402,103,436,42,182,393,232,341,385,326,150,366,380,248,159,166,388,310,333,178,429,453,205,359,57,350,315}	5	393x659	2025-10-13 07:31:40.549511	\N	\N
+735	101	finished	classic	234	2025-09-29 17:51:17.612882	2025-09-29 17:51:49.726216	2025-09-29 17:51:33.245498	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	1869x919	0001-01-01 00:00:00	\N	\N
+344	101	finished	classic	56	2025-08-17 13:45:59.793979	2025-08-17 13:46:03.928241	2025-08-17 13:45:59.821102	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+345	101	finished	classic	328	2025-08-17 13:46:03.930554	2025-08-17 13:46:08.075687	2025-08-17 13:46:05.923845	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+575	19	finished	educational	402	2025-09-22 07:24:28.501629	2025-10-01 11:15:44.310265	2025-09-22 07:28:17.342186	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+736	101	finished	classic	368	2025-09-29 17:51:49.730404	2025-09-29 17:51:58.148261	2025-09-29 17:51:55.493638	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	1869x919	0001-01-01 00:00:00	\N	\N
+346	101	finished	classic	398	2025-08-17 13:46:08.078282	2025-08-17 13:48:13.173889	2025-08-17 13:46:23.559958	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+624	101	finished	classic	9	2025-09-26 16:02:43.339123	2025-09-26 16:02:50.534758	2025-09-26 16:02:48.509315	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+576	163	finished	educational	98	2025-09-22 07:54:50.101182	2025-09-22 07:57:19.141009	2025-09-22 07:54:59.444835	{7,98,4,5,28,9,3,8,72,214,6,88,1,2}	1	1600x902	0001-01-01 00:00:00	\N	\N
+597	162	finished	classic	6	2025-09-24 14:16:04.985915	2025-09-24 14:16:09.801609	2025-09-24 14:16:06.588175	{5,7,8,6,3,9,1,2,4}	1	2509x852	0001-01-01 00:00:00	\N	\N
+640	101	finished	classic	88	2025-09-27 10:43:59.331705	2025-09-27 10:44:08.381049	2025-09-27 10:44:03.823191	{88,7,8,5,9,98,6,28,2,214,3,72,4,1}	1	2509x852	0001-01-01 00:00:00	\N	\N
+612	165	finished	educational	214	2025-09-26 15:23:50.19775	2025-09-26 15:24:01.225433	2025-09-26 15:24:01.225227	{4,88,6,214,1,8,7,72,2,98,5,3,9,28}	1	1869x919	2025-09-26 15:23:55.858555	\N	\N
+611	162	finished	educational	38	2025-09-24 16:46:31.589406	2025-09-26 15:44:15.580791	2025-09-24 16:46:44.945262	{35,32,34,10,38,40,36,31,39,37,33}	4	393x665	0001-01-01 00:00:00	\N	\N
+598	162	finished	classic	9	2025-09-24 14:16:09.803425	2025-09-24 14:16:19.553079	2025-09-24 14:16:12.787114	{5,7,8,6,3,9,1,2,4}	1	2509x852	0001-01-01 00:00:00	\N	\N
+617	101	finished	classic	3	2025-09-26 16:00:22.258259	2025-09-26 16:00:41.771382	2025-09-26 16:00:38.809391	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+600	162	finished	educational	15	2025-09-24 14:45:47.04278	2025-09-24 14:46:01.146204	2025-09-24 14:45:51.055198	{12,16,11,17,18,15,14,13,20,19}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+601	162	finished	classic	15	2025-09-24 14:46:01.147406	2025-09-24 15:14:56.79651	2025-09-24 14:46:01.17367	{12,16,11,17,18,15,14,13,20,19}	2	2509x852	0001-01-01 00:00:00	\N	\N
+626	101	finished	classic	86	2025-09-26 16:03:05.204913	2025-09-27 09:30:08.633886	2025-09-26 16:03:13.91731	{84,85,80,89,81,86,82,87}	8	1869x919	0001-01-01 00:00:00	\N	\N
+636	101	finished	classic	77	2025-09-27 10:42:54.026131	2025-09-27 10:43:27.054247	2025-09-27 10:43:00.225046	{77,74,76,70,71,78,73,79,75}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+630	101	finished	educational	22	2025-09-27 10:29:33.488415	2025-09-27 10:29:39.73781	2025-09-27 10:29:37.267624	{25,26,22,27,24,23,21,29,30}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+603	162	finished	educational	19	2025-09-24 15:48:00.124947	2025-09-24 16:11:34.556152	2025-09-24 15:48:12.58203	{12,16,11,17,18,15,14,13,20,19}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+639	101	finished	classic	36	2025-09-27 10:43:39.541106	2025-09-27 10:43:59.329715	2025-09-27 10:43:45.736247	{36,40,38,32,37,33,34,10,31,35,39}	4	2509x852	0001-01-01 00:00:00	\N	\N
+632	101	finished	classic	199	2025-09-27 10:30:05.606884	2025-09-27 10:32:03.963636	2025-09-27 10:30:10.864611	{294,199,83,244,236,313,422}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+618	101	finished	classic	72	2025-09-26 16:00:41.772897	2025-09-26 16:02:05.343558	2025-09-26 16:00:50.712051	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+625	101	finished	classic	80	2025-09-26 16:02:50.535844	2025-09-26 16:03:05.202697	2025-09-26 16:03:02.739678	{84,85,80,89,81,86,82,87}	8	1869x919	0001-01-01 00:00:00	\N	\N
+633	101	finished	classic	199	2025-09-27 10:32:03.964755	2025-09-27 10:33:34.754117	2025-09-27 10:32:03.993168	{294,199,83,244,236,313,422}	-1	2509x852	0001-01-01 00:00:00	\N	\N
+631	101	finished	classic	99	2025-09-27 10:29:39.739828	2025-09-27 10:30:05.605613	2025-09-27 10:30:02.793585	{90,92,96,91,99,93,95,97,94}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+637	101	finished	classic	74	2025-09-27 10:43:27.055782	2025-09-27 10:43:35.282359	2025-09-27 10:43:29.96498	{77,74,76,70,71,78,73,79,75}	7	2509x852	0001-01-01 00:00:00	\N	\N
+634	101	finished	classic	199	2025-09-27 10:33:34.756946	2025-09-27 10:40:29.197821	2025-09-27 10:33:34.786494	{294,199,83,244,236,313,422}	-1	2509x852	0001-01-01 00:00:00	\N	\N
+635	101	finished	classic	70	2025-09-27 10:40:29.201989	2025-09-27 10:42:54.025142	2025-09-27 10:40:40.7842	{73,75,77,76,70,74,78,71,79}	7	2509x852	0001-01-01 00:00:00	\N	\N
+638	101	finished	classic	107	2025-09-27 10:43:35.285081	2025-09-27 10:43:39.539791	2025-09-27 10:43:35.313898	{107,194,383}	0	2509x852	0001-01-01 00:00:00	\N	\N
+347	101	finished	classic	398	2025-08-17 13:48:13.176109	2025-08-17 13:54:19.436301	2025-08-17 13:48:13.207105	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+348	101	finished	time_limited	397	2025-08-17 13:54:19.440129	2025-08-17 13:56:48.495626	2025-08-17 13:54:27.529211	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+349	101	finished	classic	326	2025-08-17 13:56:48.498267	2025-08-17 15:59:14.498671	2025-08-17 14:00:50.156624	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+605	162	finished	time_limited	24	2025-09-24 16:12:16.091493	2025-09-24 16:13:26.936729	2025-09-24 16:12:20.21803	{23,29,22,27,30,25,26,24,21}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+602	162	finished	classic	14	2025-09-24 15:14:56.798813	2025-09-24 15:48:00.122508	2025-09-24 15:14:58.862982	{12,16,11,17,18,15,14,13,20,19}	2	2509x852	0001-01-01 00:00:00	\N	\N
+604	162	finished	educational	30	2025-09-24 16:11:34.55912	2025-09-24 16:12:16.089739	2025-09-24 16:12:08.782343	{23,29,22,27,30,25,26,24,21}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+577	163	finished	educational	5	2025-09-22 07:57:19.142224	2025-09-22 07:58:05.7327	2025-09-22 07:57:35.66471	{7,98,4,5,28,9,3,8,72,214,6,88,1,2}	1	1600x902	0001-01-01 00:00:00	\N	\N
+622	101	finished	classic	88	2025-09-26 16:02:28.403742	2025-09-26 16:02:33.816514	2025-09-26 16:02:28.426279	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+613	101	finished	classic	90	2025-09-26 15:42:58.313479	2025-09-26 15:47:58.037375	2025-09-26 15:42:58.339078	{91,97,99,92,94,98,95,96,93,90}	9	1869x919	0001-01-01 00:00:00	\N	\N
+619	101	finished	classic	72	2025-09-26 16:02:05.344854	2025-09-26 16:02:13.197764	2025-09-26 16:02:05.372311	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+599	162	finished	classic	18	2025-09-24 14:16:19.554283	2025-09-24 14:45:47.040231	2025-09-24 14:16:31.718308	{12,16,11,17,18,15,14,13,20,19}	2	2509x852	0001-01-01 00:00:00	\N	\N
+620	101	finished	time_limited	8	2025-09-26 16:02:13.199148	2025-09-26 16:02:19.203375	2025-09-26 16:02:16.630751	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+621	101	finished	educational	88	2025-09-26 16:02:19.204996	2025-09-26 16:02:28.402206	2025-09-26 16:02:25.951692	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+623	101	finished	classic	28	2025-09-26 16:02:33.818592	2025-09-26 16:02:43.337789	2025-09-26 16:02:40.876241	{3,98,214,7,72,8,88,1,28,9,5,2,4,6}	1	1869x919	0001-01-01 00:00:00	\N	\N
+614	162	finished	educational	31	2025-09-26 15:44:15.583168	2025-09-28 15:52:44.859488	2025-09-26 15:47:48.802116	{35,32,34,10,38,40,36,31,39,37,33}	4	1869x919	0001-01-01 00:00:00	\N	\N
+350	101	finished	time_limited	176	2025-08-17 15:59:14.502184	2025-08-17 16:01:11.471557	2025-08-17 15:59:26.492836	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+351	101	finished	time_limited	239	2025-08-17 16:01:11.472806	2025-08-17 16:10:15.464572	2025-08-17 16:01:19.456521	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+352	101	finished	educational	272	2025-08-17 16:10:15.467609	2025-08-17 16:10:26.637016	2025-08-17 16:10:22.244176	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+627	101	finished	educational	82	2025-09-27 09:30:08.636098	2025-09-27 09:30:35.423276	2025-09-27 09:30:11.332559	{84,85,80,89,81,86,82,87}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+607	101	finished	educational	90	2025-09-24 16:15:22.719979	2025-09-24 16:15:37.892925	2025-09-24 16:15:33.282559	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+606	162	finished	time_limited	24	2025-09-24 16:13:26.939112	2025-09-24 16:17:12.94086	2025-09-24 16:13:26.970125	{23,29,22,27,30,25,26,24,21}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+615	101	finished	educational	90	2025-09-26 15:47:58.038485	2025-09-26 15:50:15.389218	2025-09-26 15:47:58.068883	{91,97,99,92,94,98,95,96,93,90}	9	1869x919	0001-01-01 00:00:00	\N	\N
+578	163	finished	educational	72	2025-09-22 07:58:05.73484	2025-09-22 08:00:55.300873	2025-09-22 07:58:50.657846	{7,98,4,5,28,9,3,8,72,214,6,88,1,2}	1	375x664	0001-01-01 00:00:00	\N	\N
+628	101	finished	educational	87	2025-09-27 09:30:35.425904	2025-09-27 09:39:41.861463	2025-09-27 09:30:37.438327	{84,85,80,89,81,86,82,87}	8	1337x778	0001-01-01 00:00:00	\N	\N
+354	101	finished	classic	222	2025-08-18 05:51:40.919622	2025-08-18 06:14:11.822377	2025-08-18 05:51:41.033617	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+353	101	finished	educational	222	2025-08-17 16:10:26.639068	2025-08-18 05:51:40.892648	2025-08-17 16:10:31.64281	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+355	101	finished	educational	280	2025-08-18 06:14:11.825952	2025-08-18 12:12:56.308317	2025-08-18 06:14:14.3076	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+356	101	finished	classic	271	2025-08-18 12:12:56.31022	2025-08-18 14:52:13.724367	2025-08-18 12:12:58.946697	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+616	101	finished	classic	90	2025-09-26 15:50:15.390665	2025-09-26 16:00:22.255365	2025-09-26 15:50:15.414433	{91,97,99,92,94,98,95,96,93,90}	9	1869x919	0001-01-01 00:00:00	\N	\N
+608	101	finished	classic	90	2025-09-24 16:15:37.895008	2025-09-24 16:17:02.94731	2025-09-24 16:15:37.924049	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+579	163	finished	educational	11	2025-09-22 08:00:55.302613	2025-09-22 08:05:00.148489	2025-09-22 08:03:32.564245	{14,13,12,18,19,15,20,11,17,16}	2	375x664	0001-01-01 00:00:00	\N	\N
+629	101	finished	educational	26	2025-09-27 09:39:41.86419	2025-09-27 10:29:33.484731	2025-09-27 09:39:49.266436	{25,26,22,27,24,23,21,29,30}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+357	101	finished	classic	271	2025-08-18 14:52:13.728289	2025-08-18 14:52:18.942236	2025-08-18 14:52:13.762856	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+358	101	finished	classic	52	2025-08-18 14:52:18.944489	2025-08-18 14:52:27.062853	2025-08-18 14:52:20.807054	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+580	163	finished	time_limited	16	2025-09-22 08:05:00.150398	2025-09-22 08:05:11.327902	2025-09-22 08:05:11.3276	{14,13,12,18,19,15,20,11,17,16}	2	375x664	2025-09-22 08:05:10.345772	\N	\N
+610	162	finished	educational	10	2025-09-24 16:17:12.942047	2025-09-24 16:46:31.585515	2025-09-24 16:19:45.966377	{35,32,34,10,38,40,36,31,39,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+609	101	finished	educational	90	2025-09-24 16:17:02.948833	2025-09-26 15:42:58.310793	2025-09-24 16:17:02.976463	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+360	101	finished	classic	268	2025-08-18 14:52:35.74994	2025-08-18 15:06:14.783566	2025-08-18 14:52:41.952244	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+359	101	finished	classic	122	2025-08-18 14:52:27.064177	2025-08-18 14:52:35.748178	2025-08-18 14:52:30.656538	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+361	101	finished	educational	344	2025-08-18 15:06:14.786271	2025-08-20 08:11:20.560488	2025-08-18 15:06:18.46321	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1238	0001-01-01 00:00:00	\N	\N
+581	101	finished	classic	90	2025-09-22 13:22:23.790876	2025-09-22 13:25:48.302759	2025-09-22 13:22:23.824656	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+583	101	finished	classic	90	2025-09-22 13:25:48.304181	2025-09-22 13:49:54.01875	2025-09-22 13:25:48.329047	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+582	162	finished	educational	8	2025-09-22 13:23:59.705023	2025-09-24 14:16:04.983205	2025-09-22 13:24:19.085525	{5,7,8,6,3,9,1,2,4}	1	393x665	0001-01-01 00:00:00	\N	\N
+362	101	finished	classic	344	2025-08-20 08:11:20.564411	2025-08-20 22:09:16.069459	2025-08-20 08:11:20.597846	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+584	101	finished	classic	90	2025-09-22 13:49:54.02216	2025-09-22 14:02:14.117992	2025-09-22 13:49:54.052143	{91,97,99,92,94,98,95,96,93,90}	9	2509x1238	0001-01-01 00:00:00	\N	\N
+641	101	finished	classic	351	2025-09-27 10:44:08.383287	2025-09-27 11:11:25.791583	2025-09-27 10:44:11.586067	{351,50,51,103,211,162,232,151,122,265,379,200,367,203,171,432,444,176,260,362,320,312,333,170,410,342,366,404,263,277,206,49,360,411,158,130,434,283,445,115,220,198,371,414,133,306,147,435,44,52,53,169,418,218,175,324,127,210,184,323,242,157,357,143,278,280,284,305,309,164,167,317,59,307,128,316,226,431,354,322,325,257,380,290,452,388,102,208,383,398,286,234,163,275,134,397,177,387,391,119,347,332,58,252,196,274,329,409,369,376,187,372,256,331,209,289,386,166,346,225,268,300,282,250,339,356,314,215,217,222,126,178,330,402,421,370,425,361,390,373,185,348,123,298,335,403,152,413,394,165,112,57,297,131,426,233,216,180,193,144,191,433,377,48,118,46,204,273,254,132,438,248,190,253,201,56,345,156,318,212,319,291,179,441,105,247,106,174,406,188,213,375,442,238,136,450,276,47,400,321,100,262,301,235,416,408,358,353,186,138,42,108,224,239,287,430,172,117,129,428,107,168,415,148,145,240,302,392,334,161,202,295,336,272,436,251,183,160,326,381,243,417,182,221,389,304,446,192,104,270,114,155,328,299,194,237,293,43,261,311,399,355,343,396,266,223,382,121,264,401,310,281,269,440,207,419,340,359,227,149,439,285,228,219,368,241,303,374,231,45,140,116,327,448,338,341,173,395,279,423,229,159,364,447,337,420,124,125,230,54,344,189,255,246,142,111,258,205,137,449,363,139,384,141,424,101,427,315,350,135,267,245,110,197,153,393,120,41,249,55,292,154,109,113,349,271,146,259,453,378,429,181,437,412,385,296,288,308,150,443,195,405,451,352,407,365}	5	2509x852	0001-01-01 00:00:00	\N	\N
+737	101	finished	time_limited	403	2025-09-29 17:51:58.150585	2025-09-29 17:54:05.66952	2025-09-29 17:52:08.098762	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	1869x919	0001-01-01 00:00:00	\N	\N
+839	183	finished	educational	150	2025-10-13 07:23:56.270546	2025-10-13 07:33:30.635932	2025-10-13 07:33:30.635505	{189,272,209,215,157,111,439,150,345,162,122,375,255,248,161,41,390,156,275,283,326,436,123,388,165,154,196,338,249,407,163,443,277,171,342,325,319,341,178,291,173,355,435,379,335,190,366,344,432,308,372,233,446,118,106,169,43,235,350,197,167,198,398,371,180,227,100,208,145,299,280,164,45,449,133,262,441,204,177,312,140,397,44,348,405,362,141,314,213,50,426,359,365,238,172,205,265,192,410,224,191,288,58,181,333,408,126,448,339,103,241,434,109,336,281,186,373,376,427,304,230,401,363,243,143,293,347,245,318,212,234,378,353,296,110,48,331,270,246,431,258,274,175,416,125,303,237,320,385,47,406,160,188,155,412,286,418,404,105,119,340,107,121,295,266,259,384,251,200,152,377,131,396,393,450,392,440,324,391,55,184,421,453,452,307,222,101,356,387,216,142,361,158,334,226,425,102,229,261,183,53,134,297,210,323,202,364,276,211,127,442,193,268,135,264,57,419,104,194,285,428,151,287,403,149,381,444,252,389,182,271,374,282,315,437,176,395,292,223,144,247,228,383,250,108,51,218,203,358,380,386,302,114,112,166,402,170,231,42,451,138,400,424,327,269,382,438,429,117,409,206,316,433,136,207,290,147,120,430,59,240,447,354,309,263,130,423,279,219,352,56,370,185,225,343,239,360,124,220,49,317,321,159,137,254,267,394,368,168,256,116,242,330,413,195,337,351,300,357,129,414,115,132,305,417,153,179,221,232,260,328,139,174,311,298,146,289,399,253,415,273,445,257,329,217,284,278,310,411,54,128,367,332,420,349,306,301,201,52,187,113,46,369,346,322,148}	5	402x676	2025-10-13 07:31:00.887443	\N	\N
+364	101	finished	classic	230	2025-08-20 22:09:16.072094	2025-08-20 22:28:14.809727	2025-08-20 22:09:19.6605	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+585	101	finished	classic	90	2025-09-22 14:02:14.119563	2025-09-22 14:18:34.760285	2025-09-22 14:02:14.147533	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+365	101	finished	classic	435	2025-08-20 22:28:14.812761	2025-08-20 22:34:25.756856	2025-08-20 22:28:36.82511	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+738	101	finished	classic	371	2025-09-29 17:54:05.671462	2025-09-29 19:18:42.068553	2025-09-29 17:54:07.995835	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+649	101	finished	classic	98	2025-09-27 13:02:55.843818	2025-09-28 08:28:57.511659	2025-09-27 13:02:58.306824	{214,72,9,88,8,7,98,5,4,28,6,2,3,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+644	101	finished	classic	21	2025-09-27 11:13:31.528908	2025-09-27 11:15:08.408005	2025-09-27 11:14:44.23248	{24,21,29,23,27,30,22,25,26}	3	2509x852	0001-01-01 00:00:00	\N	\N
+642	101	finished	classic	75	2025-09-27 11:11:25.795466	2025-09-27 11:12:03.86448	2025-09-27 11:11:42.290654	{73,75,79,71,77,70,76,78,74}	7	2509x1238	0001-01-01 00:00:00	\N	\N
+647	101	finished	classic	8	2025-09-27 12:24:14.100388	2025-09-27 12:56:38.896731	2025-09-27 12:24:28.144948	{214,72,9,88,8,7,98,5,4,28,6,2,3,1}	1	2509x1238	0001-01-01 00:00:00	\N	\N
+643	101	finished	classic	390	2025-09-27 11:12:03.865741	2025-09-27 11:13:31.526793	2025-09-27 11:12:06.076024	{381,390,399,422}	0	2509x811	0001-01-01 00:00:00	\N	\N
+646	101	finished	educational	25	2025-09-27 12:22:59.805374	2025-09-27 12:24:14.099152	2025-09-27 12:23:11.891437	{21,22,24,27,30,25,26,29,23}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+648	101	finished	classic	7	2025-09-27 12:56:38.899562	2025-09-27 13:02:55.84123	2025-09-27 12:56:40.399213	{214,72,9,88,8,7,98,5,4,28,6,2,3,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+366	101	finished	time_limited	246	2025-08-20 22:34:25.759164	2025-08-20 22:34:36.477234	2025-08-20 22:34:29.967277	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+367	101	finished	classic	263	2025-08-20 22:34:36.47923	2025-08-20 22:42:23.722745	2025-08-20 22:34:40.196525	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x453	0001-01-01 00:00:00	\N	\N
+368	101	finished	classic	284	2025-08-20 22:42:23.725693	2025-08-21 05:33:11.719209	2025-08-20 22:42:26.057065	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+739	164	finished	classic	62	2025-09-29 19:04:15.11005	2025-10-10 13:46:04.392647	2025-09-29 19:04:47.410915	{62,61,60,68,65,64,69,67,66,63}	6	393x665	0001-01-01 00:00:00	\N	\N
+586	164	finished	classic	4	2025-09-22 14:08:46.438096	2025-09-22 14:08:51.3209	2025-09-22 14:08:48.899304	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+587	164	finished	classic	28	2025-09-22 14:08:51.322861	2025-09-22 14:12:06.242686	2025-09-22 14:08:52.847578	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+645	101	finished	classic	22	2025-09-27 11:15:08.409725	2025-09-27 12:22:59.802601	2025-09-27 11:15:14.667459	{21,22,24,27,30,25,26,29,23}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+369	101	finished	classic	177	2025-08-21 05:33:11.72208	2025-08-21 05:33:20.747112	2025-08-21 05:33:15.322132	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	393x665	0001-01-01 00:00:00	\N	\N
+740	101	finished	educational	229	2025-09-29 19:18:42.071766	2025-09-29 19:34:18.301026	2025-09-29 19:18:52.005774	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+588	164	finished	educational	2	2025-09-22 14:12:06.244258	2025-09-22 14:29:30.505244	2025-09-22 14:12:08.187176	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+834	180	finished	educational	105	2025-10-13 07:21:29.666691	2025-10-13 07:32:56.334817	2025-10-13 07:32:56.334447	{109,172,105,187,258,380,437,419,274,430,100,48,170,241,148,52,180,246,185,46,335,273,340,365,264,121,327,136,289,256,352,375,157,351,330,336,53,311,116,344,316,55,265,314,367,262,382,255,438,371,389,190,251,404,156,302,119,325,285,153,228,183,421,249,47,49,391,400,126,147,176,215,321,403,297,372,234,225,368,133,41,154,161,173,128,205,200,381,248,155,354,230,267,188,396,191,425,432,394,253,270,436,164,57,358,209,158,42,252,224,194,218,447,138,118,446,151,333,443,227,206,144,407,451,279,410,275,198,304,417,103,293,296,101,189,346,146,444,54,338,196,453,300,377,250,387,424,348,162,448,356,397,323,312,134,320,139,449,167,350,254,308,113,288,207,408,58,429,412,418,445,137,106,342,324,110,266,152,442,284,204,221,117,398,384,309,359,108,434,376,247,426,415,261,160,435,291,369,301,231,182,243,290,232,411,450,111,195,242,399,355,149,386,263,192,385,401,217,345,120,122,150,379,268,226,427,366,280,223,428,353,439,361,383,123,286,45,363,237,124,317,168,115,130,433,388,364,43,181,319,303,44,283,278,331,50,132,343,201,305,276,257,135,329,166,259,213,322,186,406,423,390,239,145,210,127,143,318,184,298,295,420,240,125,370,129,229,260,56,102,171,235,287,334,362,328,245,193,374,393,409,220,373,142,197,211,202,51,131,203,159,392,440,360,271,339,357,310,413,269,307,104,306,281,402,212,177,332,165,140,59,174,179,416,141,222,315,169,208,347,238,233,178,341,216,395,441,431,414,175,219,112,326,405,107,452,272,277,349,299,378,163,282,337,114,292}	5	393x659	2025-10-13 07:31:35.71477	\N	\N
+650	101	finished	classic	380	2025-09-28 08:28:57.514827	2025-09-28 08:29:26.234493	2025-09-28 08:29:02.90909	{380,372,311,345,314,410,295,296,403,249,264,319,125,392,366,104,123,219,266,302,281,391,305,325,246,396,215,285,298,231,327,449,254,307,443,300,247,288,323,124,304,333,387,452,142,255,201,398,210,128,58,54,212,378,406,162,47,291,279,50,237,253,232,330,141,273,350,363,409,441,315,46,337,343,389,280,446,107,414,45,240,248,260,289,149,407,355,51,197,155,357,192,338,308,284,332,41,148,369,306,121,184,208,161,147,362,44,241,412,257,377,374,259,397,277,118,390,163,189,211,404,265,172,317,400,376,117,394,297,301,316,222,132,229,115,160,234,168,356,395,359,310,167,361,177,445,423,101,196,318,450,122,416,272,176,444,165,420,440,227,262,388,195,438,370,131,127,57,424,204,205,269,271,275,230,179,278,411,140,225,145,267,112,129,135,401,116,340,430,111,242,100,110,402,328,427,188,283,42,419,48,434,258,358,221,433,293,431,191,183,335,158,126,178,405,139,218,437,342,156,256,348,187,217,198,250,185,435,386,349,276,287,322,136,106,235,114,190,334,415,385,213,353,428,270,383,379,352,43,144,102,220,103,331,421,371,417,202,418,146,399,347,339,303,119,216,336,251,203,159,245,175,364,368,451,329,228,120,166,55,182,49,344,252,309,154,326,138,429,375,382,224,143,130,448,226,442,351,408,233,194,324,223,56,59,346,171,105,354,186,263,299,133,360,108,268,180,170,393,193,312,384,113,181,432,439,207,436,52,282,134,239,238,243,261,274,151,152,425,174,321,53,290,150,286,209,292,200,137,173,367,320,365,157,169,453,413,153,373,109,206,426,381,164,341,447}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+370	101	finished	time_limited	438	2025-08-21 05:33:20.749038	2025-08-21 05:33:55.059267	2025-08-21 05:33:36.774117	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	393x665	0001-01-01 00:00:00	\N	\N
+589	101	finished	time_limited	90	2025-09-22 14:18:34.762391	2025-09-24 13:46:41.192735	2025-09-22 14:18:34.785753	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+371	101	finished	time_limited	325	2025-08-21 05:33:55.0617	2025-08-21 17:08:54.520646	2025-08-21 05:34:00.096205	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	393x665	0001-01-01 00:00:00	\N	\N
+651	101	finished	classic	26	2025-09-28 08:29:26.237396	2025-09-28 08:30:36.562859	2025-09-28 08:29:52.212344	{26,29,24,23,22,27,30,21,25}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+652	101	finished	educational	29	2025-09-28 08:30:36.564048	2025-09-28 08:31:37.084137	2025-09-28 08:30:46.904857	{26,29,24,23,22,27,30,21,25}	3	2509x852	0001-01-01 00:00:00	\N	\N
+373	101	finished	classic	325	2025-08-21 17:08:54.524119	2025-08-21 17:12:51.068837	2025-08-21 17:08:54.576789	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+595	164	finished	classic	8	2025-09-22 14:32:46.236172	2025-09-29 19:04:15.10349	2025-09-22 14:32:53.25556	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+590	164	finished	educational	2	2025-09-22 14:29:30.508077	2025-09-22 14:29:33.993203	2025-09-22 14:29:30.528139	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+374	101	finished	classic	327	2025-08-21 17:12:51.072068	2025-08-21 18:12:01.489908	2025-08-21 17:24:07.501653	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1869x919	0001-01-01 00:00:00	\N	\N
+741	101	finished	classic	243	2025-09-29 19:34:18.314036	2025-09-29 19:34:39.019261	2025-09-29 19:34:20.451762	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+591	164	finished	classic	7	2025-09-22 14:29:33.994427	2025-09-22 14:29:43.434521	2025-09-22 14:29:37.119332	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+592	164	finished	classic	7	2025-09-22 14:29:43.436196	2025-09-22 14:31:18.967149	2025-09-22 14:29:43.456325	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+593	164	finished	classic	7	2025-09-22 14:31:18.96853	2025-09-22 14:32:31.504695	2025-09-22 14:31:18.994844	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+594	164	finished	classic	72	2025-09-22 14:32:31.506519	2025-09-22 14:32:46.234791	2025-09-22 14:32:43.726859	{9,4,28,2,7,72,5,8,88,1,3,98,6,214}	1	2552x1284	0001-01-01 00:00:00	\N	\N
+653	101	finished	classic	60	2025-09-28 08:31:37.085557	2025-09-28 08:53:55.191764	2025-09-28 08:32:14.382792	{60,65,68,61,64,67,63,69,62,66}	6	2509x852	0001-01-01 00:00:00	\N	\N
+379	101	finished	classic	327	2025-08-21 18:12:01.491926	2025-08-23 18:07:34.804716	2025-08-21 18:12:01.521857	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+654	101	finished	classic	-1	2025-09-28 08:53:55.194866	2025-09-28 08:54:55.068106	2025-09-28 08:54:00.641769	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+380	19	finished	classic	267	2025-08-22 11:22:01.143169	2025-08-22 11:24:34.806232	2025-08-22 11:24:08.137087	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+596	101	finished	classic	90	2025-09-24 13:46:41.195404	2025-09-24 16:15:22.717688	2025-09-24 13:46:41.225534	{91,97,99,92,94,98,95,96,93,90}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+742	101	finished	classic	243	2025-09-29 19:34:39.021649	2025-09-29 19:38:38.278942	2025-09-29 19:34:39.044467	{41,139,318,161,156,399,224,234,268,231,368,421,159,126,352,439,403,293,371,359,229,329,243,118,450,137,241,251,233,261,216,443,250,420,173,331,379,381,302,109,430,308,152,343,350,129,356,338,43,390,349,431,384,142,397,158,345,325,407,322,170,172,119,394,127,190,357,398,370,363,121,400,49,59,319,326,393,330,140,364,446,277,255,427,169,437,179,167,157,182,435,429,163,186,273,228,301,208,311,230,415,178,187,295,160,438,256,257,131,309,433,106,453,153,434,380,387,432,340,321,344,164,355,267,307,408,281,120,310,189,334,297,147,332,260,416,212,382,263,47,275,436,174,149,376,290,138,113,410,348,372,306,264,181,185,183,136,386,444,107,336,440,56,412,337,324,193,401,417,213,395,292,175,278,428,423,240,447,448,145,48,385,134,270,316,425,195,389,392,361,346,205,155,391,285,259,148,271,42,112,266,54,223,328,50,441,58,305,315,409,57,291,111,117,354,253,317,150,151,165,44,171,207,383,289,46,418,130,405,303,116,211,242,252,210,377,333,247,314,287,262,200,123,404,442,192,249,283,238,177,388,144,406,327,221,396,218,225,203,194,110,353,114,300,269,191,272,365,445,227,124,162,101,206,102,105,184,296,298,375,452,217,220,222,168,265,154,146,284,215,198,100,108,239,342,374,360,132,197,180,373,279,413,419,235,237,135,55,254,104,411,276,115,196,226,133,339,347,143,366,274,320,341,201,414,258,246,335,282,451,351,280,125,369,51,245,424,367,358,449,288,362,286,426,103,323,204,209,52,248,122,176,378,232,304,45,299,53,188,166,141,402,202,219,128,312}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+743	162	finished	classic	31	2025-09-29 19:34:58.080528	2025-09-29 19:35:14.53427	2025-09-29 19:35:04.472427	{39,33,35,40,31,10,32,34,38,37,36}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+744	162	finished	classic	34	2025-09-29 19:35:14.535584	2025-09-29 19:35:27.822828	2025-09-29 19:35:18.25384	{39,33,35,40,31,10,32,34,38,37,36}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+679	101	finished	educational	69	2025-09-28 09:25:10.93509	2025-09-28 09:25:18.946167	2025-09-28 09:25:16.103445	{69,65,68,66,62,67,64,63,61,60}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+747	101	finished	classic	3	2025-09-29 19:39:12.389792	2025-09-29 19:39:45.059317	2025-09-29 19:39:18.717477	{1,2,3}	0	2509x1279	0001-01-01 00:00:00	\N	4444
+746	101	finished	classic	-1	2025-09-29 19:38:38.280285	2025-09-29 19:39:12.386591	2025-09-29 19:38:49.92129	{1}	0	2509x1279	0001-01-01 00:00:00	\N	1234
+745	162	finished	time_limited	38	2025-09-29 19:35:27.824834	2025-10-01 13:59:08.584247	2025-09-29 19:35:32.115737	{39,33,35,40,31,10,32,34,38,37,36}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+680	101	finished	educational	68	2025-09-28 09:25:18.947576	2025-09-28 09:25:28.292086	2025-09-28 09:25:22.861261	{69,65,68,66,62,67,64,63,61,60}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+681	101	finished	classic	-1	2025-09-28 09:25:28.29366	2025-09-28 09:25:35.938562	2025-09-28 09:25:33.079291	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+655	101	finished	educational	-1	2025-09-28 08:54:55.070177	2025-09-28 08:55:01.587658	2025-09-28 08:54:55.107918	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+381	19	finished	classic	324	2025-08-22 11:24:34.807766	2025-08-22 11:25:25.550313	2025-08-22 11:25:21.091629	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+656	101	finished	time_limited	-1	2025-09-28 08:55:01.589687	2025-09-28 08:55:05.252072	2025-09-28 08:55:01.629606	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+657	101	finished	classic	-1	2025-09-28 08:55:05.254073	2025-09-28 08:55:11.673999	2025-09-28 08:55:05.29582	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+658	101	finished	educational	-1	2025-09-28 08:55:11.675924	2025-09-28 09:04:03.392934	2025-09-28 08:55:11.715622	{211,212,256}	0	2509x852	0001-01-01 00:00:00	\N	\N
+756	101	finished	educational	313	2025-10-01 10:52:02.763043	2025-10-01 14:02:35.443891	2025-10-01 10:52:05.922882	{422,313,244,236,83,199,294}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+748	101	finished	classic	-1	2025-09-29 19:39:45.060826	2025-09-29 19:40:31.135771	2025-09-29 19:39:49.655662	{1,2,3}	0	2509x1279	0001-01-01 00:00:00	\N	4444
+682	101	finished	educational	82	2025-09-28 09:25:35.941706	2025-09-28 09:26:09.381776	2025-09-28 09:26:06.535407	{84,81,85,89,82,86,87,80}	8	2509x1279	0001-01-01 00:00:00	\N	\N
+751	101	finished	classic	-1	2025-09-30 16:43:44.380294	2025-09-30 16:44:30.180894	2025-09-30 16:43:48.741367	{1,2,3}	0	2509x852	0001-01-01 00:00:00	\N	1111
+753	101	finished	classic	2	2025-09-30 16:57:27.169552	2025-10-01 10:23:56.576241	2025-09-30 16:57:33.388451	{1,2,3}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+382	19	finished	time_limited	326	2025-08-22 11:25:25.552464	2025-09-22 07:14:50.228449	2025-08-22 11:25:40.748227	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+383	101	finished	classic	327	2025-08-23 18:07:34.809032	2025-08-23 19:06:36.319457	2025-08-23 18:07:34.845127	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+683	101	finished	time_limited	63	2025-09-28 09:26:09.383291	2025-09-28 09:57:11.740002	2025-09-28 09:26:22.747562	{64,63,67,60,61,65,66,69,62,68}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+384	101	finished	classic	156	2025-08-23 19:06:36.332286	2025-08-23 19:14:07.063372	2025-08-23 19:06:39.409199	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+659	101	finished	classic	-1	2025-09-28 09:04:03.395436	2025-09-28 09:04:09.27055	2025-09-28 09:04:03.442625	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+752	101	finished	classic	-1	2025-09-30 16:44:30.182181	2025-09-30 16:57:27.165607	2025-09-30 16:44:33.848845	{1,2,3}	0	2509x852	0001-01-01 00:00:00	\N	1111
+749	101	finished	time_limited	1	2025-09-29 19:40:31.137165	2025-09-30 15:36:54.407249	2025-09-29 19:40:32.637876	{88,1,98,6,7,5,9,28,4,8,214,3,2,72}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+754	101	finished	educational	97	2025-10-01 10:23:56.585485	2025-10-01 10:39:48.811965	2025-10-01 10:24:08.068585	{97,90,94,99,92,91,93,96,95}	9	393x665	0001-01-01 00:00:00	\N	\N
+386	101	finished	classic	260	2025-08-23 19:30:15.598423	2025-08-23 19:32:39.225714	2025-08-23 19:30:15.62739	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+385	101	finished	time_limited	260	2025-08-23 19:14:07.066213	2025-08-23 19:30:15.595756	2025-08-23 19:14:18.407334	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+391	141	finished	classic	6	2025-08-23 19:45:08.076622	2025-08-23 20:09:43.477985	2025-08-23 19:45:08.10601	{2,6,8,1,4,7,3,5,9}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+388	101	finished	classic	260	2025-08-23 19:32:39.227108	2025-08-23 19:43:22.74921	2025-08-23 19:32:39.255076	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+660	101	finished	classic	-1	2025-09-28 09:04:09.272308	2025-09-28 09:04:18.614232	2025-09-28 09:04:15.811295	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+390	141	finished	classic	6	2025-08-23 19:44:24.255082	2025-08-23 19:45:08.0748	2025-08-23 19:44:24.288459	{2,6,8,1,4,7,3,5,9}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+750	101	finished	classic	6	2025-09-30 15:36:54.41009	2025-09-30 16:43:44.368553	2025-09-30 15:37:00.231783	{88,1,98,6,7,5,9,28,4,8,214,3,2,72}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+755	101	finished	educational	-1	2025-10-01 10:39:48.813913	2025-10-01 10:52:02.749741	2025-10-01 10:39:58.562116	{3,4,5,6}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+389	101	finished	classic	260	2025-08-23 19:43:22.751537	2025-08-23 20:06:57.306154	2025-08-23 19:43:22.785964	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+392	101	finished	classic	260	2025-08-23 20:06:57.308016	2025-08-23 20:07:07.889779	2025-08-23 20:06:57.344284	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+393	101	finished	classic	260	2025-08-23 20:07:07.891018	2025-08-23 20:07:45.285083	2025-08-23 20:07:07.917027	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+661	101	finished	educational	-1	2025-09-28 09:04:18.616701	2025-09-28 09:11:33.652511	2025-09-28 09:04:18.660089	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+757	19	finished	educational	286	2025-10-01 11:15:44.314175	2025-10-05 20:12:00.012509	2025-10-01 11:16:22.196839	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+395	101	finished	classic	260	2025-08-23 20:07:52.742936	2025-08-23 20:09:09.466204	2025-08-23 20:07:52.774624	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+394	101	finished	classic	260	2025-08-23 20:07:45.287529	2025-08-23 20:07:52.740106	2025-08-23 20:07:45.314471	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+662	101	finished	classic	212	2025-09-28 09:11:33.655777	2025-09-28 09:12:56.67492	2025-09-28 09:11:48.594833	{211,212,256}	0	2509x852	0001-01-01 00:00:00	\N	54321
+396	101	finished	classic	260	2025-08-23 20:09:09.467919	2025-08-23 20:10:47.926322	2025-08-23 20:09:09.503388	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+397	141	finished	classic	6	2025-08-23 20:09:43.479514	2025-08-23 20:26:46.358499	2025-08-23 20:09:43.507943	{2,6,8,1,4,7,3,5,9}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+663	101	finished	educational	212	2025-09-28 09:12:56.67606	2025-09-28 09:13:00.475991	2025-09-28 09:12:56.70277	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+664	101	finished	time_limited	67	2025-09-28 09:13:00.477545	2025-09-28 09:13:05.103568	2025-09-28 09:13:02.975831	{67,62,63,65,68,66,60,61,64,69}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+399	101	finished	classic	260	2025-08-23 20:12:44.197255	2025-08-23 20:12:58.29338	2025-08-23 20:12:44.236517	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+398	101	finished	classic	260	2025-08-23 20:10:47.928836	2025-08-23 20:12:44.194228	2025-08-23 20:10:47.959283	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+400	101	finished	classic	260	2025-08-23 20:12:58.294721	2025-08-23 20:13:04.993147	2025-08-23 20:12:58.318909	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+401	101	finished	classic	260	2025-08-23 20:13:04.994883	2025-08-23 20:13:12.59764	2025-08-23 20:13:05.023134	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+666	101	finished	classic	-1	2025-09-28 09:13:25.58249	2025-09-28 09:13:31.204474	2025-09-28 09:13:29.145476	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+665	101	finished	educational	62	2025-09-28 09:13:05.105542	2025-09-28 09:13:25.580455	2025-09-28 09:13:19.894177	{67,62,63,65,68,66,60,61,64,69}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+403	101	finished	classic	260	2025-08-23 20:13:19.198659	2025-08-23 20:25:08.012041	2025-08-23 20:13:19.224457	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+402	101	finished	classic	260	2025-08-23 20:13:12.600945	2025-08-23 20:13:19.197489	2025-08-23 20:13:12.631307	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+669	101	finished	classic	256	2025-09-28 09:13:47.76239	2025-09-28 09:13:52.008506	2025-09-28 09:13:50.384565	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+667	101	finished	educational	-1	2025-09-28 09:13:31.206325	2025-09-28 09:13:41.318176	2025-09-28 09:13:31.242346	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+671	101	finished	classic	23	2025-09-28 09:15:18.695532	2025-09-28 09:15:24.423178	2025-09-28 09:15:18.724438	{27,21,25,22,23,29,26,30,24}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+668	101	finished	time_limited	-1	2025-09-28 09:13:41.319696	2025-09-28 09:13:47.759836	2025-09-28 09:13:41.360558	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+672	101	finished	classic	212	2025-09-28 09:15:24.425037	2025-09-28 09:15:30.228907	2025-09-28 09:15:26.968144	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+674	101	finished	classic	-1	2025-09-28 09:15:35.480299	2025-09-28 09:16:07.135948	2025-09-28 09:16:02.871626	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	54321
+673	101	finished	educational	256	2025-09-28 09:15:30.230322	2025-09-28 09:15:35.478662	2025-09-28 09:15:32.07872	{211,212,256}	0	2509x1279	0001-01-01 00:00:00	\N	\N
+670	101	finished	educational	23	2025-09-28 09:13:52.010332	2025-09-28 09:15:18.693221	2025-09-28 09:14:09.385658	{27,21,25,22,23,29,26,30,24}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+675	101	finished	time_limited	-1	2025-09-28 09:16:07.137772	2025-09-28 09:20:00.112394	2025-09-28 09:16:07.175019	{211,212,256}	0	2509x852	0001-01-01 00:00:00	\N	\N
+412	141	finished	classic	175	2025-08-23 20:26:46.361535	2025-08-25 15:26:26.684705	2025-08-23 20:28:34.526907	{442,248,427,115,441,175,431,247,377,105,412,141,140,314,395,159,230,265,48,372,192,356,373,177,293,148,408,221,267,327,202,269,169,328,151,409,274,225,116,114,268,133,288,56,438,429,448,446,58,335,332,185,439,367,445,207,418,261,198,369,318,423,444,168,432,284,124,345,302,362,452,312,319,360,310,342,212,129,358,254,147,55,271,347,111,156,341,109,179,104,368,309,390,453,403,101,174,437,272,359,276,211,130,162,232,206,398,354,123,331,213,375,178,308,166,280,366,188,142,227,196,229,251,216,224,355,317,321,150,134,165,371,180,110,256,326,376,329,126,181,400,281,233,391,311,333,228,112,152,382,239,189,264,275,193,322,393,304,270,351,218,215,157,407,245,197,303,340,137,249,278,217,182,447,117,241,384,405,208,163,324,242,160,315,170,252,154,430,343,290,397,119,51,404,122,379,50,127,235,107,220,396,440,46,234,113,381,350,47,222,361,250,187,139,186,353,203,334,380,277,433,416,339,149,45,161,279,138,392,262,282,240,388,307,219,450,155,410,200,246,54,273,325,42,295,434,57,164,291,337,146,176,426,320,323,436,205,451,364,336,144,194,223,103,352,299,399,171,348,420,425,386,121,316,53,383,214,344,449,287,125,370,435,158,128,298,300,257,266,195,210,338,59,401,297,286,238,285,402,100,226,43,118,306,243,374,143,385,443,296,357,428,52,387,231,301,411,258,201,413,305,414,102,136,363,132,167,183,41,365,44,255,394,184,424,419,259,237,173,209,253,131,346,292,204,172,145,260,289,153,389,283,415,406,417,349,108,191,330,378,49,190,106,421,263,135,120}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+758	147	finished	educational	342	2025-10-01 11:17:34.000584	2025-10-01 11:20:12.463915	2025-10-01 11:19:41.469302	{127,155,43,125,192,293,180,350,453,276,272,419,117,342,440,379,47,357,154,326,105,206,365,366,263,311,146,354,219,208,228,405,331,259,402,317,130,252,359,388,240,361,340,409,452,384,355,182,330,217,438,298,321,171,227,110,344,243,431,51,187,151,253,375,118,428,305,435,104,120,107,46,370,434,128,324,135,415,325,242,268,360,378,336,373,447,190,256,158,247,48,433,160,416,446,207,288,191,157,346,307,179,269,385,173,383,301,280,215,235,390,41,126,403,364,451,45,420,245,436,426,427,122,449,200,316,184,394,266,123,203,372,404,369,56,380,121,108,249,303,195,337,279,103,232,174,167,230,421,414,339,159,241,395,186,142,214,211,196,170,408,443,205,309,136,381,406,44,278,302,144,52,218,150,166,226,399,374,134,198,410,441,246,149,210,347,448,59,251,169,397,341,413,270,168,202,164,338,386,424,114,367,147,225,306,177,287,221,234,352,124,332,323,275,209,297,233,283,335,161,429,262,345,290,329,286,444,334,239,363,291,111,50,54,273,425,143,353,284,295,116,248,185,362,417,358,101,300,312,437,328,318,296,304,172,320,277,49,178,53,299,382,430,250,145,175,322,257,140,285,310,152,162,371,327,274,445,255,119,193,261,333,194,138,315,439,376,212,213,102,153,109,183,418,224,281,265,400,132,351,407,389,387,319,308,176,264,356,442,343,396,57,271,113,391,258,201,450,237,131,188,141,231,58,115,260,229,423,42,133,112,432,222,156,137,292,139,163,392,148,181,267,411,197,129,398,412,368,223,100,204,216,401,55,377,282,238,165,220,314,289,254,349,106,348,393,189}	5	375x664	0001-01-01 00:00:00	\N	\N
+841	101	finished	educational	389	2025-10-13 08:52:15.213021	2025-10-13 09:02:16.085371	2025-10-13 08:52:18.901964	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+759	147	finished	educational	440	2025-10-01 11:20:12.465317	2025-10-01 11:21:20.884268	2025-10-01 11:21:20.883605	{127,155,43,125,192,293,180,350,453,276,272,419,117,342,440,379,47,357,154,326,105,206,365,366,263,311,146,354,219,208,228,405,331,259,402,317,130,252,359,388,240,361,340,409,452,384,355,182,330,217,438,298,321,171,227,110,344,243,431,51,187,151,253,375,118,428,305,435,104,120,107,46,370,434,128,324,135,415,325,242,268,360,378,336,373,447,190,256,158,247,48,433,160,416,446,207,288,191,157,346,307,179,269,385,173,383,301,280,215,235,390,41,126,403,364,451,45,420,245,436,426,427,122,449,200,316,184,394,266,123,203,372,404,369,56,380,121,108,249,303,195,337,279,103,232,174,167,230,421,414,339,159,241,395,186,142,214,211,196,170,408,443,205,309,136,381,406,44,278,302,144,52,218,150,166,226,399,374,134,198,410,441,246,149,210,347,448,59,251,169,397,341,413,270,168,202,164,338,386,424,114,367,147,225,306,177,287,221,234,352,124,332,323,275,209,297,233,283,335,161,429,262,345,290,329,286,444,334,239,363,291,111,50,54,273,425,143,353,284,295,116,248,185,362,417,358,101,300,312,437,328,318,296,304,172,320,277,49,178,53,299,382,430,250,145,175,322,257,140,285,310,152,162,371,327,274,445,255,119,193,261,333,194,138,315,439,376,212,213,102,153,109,183,418,224,281,265,400,132,351,407,389,387,319,308,176,264,356,442,343,396,57,271,113,391,258,201,450,237,131,188,141,231,58,115,260,229,423,42,133,112,432,222,156,137,292,139,163,392,148,181,267,411,197,129,398,412,368,223,100,204,216,401,55,377,282,238,165,220,314,289,254,349,106,348,393,189}	5	375x664	2025-10-01 11:20:12.495229	\N	\N
+792	162	finished	classic	36	2025-10-05 09:44:07.727107	2025-10-12 12:45:13.161666	2025-10-05 09:44:10.343704	{32,38,36,10,40,35,39,34,31,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+676	101	finished	educational	-1	2025-09-28 09:20:00.113837	2025-09-28 09:20:14.919692	2025-09-28 09:20:00.180201	{211,212,256}	0	2509x852	0001-01-01 00:00:00	\N	\N
+415	101	finished	classic	330	2025-08-23 20:31:01.106793	2025-08-23 20:47:16.050229	2025-08-23 20:31:02.377401	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+770	101	finished	classic	70	2025-10-04 11:15:38.203714	2025-10-04 11:46:54.17434	2025-10-04 11:15:44.294982	{73,70,76,71,78,74,77,75,79}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+678	101	finished	educational	287	2025-09-28 09:20:45.570492	2025-09-28 09:45:08.577074	2025-09-28 09:45:08.576376	{287,142,47,255,442,334,158,222,141,391,453,197,365,114,133,134,281,227,151,438,387,374,220,304,243,104,298,118,360,140,185,299,425,291,110,340,366,123,329,290,448,323,347,439,383,160,327,342,274,248,41,292,286,449,346,216,393,275,135,109,328,230,295,233,170,208,107,279,428,331,377,333,357,385,396,285,48,280,344,406,224,336,53,306,155,378,139,148,108,363,177,130,273,149,111,234,106,56,173,212,169,235,124,256,353,154,225,398,144,178,188,417,54,350,338,322,219,258,451,260,400,102,362,423,354,101,261,254,112,179,126,44,408,409,152,367,352,120,167,324,198,264,426,301,368,257,402,267,337,444,418,241,231,370,191,246,421,150,137,412,42,50,380,195,228,242,249,239,415,119,410,395,218,282,115,277,146,307,270,432,315,434,221,266,145,345,311,302,226,339,122,316,372,389,392,207,404,305,250,138,237,153,168,384,382,129,388,351,164,403,288,184,308,136,203,446,116,414,186,397,215,278,253,189,343,121,272,394,259,43,348,55,314,180,100,192,364,183,349,46,407,376,171,312,447,369,413,321,159,443,436,386,181,161,45,375,440,356,223,355,172,240,268,293,317,435,213,209,165,318,156,162,424,427,182,430,52,103,358,381,262,320,163,105,297,437,200,276,175,433,341,265,58,238,49,128,174,166,229,201,205,51,132,125,390,131,452,143,263,373,309,245,359,113,252,127,361,190,441,283,232,147,210,57,187,379,196,419,117,194,284,411,303,247,269,332,325,251,271,450,157,416,206,59,371,429,193,445,401,405,204,420,176,319,289,300,296,399,202,217,335,431,326,330,211,310}	5	2509x852	2025-09-28 09:45:07.456217	\N	\N
+677	101	finished	classic	212	2025-09-28 09:20:14.921045	2025-09-28 09:20:45.569081	2025-09-28 09:20:42.998108	{211,212,256}	0	2509x852	0001-01-01 00:00:00	\N	54321
+786	101	finished	classic	64	2025-10-04 19:05:57.250206	2025-10-04 19:07:09.859481	2025-10-04 19:05:59.135371	{60,64,65,69,63,67,61,68,62,66}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+760	167	finished	educational	10	2025-10-01 11:22:56.553357	2025-10-01 11:39:27.336807	2025-10-01 11:25:06.142305	{38,10,35,33,37,32,34,39,40,31,36}	4	375x664	0001-01-01 00:00:00	\N	\N
+778	101	finished	classic	13	2025-10-04 18:15:25.503707	2025-10-04 18:43:57.470066	2025-10-04 18:15:31.4153	{19,12,17,16,11,18,15,13,20,14}	2	2509x852	0001-01-01 00:00:00	\N	\N
+772	101	finished	classic	77	2025-10-04 12:38:23.075506	2025-10-04 12:39:07.844779	2025-10-04 12:38:34.822992	{73,70,76,71,78,74,77,75,79}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+791	101	finished	classic	96	2025-10-05 09:35:58.465379	2025-10-05 20:11:00.063014	2025-10-05 09:36:01.867146	{95,90,99,92,96,97,93,94,91}	9	2509x852	0001-01-01 00:00:00	\N	\N
+779	101	finished	educational	14	2025-10-04 18:43:57.473221	2025-10-04 18:47:08.478928	2025-10-04 18:44:04.857954	{19,12,17,16,11,18,15,13,20,14}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+777	101	finished	classic	11	2025-10-04 18:13:48.532714	2025-10-04 18:15:25.502121	2025-10-04 18:13:51.572211	{19,12,17,16,11,18,15,13,20,14}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+788	101	finished	classic	-1	2025-10-04 19:08:24.015174	2025-10-05 08:38:49.708027	2025-10-04 19:08:25.498556	{1}	0	2509x1279	0001-01-01 00:00:00	\N	2222
+793	101	finished	classic	97	2025-10-05 20:11:00.066606	2025-10-06 14:01:29.569214	2025-10-05 20:11:02.233545	{95,90,99,92,96,97,93,94,91}	9	1869x919	0001-01-01 00:00:00	\N	\N
+419	145	finished	classic	23	2025-08-23 20:49:01.20801	2025-08-25 15:27:27.355045	2025-08-23 20:49:04.323268	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+420	101	finished	classic	330	2025-08-23 20:50:19.570708	2025-08-23 20:54:40.327527	2025-08-23 20:50:19.59512	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+421	101	finished	classic	330	2025-08-23 20:54:40.330351	2025-08-23 20:59:30.211211	2025-08-23 20:54:40.362006	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+418	101	finished	classic	330	2025-08-23 20:47:53.479316	2025-08-23 20:50:19.568482	2025-08-23 20:47:53.511513	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+781	101	finished	classic	30	2025-10-04 18:47:46.397538	2025-10-04 18:47:57.445334	2025-10-04 18:47:48.595858	{24,30,29,22,21,27,26,23,25}	3	2509x852	0001-01-01 00:00:00	\N	\N
+761	167	finished	educational	35	2025-10-01 11:39:27.339544	2025-10-01 11:43:09.015361	2025-10-01 11:39:43.284376	{38,10,35,33,37,32,34,39,40,31,36}	4	1600x902	0001-01-01 00:00:00	\N	\N
+794	173	finished	educational	9	2025-10-05 20:11:17.542505	2025-10-05 20:18:49.994939	2025-10-05 20:18:44.759755	{9,8,214,5,6,2,1,7,98,3,28,4,88,72}	1	1855x959	0001-01-01 00:00:00	\N	\N
+773	101	finished	classic	75	2025-10-04 12:39:07.846533	2025-10-04 12:40:02.566959	2025-10-04 12:39:13.228419	{73,70,76,71,78,74,77,75,79}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+780	101	finished	classic	24	2025-10-04 18:47:08.480472	2025-10-04 18:47:46.396654	2025-10-04 18:47:20.085478	{24,30,29,22,21,27,26,23,25}	3	2509x852	0001-01-01 00:00:00	\N	\N
+774	101	finished	classic	79	2025-10-04 12:40:02.568242	2025-10-04 12:45:43.698043	2025-10-04 12:40:50.250555	{73,70,76,71,78,74,77,75,79}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+771	101	finished	classic	71	2025-10-04 11:46:54.176806	2025-10-04 12:38:23.070618	2025-10-04 11:46:59.885185	{73,70,76,71,78,74,77,75,79}	7	2509x1279	0001-01-01 00:00:00	\N	\N
+787	101	finished	classic	65	2025-10-04 19:07:09.86093	2025-10-04 19:08:24.013971	2025-10-04 19:07:11.202334	{60,64,65,69,63,67,61,68,62,66}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+762	167	finished	educational	-1	2025-10-01 11:43:09.016766	2025-10-05 20:18:32.190372	2025-10-01 11:43:39.554775	{3,5,12,13,14,20,21}	0	375x407	0001-01-01 00:00:00	21	TEST01
+422	101	finished	classic	163	2025-08-23 20:59:30.21382	2025-08-23 20:59:35.0273	2025-08-23 20:59:31.994087	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+763	162	finished	classic	37	2025-10-01 13:59:08.586803	2025-10-01 13:59:15.536957	2025-10-01 13:59:09.646047	{39,33,35,40,31,10,32,34,38,37,36}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+775	101	finished	time_limited	17	2025-10-04 12:45:43.700312	2025-10-04 13:06:26.838472	2025-10-04 12:45:59.263745	{19,12,17,16,11,18,15,13,20,14}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+782	101	finished	classic	21	2025-10-04 18:47:57.446819	2025-10-04 18:51:59.837096	2025-10-04 18:48:03.325961	{24,30,29,22,21,27,26,23,25}	3	2509x852	0001-01-01 00:00:00	\N	\N
+789	101	finished	classic	90	2025-10-05 08:38:49.711452	2025-10-05 08:42:46.090899	2025-10-05 08:38:52.350531	{95,90,99,92,96,97,93,94,91}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+764	162	in_progress	classic	18	2025-10-01 13:59:15.538305	2025-10-01 13:59:48.480116	2025-10-01 13:59:36.01535	{16,20,19,14,15,13,11,17,12,18}	2	2509x1279	2025-10-01 13:59:48.479768	\N	\N
+424	101	finished	time_limited	163	2025-08-23 21:01:45.392263	2025-08-25 07:43:48.260294	2025-08-23 21:01:45.420363	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+423	101	finished	classic	163	2025-08-23 20:59:35.029156	2025-08-23 21:01:45.389399	2025-08-23 20:59:35.056834	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+425	101	finished	classic	295	2025-08-25 07:43:48.26282	2025-08-25 08:03:26.813142	2025-08-25 07:43:51.275393	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+426	101	finished	classic	215	2025-08-25 08:03:26.816605	2025-08-25 12:31:31.40216	2025-08-25 08:03:36.608281	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+776	101	finished	classic	17	2025-10-04 13:06:26.841233	2025-10-04 18:13:48.527851	2025-10-04 13:06:26.883686	{19,12,17,16,11,18,15,13,20,14}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+783	101	finished	classic	-1	2025-10-04 18:51:59.839447	2025-10-04 18:52:27.973269	2025-10-04 18:52:05.921981	{5,6,7}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+790	101	finished	classic	99	2025-10-05 08:42:46.093553	2025-10-05 09:35:58.449476	2025-10-05 08:42:47.151692	{95,90,99,92,96,97,93,94,91}	9	2509x1279	0001-01-01 00:00:00	\N	\N
+765	162	finished	classic	18	2025-10-01 13:59:39.705254	2025-10-05 09:44:07.724167	2025-10-01 13:59:53.010567	{16,20,19,14,15,13,11,17,12,18}	2	2192x563	0001-01-01 00:00:00	\N	\N
+430	101	finished	educational	181	2025-08-25 12:31:31.405219	2025-08-25 12:31:44.571159	2025-08-25 12:31:38.610184	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+428	147	finished	educational	125	2025-08-25 08:29:27.766013	2025-08-25 08:42:32.72359	2025-08-25 08:35:17.563908	{127,155,43,125,192,293,180,350,453,276,272,419,117,342,440,379,47,357,154,326,105,206,365,366,263,311,146,354,219,208,228,405,331,259,402,317,130,252,359,388,240,361,340,409,452,384,355,182,330,217,438,298,321,171,227,110,344,243,431,51,187,151,253,375,118,428,305,435,104,120,107,46,370,434,128,324,135,415,325,242,268,360,378,336,373,447,190,256,158,247,48,433,160,416,446,207,288,191,157,346,307,179,269,385,173,383,301,280,215,235,390,41,126,403,364,451,45,420,245,436,426,427,122,449,200,316,184,394,266,123,203,372,404,369,56,380,121,108,249,303,195,337,279,103,232,174,167,230,421,414,339,159,241,395,186,142,214,211,196,170,408,443,205,309,136,381,406,44,278,302,144,52,218,150,166,226,399,374,134,198,410,441,246,149,210,347,448,59,251,169,397,341,413,270,168,202,164,338,386,424,114,367,147,225,306,177,287,221,234,352,124,332,323,275,209,297,233,283,335,161,429,262,345,290,329,286,444,334,239,363,291,111,50,54,273,425,143,353,284,295,116,248,185,362,417,358,101,300,312,437,328,318,296,304,172,320,277,49,178,53,299,382,430,250,145,175,322,257,140,285,310,152,162,371,327,274,445,255,119,193,261,333,194,138,315,439,376,212,213,102,153,109,183,418,224,281,265,400,132,351,407,389,387,319,308,176,264,356,442,343,396,57,271,113,391,258,201,450,237,131,188,141,231,58,115,260,229,423,42,133,112,432,222,156,137,292,139,163,392,148,181,267,411,197,129,398,412,368,223,100,204,216,401,55,377,282,238,165,220,314,289,254,349,106,348,393,189}	5	1600x902	0001-01-01 00:00:00	\N	\N
+429	147	finished	educational	350	2025-08-25 08:42:32.726499	2025-10-01 11:17:33.997954	2025-08-25 08:42:56.051534	{127,155,43,125,192,293,180,350,453,276,272,419,117,342,440,379,47,357,154,326,105,206,365,366,263,311,146,354,219,208,228,405,331,259,402,317,130,252,359,388,240,361,340,409,452,384,355,182,330,217,438,298,321,171,227,110,344,243,431,51,187,151,253,375,118,428,305,435,104,120,107,46,370,434,128,324,135,415,325,242,268,360,378,336,373,447,190,256,158,247,48,433,160,416,446,207,288,191,157,346,307,179,269,385,173,383,301,280,215,235,390,41,126,403,364,451,45,420,245,436,426,427,122,449,200,316,184,394,266,123,203,372,404,369,56,380,121,108,249,303,195,337,279,103,232,174,167,230,421,414,339,159,241,395,186,142,214,211,196,170,408,443,205,309,136,381,406,44,278,302,144,52,218,150,166,226,399,374,134,198,410,441,246,149,210,347,448,59,251,169,397,341,413,270,168,202,164,338,386,424,114,367,147,225,306,177,287,221,234,352,124,332,323,275,209,297,233,283,335,161,429,262,345,290,329,286,444,334,239,363,291,111,50,54,273,425,143,353,284,295,116,248,185,362,417,358,101,300,312,437,328,318,296,304,172,320,277,49,178,53,299,382,430,250,145,175,322,257,140,285,310,152,162,371,327,274,445,255,119,193,261,333,194,138,315,439,376,212,213,102,153,109,183,418,224,281,265,400,132,351,407,389,387,319,308,176,264,356,442,343,396,57,271,113,391,258,201,450,237,131,188,141,231,58,115,260,229,423,42,133,112,432,222,156,137,292,139,163,392,148,181,267,411,197,129,398,412,368,223,100,204,216,401,55,377,282,238,165,220,314,289,254,349,106,348,393,189}	5	1600x902	0001-01-01 00:00:00	\N	\N
+431	101	finished	classic	160	2025-08-25 12:31:44.574056	2025-08-25 12:50:41.088608	2025-08-25 12:35:15.662322	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+766	101	finished	classic	-1	2025-10-01 14:02:35.446095	2025-10-01 14:07:35.635281	2025-10-01 14:02:44.688816	{4,5,6}	0	2509x1279	0001-01-01 00:00:00	\N	2222
+784	101	finished	classic	-1	2025-10-04 18:52:27.974384	2025-10-04 19:05:57.247049	2025-10-04 18:52:31.660403	{5,6,7}	0	2509x1279	0001-01-01 00:00:00	\N	1111
+785	168	finished	classic	-1	2025-10-04 18:52:58.318165	2025-10-04 18:53:01.452985	2025-10-04 18:53:01.452684	{5,6,7}	0	2509x1279	2025-10-04 18:52:59.971943	\N	1111
+433	101	finished	classic	303	2025-08-25 13:27:04.449877	2025-08-25 15:25:27.814124	2025-08-25 13:27:04.481073	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+432	101	finished	classic	303	2025-08-25 12:50:41.092566	2025-08-25 13:27:04.447841	2025-08-25 12:51:33.443325	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+769	101	finished	educational	17	2025-10-01 14:09:27.004221	2025-10-04 11:15:38.197803	2025-10-01 14:09:46.947577	{13,15,14,12,20,16,11,18,19,17}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+435	141	not_started	classic	175	2025-08-25 15:26:26.687006	2025-08-25 15:26:26.719103	\N	{442,248,427,115,441,175,431,247,377,105,412,141,140,314,395,159,230,265,48,372,192,356,373,177,293,148,408,221,267,327,202,269,169,328,151,409,274,225,116,114,268,133,288,56,438,429,448,446,58,335,332,185,439,367,445,207,418,261,198,369,318,423,444,168,432,284,124,345,302,362,452,312,319,360,310,342,212,129,358,254,147,55,271,347,111,156,341,109,179,104,368,309,390,453,403,101,174,437,272,359,276,211,130,162,232,206,398,354,123,331,213,375,178,308,166,280,366,188,142,227,196,229,251,216,224,355,317,321,150,134,165,371,180,110,256,326,376,329,126,181,400,281,233,391,311,333,228,112,152,382,239,189,264,275,193,322,393,304,270,351,218,215,157,407,245,197,303,340,137,249,278,217,182,447,117,241,384,405,208,163,324,242,160,315,170,252,154,430,343,290,397,119,51,404,122,379,50,127,235,107,220,396,440,46,234,113,381,350,47,222,361,250,187,139,186,353,203,334,380,277,433,416,339,149,45,161,279,138,392,262,282,240,388,307,219,450,155,410,200,246,54,273,325,42,295,434,57,164,291,337,146,176,426,320,323,436,205,451,364,336,144,194,223,103,352,299,399,171,348,420,425,386,121,316,53,383,214,344,449,287,125,370,435,158,128,298,300,257,266,195,210,338,59,401,297,286,238,285,402,100,226,43,118,306,243,374,143,385,443,296,357,428,52,387,231,301,411,258,201,413,305,414,102,136,363,132,167,183,41,365,44,255,394,184,424,419,259,237,173,209,253,131,346,292,204,172,145,260,289,153,389,283,415,406,417,349,108,191,330,378,49,190,106,421,263,135,120}	5	2509x1279	2025-08-25 15:26:26.718612	\N	\N
+436	145	finished	classic	23	2025-08-25 15:27:27.357511	2025-08-25 15:27:31.341235	2025-08-25 15:27:27.38759	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	0001-01-01 00:00:00	\N	\N
+437	145	not_started	classic	23	2025-08-25 15:27:31.342293	2025-08-25 15:27:31.367879	\N	{21,29,24,28,30,25,22,26,23,27}	3	2509x1279	2025-08-25 15:27:31.367705	\N	\N
+768	101	finished	classic	18	2025-10-01 14:08:44.410207	2025-10-01 14:09:27.002517	2025-10-01 14:09:06.226922	{13,15,14,12,20,16,11,18,19,17}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+767	101	finished	classic	16	2025-10-01 14:07:35.637922	2025-10-01 14:08:44.408216	2025-10-01 14:07:57.160273	{13,15,14,12,20,16,11,18,19,17}	2	2509x1279	0001-01-01 00:00:00	\N	\N
+434	101	finished	classic	303	2025-08-25 15:25:27.816631	2025-08-25 15:35:24.110038	2025-08-25 15:25:27.849518	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+438	101	finished	educational	208	2025-08-25 15:35:24.112756	2025-08-25 15:39:34.720272	2025-08-25 15:35:28.469293	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+439	101	finished	classic	194	2025-08-25 15:39:34.723748	2025-09-07 08:33:27.830907	2025-08-25 15:39:45.230034	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+440	72	finished	classic	327	2025-08-25 16:34:04.168237	2025-08-25 16:42:48.719961	2025-08-25 16:39:08.050205	{381,101,249,327,238,278,132,193,310,173,328,426,175,189,447,103,415,358,352,245,176,369,104,226,308,47,268,343,359,377,438,394,297,338,135,194,46,56,243,117,303,122,229,449,389,228,188,246,334,448,373,106,406,45,233,151,283,259,234,147,271,126,179,241,168,276,274,330,353,432,291,149,242,165,55,159,319,424,57,182,331,382,444,108,133,430,320,230,205,120,282,326,181,355,421,293,279,186,290,354,169,361,411,360,388,158,224,413,314,116,213,298,157,368,365,110,431,208,145,416,221,163,258,191,390,170,239,160,386,403,153,407,254,275,59,262,371,401,400,265,312,335,223,102,445,240,200,295,284,347,387,340,342,450,302,398,51,442,174,105,433,138,409,183,255,128,412,419,140,370,118,420,100,206,337,351,203,250,414,323,374,237,192,52,222,134,178,436,197,321,405,393,410,166,362,452,261,260,395,161,232,345,54,443,216,129,324,50,287,172,280,427,247,131,231,220,248,204,217,48,380,154,177,114,439,299,111,301,272,130,372,318,143,307,201,185,137,219,121,269,225,210,434,383,49,396,256,286,263,317,437,123,252,285,281,119,356,325,207,341,277,322,385,305,264,141,418,124,251,350,109,346,404,115,435,402,142,348,425,363,379,139,58,344,155,309,41,267,209,304,266,311,171,44,202,332,339,107,218,423,296,397,417,451,198,349,187,162,167,214,144,125,292,366,392,391,270,384,375,315,215,113,150,378,367,408,453,316,289,152,364,112,156,53,253,429,227,180,376,273,184,127,190,441,399,42,300,288,235,440,196,428,136,306,212,195,329,333,164,146,336,357,43,148,257,446,211}	5	1869x955	0001-01-01 00:00:00	\N	\N
+441	72	in_progress	educational	238	2025-08-25 16:42:48.722417	2025-08-25 16:42:55.070641	\N	{381,101,249,327,238,278,132,193,310,173,328,426,175,189,447,103,415,358,352,245,176,369,104,226,308,47,268,343,359,377,438,394,297,338,135,194,46,56,243,117,303,122,229,449,389,228,188,246,334,448,373,106,406,45,233,151,283,259,234,147,271,126,179,241,168,276,274,330,353,432,291,149,242,165,55,159,319,424,57,182,331,382,444,108,133,430,320,230,205,120,282,326,181,355,421,293,279,186,290,354,169,361,411,360,388,158,224,413,314,116,213,298,157,368,365,110,431,208,145,416,221,163,258,191,390,170,239,160,386,403,153,407,254,275,59,262,371,401,400,265,312,335,223,102,445,240,200,295,284,347,387,340,342,450,302,398,51,442,174,105,433,138,409,183,255,128,412,419,140,370,118,420,100,206,337,351,203,250,414,323,374,237,192,52,222,134,178,436,197,321,405,393,410,166,362,452,261,260,395,161,232,345,54,443,216,129,324,50,287,172,280,427,247,131,231,220,248,204,217,48,380,154,177,114,439,299,111,301,272,130,372,318,143,307,201,185,137,219,121,269,225,210,434,383,49,396,256,286,263,317,437,123,252,285,281,119,356,325,207,341,277,322,385,305,264,141,418,124,251,350,109,346,404,115,435,402,142,348,425,363,379,139,58,344,155,309,41,267,209,304,266,311,171,44,202,332,339,107,218,423,296,397,417,451,198,349,187,162,167,214,144,125,292,366,392,391,270,384,375,315,215,113,150,378,367,408,453,316,289,152,364,112,156,53,253,429,227,180,376,273,184,127,190,441,399,42,300,288,235,440,196,428,136,306,212,195,329,333,164,146,336,357,43,148,257,446,211}	5	1869x955	2025-08-25 16:42:48.753403	\N	\N
+795	19	finished	educational	104	2025-10-05 20:12:00.015099	2025-10-06 18:56:33.277541	2025-10-05 20:12:14.569224	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+443	101	finished	classic	128	2025-09-07 08:33:27.835998	2025-09-07 09:38:55.703762	2025-09-07 08:33:30.168324	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+842	101	finished	classic	46	2025-10-13 09:02:16.087904	2025-10-16 07:52:03.676161	2025-10-13 09:02:17.619005	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+446	101	finished	educational	240	2025-09-07 09:43:43.862209	2025-09-07 09:50:45.307654	2025-09-07 09:43:53.261785	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+444	101	finished	classic	404	2025-09-07 09:38:55.705844	2025-09-07 09:39:03.328719	2025-09-07 09:38:59.695943	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+445	101	finished	educational	185	2025-09-07 09:39:03.33015	2025-09-07 09:43:43.859617	2025-09-07 09:39:08.369788	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+447	101	finished	classic	240	2025-09-07 09:50:45.309494	2025-09-07 09:50:50.91025	2025-09-07 09:50:46.613039	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+796	167	finished	educational	81	2025-10-05 20:18:32.192178	2025-10-05 20:20:10.375426	2025-10-05 20:20:10.375111	{86,85,80,82,81,84,89,87}	8	375x634	2025-10-05 20:19:05.094564	\N	\N
+797	173	finished	educational	9	2025-10-05 20:18:49.996574	2025-10-05 20:25:51.961214	2025-10-05 20:18:50.030163	{9,8,214,5,6,2,1,7,98,3,28,4,88,72}	1	1855x959	0001-01-01 00:00:00	\N	\N
+843	178	finished	educational	93	2025-10-13 12:43:48.134624	2025-10-13 12:44:17.910886	2025-10-13 12:44:17.91069	{99,93,96,91,90,92,97,95,94}	9	402x680	2025-10-13 12:43:48.244745	\N	\N
+448	101	finished	classic	179	2025-09-07 09:50:50.912296	2025-09-07 09:51:04.037293	2025-09-07 09:50:54.118564	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+449	101	finished	classic	179	2025-09-07 09:51:04.03922	2025-09-07 09:51:33.618646	2025-09-07 09:51:05.626584	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+450	101	finished	educational	179	2025-09-07 09:51:33.620301	2025-09-07 09:51:38.455223	2025-09-07 09:51:34.516763	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+798	173	finished	educational	5	2025-10-05 20:25:51.963631	2025-10-05 20:28:28.490087	2025-10-05 20:26:21.9458	{9,8,214,5,6,2,1,7,98,3,28,4,88,72}	1	1855x959	0001-01-01 00:00:00	\N	\N
+844	182	finished	educational	76	2025-10-13 19:54:30.08754	2025-10-13 19:55:46.411404	2025-10-13 19:55:46.410925	{77,76,73,79,75,74,70,78,71}	7	393x665	2025-10-13 19:55:34.517339	\N	\N
+451	101	finished	educational	232	2025-09-07 09:51:38.458115	2025-09-07 09:52:27.919751	2025-09-07 09:51:55.960071	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+452	101	finished	time_limited	232	2025-09-07 09:52:27.922257	2025-09-07 09:58:29.140295	2025-09-07 09:52:30.603137	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+799	173	finished	educational	5	2025-10-05 20:28:28.491526	2025-10-13 07:18:20.742237	2025-10-05 20:28:28.524416	{9,8,214,5,6,2,1,7,98,3,28,4,88,72}	1	1855x959	0001-01-01 00:00:00	\N	\N
+845	112	finished	educational	15	2025-10-14 09:42:11.455124	2025-10-14 09:43:14.599981	2025-10-14 09:43:14.599571	{17,20,15,13,12,18,19,16,11,14}	2	2560x1305	2025-10-14 09:42:51.903006	\N	\N
+453	101	finished	classic	413	2025-09-07 09:58:29.142888	2025-09-07 09:58:37.558917	2025-09-07 09:58:34.62211	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+455	101	finished	classic	376	2025-09-07 09:59:10.108094	2025-09-07 09:59:20.138641	2025-09-07 09:59:16.589453	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+454	101	finished	educational	43	2025-09-07 09:58:37.560074	2025-09-07 09:59:10.106088	2025-09-07 09:58:40.744072	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+456	101	finished	classic	343	2025-09-07 09:59:20.141104	2025-09-07 10:16:46.069412	2025-09-07 09:59:25.004049	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+800	101	finished	classic	94	2025-10-06 14:01:29.572474	2025-10-06 14:01:41.693926	2025-10-06 14:01:32.665799	{95,90,99,92,96,97,93,94,91}	9	1800x884	0001-01-01 00:00:00	\N	\N
+801	101	finished	classic	422	2025-10-06 14:01:41.696452	2025-10-06 14:03:06.666356	2025-10-06 14:01:43.987757	{422,83,236,199,244,313,294}	-1	2509x1279	0001-01-01 00:00:00	\N	\N
+457	101	finished	educational	275	2025-09-07 10:16:46.072533	2025-09-07 10:17:05.952695	2025-09-07 10:16:52.620881	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+459	101	finished	classic	253	2025-09-07 10:17:47.048386	2025-09-07 10:19:04.130042	2025-09-07 10:17:52.551298	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+458	101	finished	educational	224	2025-09-07 10:17:05.95523	2025-09-07 10:17:47.047412	2025-09-07 10:17:42.464804	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+460	101	finished	educational	372	2025-09-07 10:19:04.132702	2025-09-07 10:48:41.117175	2025-09-07 10:48:41.116477	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+461	101	finished	educational	54	2025-09-07 10:45:11.468676	2025-09-07 10:47:13.10759	2025-09-07 10:45:23.408453	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+463	101	finished	educational	296	2025-09-07 10:47:25.336349	2025-09-07 10:50:00.418718	2025-09-07 10:47:40.348482	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+462	101	finished	classic	231	2025-09-07 10:47:13.109263	2025-09-07 10:47:25.332873	2025-09-07 10:47:18.591016	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+464	101	finished	educational	296	2025-09-07 10:50:00.420502	2025-09-07 10:55:07.752834	2025-09-07 10:50:00.451755	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+465	101	finished	educational	361	2025-09-07 10:55:07.756034	2025-09-07 11:15:26.942761	2025-09-07 10:58:18.946791	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+467	101	finished	classic	172	2025-09-07 11:15:40.446406	2025-09-07 11:16:37.116848	2025-09-07 11:16:28.089813	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+466	101	finished	educational	415	2025-09-07 11:15:26.946192	2025-09-07 11:15:40.4438	2025-09-07 11:15:37.897486	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+468	101	finished	educational	289	2025-09-07 11:16:37.118296	2025-09-07 18:40:32.369274	2025-09-07 11:17:04.427131	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+846	101	not_started	classic	46	2025-10-16 07:52:03.679781	2025-10-16 07:52:03.778366	\N	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	393x665	2025-10-16 07:52:03.777573	\N	\N
+469	101	finished	educational	392	2025-09-07 18:40:32.371198	2025-09-08 15:03:54.395828	2025-09-07 18:40:55.901522	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+802	101	finished	classic	346	2025-10-06 14:03:06.667869	2025-10-06 14:04:42.442362	2025-10-06 14:04:02.677887	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+471	101	finished	educational	189	2025-09-08 15:22:52.28525	2025-09-10 17:02:09.187503	2025-09-08 15:25:24.781429	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1366x643	0001-01-01 00:00:00	\N	\N
+470	101	finished	educational	424	2025-09-08 15:03:54.406898	2025-09-08 15:22:52.282495	2025-09-08 15:05:01.627317	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	1366x643	0001-01-01 00:00:00	\N	\N
+472	101	finished	classic	189	2025-09-10 17:02:09.189679	2025-09-10 17:02:14.580902	2025-09-10 17:02:09.235976	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+473	101	finished	classic	267	2025-09-10 17:02:14.582311	2025-09-11 14:00:53.453067	2025-09-10 17:02:17.5382	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+847	162	not_started	classic	36	2025-10-16 09:48:09.873701	2025-10-16 09:48:09.924875	\N	{32,38,36,10,40,35,39,34,31,37,33}	4	1358x650	2025-10-16 09:48:09.924488	\N	\N
+474	101	finished	educational	380	2025-09-11 14:00:53.456758	2025-09-11 17:22:44.980236	2025-09-11 14:01:00.897273	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+803	101	finished	classic	447	2025-10-06 14:04:42.443732	2025-10-11 19:53:21.261929	2025-10-06 14:04:53.377649	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+475	101	finished	classic	283	2025-09-11 17:22:44.991291	2025-09-11 17:23:27.979677	2025-09-11 17:22:55.79562	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+476	101	finished	time_limited	49	2025-09-11 17:23:27.981062	2025-09-11 17:23:38.658274	2025-09-11 17:23:31.677831	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+477	101	finished	classic	49	2025-09-11 17:23:38.660967	2025-09-11 17:23:46.247259	2025-09-11 17:23:38.684854	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+804	19	finished	educational	124	2025-10-06 18:56:33.281344	2025-10-06 21:01:29.119157	2025-10-06 18:57:32.024813	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x664	0001-01-01 00:00:00	\N	\N
+810	177	not_started	educational	294	2025-10-09 17:59:53.663208	2025-10-09 17:59:53.701586	\N	{294,244,422,236,83,199,313}	-1	1869x919	2025-10-09 17:59:53.701096	\N	\N
+848	99	finished	educational	7	2025-10-16 11:11:48.154145	2025-10-16 11:12:14.464122	2025-10-16 11:12:14.463811	{4,10,6,3,7,9,5,1,8,2}	1	1728x958	2025-10-16 11:12:00.494626	\N	\N
+478	101	finished	time_limited	322	2025-09-11 17:23:46.249141	2025-09-11 17:37:44.445461	2025-09-11 17:23:55.835228	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+805	174	finished	educational	70	2025-10-06 20:30:21.020846	2025-10-06 20:32:02.921697	2025-10-06 20:31:04.572384	{76,74,71,70,73,77,75,79,78}	7	1600x902	0001-01-01 00:00:00	\N	\N
+806	174	finished	classic	73	2025-10-06 20:32:02.922737	2025-10-06 20:32:50.007916	2025-10-06 20:32:12.597561	{76,74,71,70,73,77,75,79,78}	7	1600x902	0001-01-01 00:00:00	\N	\N
+807	174	finished	educational	77	2025-10-06 20:32:50.009171	2025-10-06 20:33:04.644413	2025-10-06 20:32:57.520606	{76,74,71,70,73,77,75,79,78}	7	1600x902	0001-01-01 00:00:00	\N	\N
+808	174	finished	educational	75	2025-10-06 20:33:04.647038	2025-10-06 20:33:48.059562	2025-10-06 20:33:48.059362	{76,74,71,70,73,77,75,79,78}	7	1600x902	2025-10-06 20:33:10.808966	\N	\N
+811	164	finished	classic	68	2025-10-10 13:46:04.395752	2025-10-10 13:50:36.128247	2025-10-10 13:47:41.519683	{62,61,60,68,65,64,69,67,66,63}	6	1920x911	0001-01-01 00:00:00	\N	\N
+479	101	finished	time_limited	391	2025-09-11 17:37:44.449415	2025-09-11 17:37:56.276974	2025-09-11 17:37:49.266071	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+813	164	finished	classic	-1	2025-10-10 13:51:41.586435	2025-10-10 13:52:01.028102	2025-10-10 13:51:49.940411	{2,3,4,5}	0	1920x911	0001-01-01 00:00:00	25	1234
+480	101	finished	classic	371	2025-09-11 17:37:56.278718	2025-09-11 17:38:02.673925	2025-09-11 17:37:59.904142	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+812	164	finished	classic	67	2025-10-10 13:50:36.129871	2025-10-10 13:51:41.584636	2025-10-10 13:51:04.958664	{62,61,60,68,65,64,69,67,66,63}	6	1920x911	0001-01-01 00:00:00	\N	\N
+815	164	finished	classic	95	2025-10-10 13:52:45.856335	2025-10-10 13:53:00.396684	2025-10-10 13:52:51.457905	{96,92,91,90,95,93,94,99,97}	9	1920x911	0001-01-01 00:00:00	\N	\N
+817	164	finished	educational	99	2025-10-10 13:53:15.935768	2025-10-10 13:53:23.232831	2025-10-10 13:53:23.232479	{96,92,91,90,95,93,94,99,97}	9	1920x911	2025-10-10 13:53:19.453884	\N	\N
+809	19	finished	educational	436	2025-10-06 21:01:29.121761	2025-10-12 07:50:16.115647	2025-10-06 21:06:13.607306	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+814	164	finished	educational	90	2025-10-10 13:52:01.029758	2025-10-10 13:52:45.854547	2025-10-10 13:52:41.912292	{96,92,91,90,95,93,94,99,97}	9	1920x911	0001-01-01 00:00:00	\N	\N
+816	164	finished	classic	93	2025-10-10 13:53:00.397939	2025-10-10 13:53:15.933948	2025-10-10 13:53:13.566955	{96,92,91,90,95,93,94,99,97}	9	1920x911	0001-01-01 00:00:00	\N	\N
+486	101	finished	classic	217	2025-09-11 18:04:03.457313	2025-09-11 18:04:07.337286	2025-09-11 18:04:03.497594	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+484	154	finished	classic	5	2025-09-11 17:40:08.809987	2025-09-11 17:40:18.572873	2025-09-11 17:40:08.835312	{5,9,2,6,8,7,4,3,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+485	154	not_started	classic	5	2025-09-11 17:40:18.575801	2025-09-11 17:40:18.601966	\N	{5,9,2,6,8,7,4,3,1}	1	2509x1279	2025-09-11 17:40:18.601348	\N	\N
+482	154	finished	classic	5	2025-09-11 17:39:56.06606	2025-09-11 17:40:00.355488	2025-09-11 17:39:56.092447	{5,9,2,6,8,7,4,3,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+481	101	finished	educational	217	2025-09-11 17:38:02.676803	2025-09-11 18:04:03.453603	2025-09-11 17:38:08.975444	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+483	154	finished	classic	5	2025-09-11 17:40:00.357503	2025-09-11 17:40:08.808843	2025-09-11 17:40:00.37873	{5,9,2,6,8,7,4,3,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+488	155	finished	educational	8	2025-09-11 18:05:44.695335	2025-09-11 18:05:46.680958	2025-09-11 18:05:44.72341	{8,2,5,9,6,7,3,4,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+489	155	finished	classic	8	2025-09-11 18:05:46.681943	2025-09-11 18:05:48.255364	2025-09-11 18:05:46.706337	{8,2,5,9,6,7,3,4,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+490	155	finished	time_limited	8	2025-09-11 18:05:48.256916	2025-09-11 18:06:59.373255	2025-09-11 18:05:48.280212	{8,2,5,9,6,7,3,4,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+491	155	finished	educational	8	2025-09-11 18:06:59.375337	2025-09-11 18:07:03.186183	2025-09-11 18:06:59.397919	{8,2,5,9,6,7,3,4,1}	1	2509x1279	0001-01-01 00:00:00	\N	\N
+492	155	not_started	classic	8	2025-09-11 18:07:03.187429	2025-09-11 18:07:03.209942	\N	{8,2,5,9,6,7,3,4,1}	1	2509x1279	2025-09-11 18:07:03.209433	\N	\N
+487	101	finished	educational	217	2025-09-11 18:04:07.339924	2025-09-11 18:13:05.116485	2025-09-11 18:04:07.367852	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+493	101	finished	time_limited	228	2025-09-11 18:13:05.119	2025-09-11 18:13:29.650505	2025-09-11 18:13:11.178268	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+818	101	finished	classic	193	2025-10-11 19:53:21.264722	2025-10-12 09:17:42.956202	2025-10-11 19:53:33.902634	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+494	101	finished	time_limited	203	2025-09-11 18:13:29.652128	2025-09-11 18:19:38.476563	2025-09-11 18:14:08.957732	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+819	19	finished	educational	263	2025-10-12 07:50:16.119118	2025-10-12 20:30:49.319008	2025-10-12 07:50:28.094358	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	375x664	0001-01-01 00:00:00	\N	\N
+495	101	finished	classic	423	2025-09-11 18:19:38.478707	2025-09-11 18:19:44.508465	2025-09-11 18:19:42.57874	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+496	101	finished	time_limited	363	2025-09-11 18:19:44.51003	2025-09-11 18:20:00.84374	2025-09-11 18:19:55.452889	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+497	101	finished	time_limited	195	2025-09-11 18:20:00.845723	2025-09-12 15:23:53.98913	2025-09-11 18:20:32.707686	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+820	101	finished	classic	435	2025-10-12 09:17:42.959301	2025-10-12 09:22:28.173938	2025-10-12 09:17:44.289193	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+499	101	finished	classic	315	2025-09-12 19:02:32.085627	2025-09-14 08:10:12.915259	2025-09-12 19:02:35.716399	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+498	101	finished	educational	367	2025-09-12 15:23:53.991677	2025-09-12 19:02:32.083206	2025-09-12 15:23:59.04079	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+502	101	finished	classic	106	2025-09-14 08:13:56.362467	2025-09-14 08:56:32.745427	2025-09-14 08:13:59.52738	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x514	0001-01-01 00:00:00	\N	\N
+501	101	finished	classic	315	2025-09-14 08:10:12.920589	2025-09-14 08:13:56.360746	2025-09-14 08:10:12.967493	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+821	101	finished	classic	397	2025-10-12 09:22:28.175942	2025-10-12 09:22:44.828038	2025-10-12 09:22:33.324804	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+503	101	finished	classic	254	2025-09-14 08:56:32.748782	2025-09-14 10:12:43.801163	2025-09-14 08:56:35.955699	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+504	101	finished	classic	46	2025-09-14 10:12:43.805089	2025-09-14 10:13:00.889781	2025-09-14 10:12:57.029281	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+822	101	finished	classic	372	2025-10-12 09:22:44.829722	2025-10-12 11:09:51.244049	2025-10-12 09:22:50.09219	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+506	101	finished	classic	384	2025-09-14 10:13:13.660126	2025-09-14 10:13:21.861756	2025-09-14 10:13:19.305882	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+505	101	finished	time_limited	450	2025-09-14 10:13:00.891416	2025-09-14 10:13:13.658658	2025-09-14 10:13:10.390351	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+507	101	finished	educational	114	2025-09-14 10:13:21.864008	2025-09-14 10:14:14.770677	2025-09-14 10:13:32.066804	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+823	101	finished	educational	105	2025-10-12 11:09:51.247466	2025-10-12 11:10:02.073148	2025-10-12 11:09:57.745946	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+508	101	finished	classic	103	2025-09-14 10:14:14.771867	2025-09-14 10:25:47.10952	2025-09-14 10:25:43.285467	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x515	0001-01-01 00:00:00	\N	\N
+509	101	finished	time_limited	449	2025-09-14 10:25:47.112507	2025-09-14 10:29:05.683788	2025-09-14 10:25:53.993565	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+824	101	finished	educational	114	2025-10-12 11:10:02.076128	2025-10-12 11:10:09.463389	2025-10-12 11:10:05.22018	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+511	101	finished	classic	442	2025-09-14 10:33:39.144697	2025-09-14 10:53:23.504993	2025-09-14 10:53:23.504069	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+510	101	finished	classic	449	2025-09-14 10:29:05.686146	2025-09-14 10:33:39.142022	2025-09-14 10:29:05.750981	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x515	0001-01-01 00:00:00	\N	\N
+825	101	finished	educational	114	2025-10-12 11:10:09.466718	2025-10-13 08:52:15.20982	2025-10-12 11:10:09.49799	{412,186,338,205,168,242,445,342,383,452,135,415,238,207,127,426,297,423,232,151,220,391,453,44,103,150,113,346,261,327,307,233,245,118,187,147,157,172,287,377,370,447,175,216,193,435,397,372,359,105,114,389,46,116,260,196,269,416,212,282,110,444,331,319,449,403,387,111,361,123,49,253,221,267,271,399,341,129,340,183,140,155,344,237,120,47,312,58,335,165,430,190,51,160,278,132,101,310,410,400,202,395,159,365,433,227,279,381,117,167,256,217,141,277,276,374,248,144,154,179,348,240,280,406,210,386,203,392,206,266,409,329,283,326,124,241,42,375,352,274,48,354,366,152,191,322,153,353,345,53,176,185,171,134,139,188,262,133,441,317,360,252,439,376,102,250,429,363,224,311,373,119,41,180,314,299,197,292,228,362,57,350,284,243,281,55,209,364,325,446,45,201,128,316,334,50,257,246,285,437,138,148,182,126,380,158,396,398,121,231,349,56,130,149,371,230,137,195,450,318,164,100,184,401,226,427,301,428,104,442,239,163,448,156,286,208,211,200,384,270,388,263,420,336,162,390,393,194,330,174,112,402,169,295,258,229,367,300,265,378,235,296,369,443,234,173,356,357,177,115,421,324,432,436,268,407,289,215,298,131,145,142,438,143,264,247,302,306,275,259,178,305,125,225,385,54,408,404,204,136,254,379,293,192,414,223,351,109,108,332,273,198,52,358,288,189,146,213,425,411,166,303,290,413,339,107,440,405,333,451,382,320,255,219,249,347,218,343,251,419,434,170,323,321,161,337,106,355,328,43,417,291,418,309,315,304,122,431,368,272,394,424,308,181,59,222}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+512	101	finished	classic	265	2025-09-14 10:52:37.693638	2025-09-14 10:53:48.525623	2025-09-14 10:52:49.220922	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+827	162	finished	educational	36	2025-10-12 12:45:16.372284	2025-10-16 09:48:09.860498	2025-10-12 12:45:16.398354	{32,38,36,10,40,35,39,34,31,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+826	162	finished	educational	36	2025-10-12 12:45:13.167046	2025-10-12 12:45:16.370798	2025-10-12 12:45:13.2257	{32,38,36,10,40,35,39,34,31,37,33}	4	2509x1279	0001-01-01 00:00:00	\N	\N
+513	101	finished	time_limited	434	2025-09-14 10:53:48.527448	2025-09-14 10:53:58.477989	2025-09-14 10:53:56.004166	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+514	101	finished	classic	310	2025-09-14 10:53:58.479141	2025-09-14 10:55:21.396707	2025-09-14 10:54:11.139624	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+828	19	finished	educational	263	2025-10-12 20:30:49.334721	2025-10-13 07:18:18.437279	2025-10-12 20:30:49.387717	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1600x902	0001-01-01 00:00:00	\N	\N
+832	178	finished	educational	99	2025-10-13 07:18:22.696227	2025-10-13 12:43:48.131714	2025-10-13 07:33:27.105868	{99,93,96,91,90,92,97,95,94}	9	402x680	0001-01-01 00:00:00	\N	\N
+515	101	finished	classic	42	2025-09-14 10:55:21.397974	2025-09-14 11:12:47.850507	2025-09-14 10:55:31.563536	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+830	173	finished	educational	6	2025-10-13 07:18:20.744511	2025-10-13 07:21:44.215643	2025-10-13 07:20:42.726493	{9,8,214,5,6,2,1,7,98,3,28,4,88,72}	1	430x739	0001-01-01 00:00:00	\N	\N
+516	101	finished	classic	452	2025-09-14 11:12:47.853518	2025-09-14 11:19:14.753762	2025-09-14 11:12:54.124479	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x1279	0001-01-01 00:00:00	\N	\N
+829	19	finished	educational	221	2025-10-13 07:18:18.450062	2025-10-13 07:20:31.054286	2025-10-13 07:20:31.053802	{133,166,132,359,105,442,328,139,300,134,344,119,209,280,197,318,302,143,363,160,57,368,142,276,308,303,323,395,452,50,354,409,428,165,46,431,412,351,385,146,117,273,299,269,408,115,413,391,380,107,182,271,449,316,208,445,217,416,346,298,404,425,340,384,230,222,258,234,245,147,314,100,242,253,228,164,419,189,144,225,275,123,179,264,162,439,444,102,130,223,447,265,415,101,341,379,337,353,307,205,45,141,127,406,192,266,401,243,216,195,295,392,194,233,58,231,239,138,430,227,261,270,218,154,52,330,315,438,331,267,183,367,453,252,114,429,332,400,48,348,324,326,405,171,41,306,232,309,42,288,55,349,446,394,220,148,207,215,214,277,136,140,108,106,420,352,290,175,170,279,355,188,145,402,49,238,286,104,383,176,403,124,427,161,159,156,210,376,47,109,436,297,263,221,305,301,202,414,211,259,56,112,235,187,451,241,317,53,274,54,152,418,434,399,204,172,345,450,250,272,369,226,196,51,365,110,291,59,149,180,135,128,386,433,282,322,150,292,393,125,201,257,389,126,382,347,360,224,247,174,203,191,116,387,237,388,255,362,113,320,173,440,278,284,260,240,378,118,122,424,249,219,325,448,397,177,426,293,435,373,356,336,262,121,432,361,43,358,268,381,163,296,158,398,212,311,357,338,396,184,417,364,190,370,374,421,167,321,111,198,423,103,372,120,443,129,246,131,229,283,339,329,44,213,335,366,155,281,350,411,377,342,410,137,169,206,312,157,334,185,178,186,310,437,181,343,289,153,407,390,193,287,200,375,168,251,248,319,371,151,285,327,254,441,333,256,304}	5	1920x919	2025-10-13 07:18:18.503471	\N	\N
+517	101	finished	classic	329	2025-09-14 11:19:14.755878	2025-09-14 11:23:05.030077	2025-09-14 11:19:19.645425	{291,257,151,47,150,102,266,225,183,341,399,101,167,238,421,359,375,445,358,346,202,297,129,55,132,168,448,229,119,323,251,400,368,147,352,299,321,302,223,420,446,432,379,109,416,252,356,320,105,48,306,196,331,162,140,111,256,218,338,197,58,385,388,340,418,276,406,245,173,378,279,355,451,174,287,337,178,250,407,131,233,41,57,154,143,159,53,258,443,169,366,243,419,429,339,370,411,117,324,332,264,125,365,211,353,333,138,312,311,142,44,120,104,45,148,349,437,261,237,207,123,405,188,273,51,433,220,219,133,408,242,401,444,210,431,316,50,290,249,227,286,318,166,304,373,170,134,126,394,387,278,171,383,137,56,328,398,345,397,182,269,193,436,190,403,110,326,390,187,149,176,298,239,412,272,300,222,280,271,52,374,122,293,360,268,319,344,184,230,136,314,414,288,335,425,121,435,439,246,441,263,284,177,212,336,354,438,325,327,156,115,393,213,260,118,157,277,127,330,163,295,350,141,215,145,181,160,348,165,357,417,396,235,382,200,381,152,409,144,281,303,247,208,255,402,59,317,158,410,274,194,128,428,404,113,185,186,240,179,307,232,413,43,285,376,447,343,275,224,342,301,253,440,372,226,214,209,347,54,427,231,262,259,453,204,296,135,192,241,305,201,364,361,386,415,161,426,116,172,164,289,292,206,392,362,270,424,175,108,189,267,380,146,139,283,107,369,430,180,49,322,391,371,100,191,217,228,308,155,389,216,377,221,203,423,334,363,395,130,309,112,205,195,124,367,315,106,248,254,153,234,46,282,450,384,198,351,114,103,449,442,265,434,310,42,452,329}	5	2509x515	0001-01-01 00:00:00	\N	\N
+833	182	finished	educational	422	2025-10-13 07:21:26.472901	2025-10-13 07:22:47.773335	2025-10-13 07:22:22.140153	{313,244,294,422,83,199,236}	-1	393x665	0001-01-01 00:00:00	\N	\N
+836	173	in_progress	educational	89	2025-10-13 07:21:44.218123	2025-10-13 07:31:27.294879	\N	{85,80,82,84,86,87,89,81}	8	430x739	2025-10-13 07:31:27.294595	\N	\N
+835	179	finished	educational	19	2025-10-13 07:21:32.003157	2025-10-13 07:32:34.60392	2025-10-13 07:32:34.603568	{16,20,17,13,18,12,19,14,11,15}	2	393x659	2025-10-13 07:30:03.318844	\N	\N
+837	184	finished	educational	10	2025-10-13 07:21:53.084394	2025-10-13 07:32:35.266684	2025-10-13 07:32:35.266127	{38,32,34,40,39,37,31,33,36,35,10}	4	360x705	2025-10-13 07:31:25.131157	\N	\N
+838	182	finished	educational	199	2025-10-13 07:22:47.774437	2025-10-13 07:27:33.150614	2025-10-13 07:24:22.309517	{313,244,294,422,83,199,236}	-1	393x665	0001-01-01 00:00:00	\N	\N
+518	101	finished	classic	66	2025-09-14 11:23:05.032686	2025-09-14 11:23:25.987396	2025-09-14 11:23:10.173023	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+519	101	finished	time_limited	66	2025-09-14 11:23:25.989261	2025-09-14 11:25:23.638752	2025-09-14 11:23:26.011674	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+520	101	finished	classic	67	2025-09-14 11:25:23.64014	2025-09-14 11:25:34.937695	2025-09-14 11:25:30.045325	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+521	101	finished	classic	60	2025-09-14 11:25:34.938961	2025-09-14 12:25:58.234966	2025-09-14 11:25:37.252153	{66,67,60,62,69,68,61,65,64,63}	6	2509x1279	0001-01-01 00:00:00	\N	\N
+\.
+
+
+--
+-- Data for Name: quiz_user_access; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.quiz_user_access (user_id, approved, approved_by, approved_at, created_at) FROM stdin;
+21	t	\N	2025-08-21 18:02:51.115623+00	2025-08-21 18:02:51.115623+00
+143	t	\N	2025-08-21 18:07:27.367731+00	2025-08-21 18:07:27.367731+00
+3	t	\N	2025-08-23 18:17:02.817669+00	2025-08-23 18:17:01.302992+00
+117	t	\N	2025-08-23 19:06:12.283936+00	2025-08-23 19:06:12.283936+00
+101	t	\N	2025-08-23 19:06:33.316807+00	2025-08-23 19:06:33.316807+00
+146	t	\N	2025-08-23 20:30:29.762447+00	2025-08-23 20:30:29.762447+00
+145	t	\N	2025-08-23 20:48:44.426397+00	2025-08-23 20:48:44.426397+00
+147	t	\N	2025-08-25 08:27:39.235826+00	2025-08-25 08:27:39.235826+00
+54	t	\N	2025-09-08 15:24:54.310366+00	2025-09-08 15:24:54.310366+00
+112	t	\N	2025-09-08 15:25:31.303207+00	2025-09-08 15:25:31.303207+00
+153	t	\N	2025-09-11 17:09:34.022927+00	2025-09-11 17:09:34.022927+00
+152	t	\N	2025-09-11 17:10:01.094645+00	2025-09-11 17:10:01.094645+00
+121	t	\N	2025-09-11 17:23:08.183554+00	2025-09-11 17:23:08.183554+00
+17	t	\N	2025-09-11 17:23:13.029278+00	2025-09-11 17:23:13.029278+00
+154	t	\N	2025-09-11 17:40:17.548264+00	2025-09-11 17:40:17.548264+00
+150	t	\N	2025-09-11 18:04:26.909019+00	2025-09-11 18:04:26.909019+00
+155	t	\N	2025-09-11 18:06:58.299437+00	2025-09-11 18:06:58.299437+00
+97	t	\N	2025-09-12 15:24:32.068207+00	2025-09-12 15:24:32.068207+00
+151	t	\N	2025-09-13 08:16:31.926236+00	2025-09-13 08:16:31.926236+00
+156	t	\N	2025-09-13 08:20:33.815089+00	2025-09-13 08:20:33.815089+00
+157	t	\N	2025-09-14 08:54:26.554023+00	2025-09-14 08:54:26.554023+00
+139	t	\N	2025-09-14 10:26:05.682932+00	2025-09-14 10:26:05.682932+00
+158	t	\N	2025-09-15 13:47:49.587337+00	2025-09-15 13:47:49.587337+00
+159	t	\N	2025-09-15 14:02:13.203568+00	2025-09-15 14:02:13.203568+00
+161	t	\N	2025-09-20 17:10:44.989994+00	2025-09-20 17:10:44.989994+00
+1	t	\N	2025-09-20 17:13:20.5223+00	2025-09-20 17:13:20.5223+00
+19	t	\N	2025-09-22 07:12:50.851669+00	2025-09-22 07:12:50.851669+00
+27	t	\N	2025-09-22 07:12:52.680759+00	2025-09-22 07:12:52.680759+00
+42	t	\N	2025-09-22 07:13:17.985627+00	2025-09-22 07:13:17.985627+00
+43	t	\N	2025-09-22 07:13:18.771562+00	2025-09-22 07:13:18.771562+00
+44	t	\N	2025-09-22 07:13:19.784097+00	2025-09-22 07:13:19.784097+00
+45	t	\N	2025-09-22 07:13:20.709662+00	2025-09-22 07:13:20.709662+00
+67	t	\N	2025-09-22 07:13:22.90545+00	2025-09-22 07:13:22.90545+00
+68	t	\N	2025-09-22 07:13:23.779942+00	2025-09-22 07:13:23.779942+00
+69	t	\N	2025-09-22 07:13:24.390354+00	2025-09-22 07:13:24.390354+00
+70	t	\N	2025-09-22 07:13:25.01827+00	2025-09-22 07:13:25.01827+00
+71	t	\N	2025-09-22 07:13:25.764362+00	2025-09-22 07:13:25.764362+00
+72	t	\N	2025-09-22 07:13:26.410224+00	2025-09-22 07:13:26.410224+00
+73	t	\N	2025-09-22 07:13:27.010656+00	2025-09-22 07:13:27.010656+00
+74	t	\N	2025-09-22 07:13:28.670532+00	2025-09-22 07:13:28.670532+00
+75	t	\N	2025-09-22 07:13:29.247998+00	2025-09-22 07:13:29.247998+00
+82	t	\N	2025-09-22 07:13:29.896504+00	2025-09-22 07:13:29.896504+00
+90	t	\N	2025-09-22 07:13:30.662171+00	2025-09-22 07:13:30.662171+00
+92	t	\N	2025-09-22 07:13:31.340429+00	2025-09-22 07:13:31.340429+00
+94	t	\N	2025-09-22 07:13:31.958062+00	2025-09-22 07:13:31.958062+00
+95	t	\N	2025-09-22 07:13:33.12409+00	2025-09-22 07:13:33.12409+00
+96	t	\N	2025-09-22 07:13:34.946668+00	2025-09-22 07:13:34.946668+00
+98	t	\N	2025-09-22 07:13:35.603918+00	2025-09-22 07:13:35.603918+00
+102	t	\N	2025-09-22 07:13:38.686328+00	2025-09-22 07:13:38.686328+00
+103	t	\N	2025-09-22 07:13:39.326599+00	2025-09-22 07:13:39.326599+00
+104	t	\N	2025-09-22 07:13:39.880635+00	2025-09-22 07:13:39.880635+00
+105	t	\N	2025-09-22 07:13:40.526385+00	2025-09-22 07:13:40.526385+00
+106	t	\N	2025-09-22 07:13:41.154817+00	2025-09-22 07:13:41.154817+00
+107	t	\N	2025-09-22 07:13:44.681463+00	2025-09-22 07:13:44.681463+00
+108	t	\N	2025-09-22 07:13:46.964566+00	2025-09-22 07:13:46.964566+00
+110	t	\N	2025-09-22 07:13:47.804902+00	2025-09-22 07:13:47.804902+00
+111	t	\N	2025-09-22 07:13:48.532271+00	2025-09-22 07:13:48.532271+00
+113	t	\N	2025-09-22 07:13:50.696987+00	2025-09-22 07:13:50.696987+00
+114	t	\N	2025-09-22 07:13:51.283091+00	2025-09-22 07:13:51.283091+00
+115	t	\N	2025-09-22 07:13:52.013229+00	2025-09-22 07:13:52.013229+00
+116	t	\N	2025-09-22 07:13:53.046261+00	2025-09-22 07:13:53.046261+00
+144	t	\N	2025-09-22 07:13:54.120913+00	2025-09-22 07:13:54.120913+00
+148	t	\N	2025-09-22 07:13:56.188575+00	2025-09-22 07:13:56.188575+00
+149	t	\N	2025-09-22 07:13:57.305025+00	2025-09-22 07:13:57.305025+00
+164	t	\N	2025-09-22 14:08:43.964235+00	2025-09-22 14:08:43.964235+00
+165	t	\N	2025-09-26 15:23:26.053844+00	2025-09-26 15:23:26.053844+00
+160	t	\N	2025-09-28 13:10:39.265781+00	2025-09-28 13:10:39.265781+00
+2	t	\N	2025-09-28 15:37:25.786792+00	2025-09-28 15:37:25.786792+00
+167	t	\N	2025-10-01 11:22:50.285657+00	2025-10-01 11:22:50.285657+00
+168	t	\N	2025-10-01 13:57:51.596376+00	2025-10-01 13:57:51.596376+00
+173	t	\N	2025-10-05 20:11:05.22793+00	2025-10-05 20:11:05.22793+00
+175	t	\N	2025-10-09 17:47:46.624023+00	2025-10-09 17:47:46.624023+00
+176	t	\N	2025-10-09 17:58:52.45672+00	2025-10-09 17:58:52.45672+00
+177	t	\N	2025-10-09 17:59:28.214394+00	2025-10-09 17:59:28.214394+00
+162	f	\N	2025-10-12 12:52:38.594343+00	2025-09-21 13:15:45.018154+00
+163	t	\N	2025-10-12 19:01:01.939595+00	2025-09-22 07:53:10.375598+00
+\.
+
+
+--
+-- Data for Name: quiz_user_registry; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.quiz_user_registry (user_id, registered_at, source, created_at) FROM stdin;
+145	2025-08-23 19:24:07.642676+00	first_seen	2025-08-23 19:24:07.642676+00
+146	2025-08-23 20:30:05.2386+00	first_seen	2025-08-23 20:30:05.2386+00
+149	2025-08-25 16:31:58.888725+00	first_seen	2025-08-25 16:31:58.888725+00
+153	2025-09-07 09:16:29.651467+00	first_seen	2025-09-07 09:16:29.651467+00
+154	2025-09-11 17:39:39.241097+00	first_seen	2025-09-11 17:39:39.241097+00
+155	2025-09-11 18:05:44.688127+00	first_seen	2025-09-11 18:05:44.688127+00
+156	2025-09-13 08:20:53.353519+00	first_seen	2025-09-13 08:20:53.353519+00
+158	2025-09-15 13:47:38.159367+00	first_seen	2025-09-15 13:47:38.159367+00
+159	2025-09-15 14:01:48.636634+00	first_seen	2025-09-15 14:01:48.636634+00
+174	2025-10-06 20:30:21.009362+00	first_seen	2025-10-06 20:30:21.009362+00
+173	2025-10-13 07:18:20.734443+00	first_seen	2025-10-13 07:18:20.734443+00
+181	2025-10-13 07:18:21.440601+00	first_seen	2025-10-13 07:18:21.440601+00
+178	2025-10-13 07:18:22.69362+00	first_seen	2025-10-13 07:18:22.69362+00
+182	2025-10-13 07:21:26.468807+00	first_seen	2025-10-13 07:21:26.468807+00
+180	2025-10-13 07:21:29.661965+00	first_seen	2025-10-13 07:21:29.661965+00
+179	2025-10-13 07:21:32.001081+00	first_seen	2025-10-13 07:21:32.001081+00
+184	2025-10-13 07:21:53.081612+00	first_seen	2025-10-13 07:21:53.081612+00
+183	2025-10-13 07:23:56.263943+00	first_seen	2025-10-13 07:23:56.263943+00
+162	2025-10-16 09:48:09.851341+00	first_seen	2025-10-16 09:48:09.851341+00
+92	2025-01-19 19:43:40.582567+00	auth	2025-08-21 17:08:20.127714+00
+75	2024-11-25 10:02:37.556477+00	auth	2025-08-21 17:08:20.127714+00
+98	2025-03-22 14:32:29.683974+00	auth	2025-08-21 17:08:20.127714+00
+74	2024-11-25 10:00:19.471608+00	auth	2025-08-21 17:08:20.127714+00
+110	2025-06-23 18:44:53.017965+00	auth	2025-08-21 17:08:20.127714+00
+121	2025-07-23 15:57:47.483336+00	auth	2025-08-21 17:08:20.127714+00
+104	2025-04-14 09:24:19.874047+00	auth	2025-08-21 17:08:20.127714+00
+111	2025-06-23 18:45:58.894318+00	auth	2025-08-21 17:08:20.127714+00
+112	2025-06-23 19:42:49.148679+00	auth	2025-08-21 17:08:20.127714+00
+54	2024-11-24 21:10:33.296971+00	auth	2025-08-21 17:08:20.127714+00
+42	2024-11-10 12:04:19.054451+00	auth	2025-08-21 17:08:20.127714+00
+43	2024-11-10 17:07:34.548793+00	auth	2025-08-21 17:08:20.127714+00
+44	2024-11-10 17:14:35.888228+00	auth	2025-08-21 17:08:20.127714+00
+45	2024-11-17 22:38:54.673073+00	auth	2025-08-21 17:08:20.127714+00
+17	2024-11-08 16:31:36.764156+00	auth	2025-08-21 17:08:20.127714+00
+107	2025-04-14 09:25:01.318562+00	auth	2025-08-21 17:08:20.127714+00
+67	2024-11-25 09:56:34.198101+00	auth	2025-08-21 17:08:20.127714+00
+95	2025-02-03 09:30:30.999915+00	auth	2025-08-21 17:08:20.127714+00
+68	2024-11-25 09:56:41.52939+00	auth	2025-08-21 17:08:20.127714+00
+99	2025-03-24 19:45:21.729821+00	auth	2025-08-21 17:08:20.127714+00
+69	2024-11-25 09:57:03.321346+00	auth	2025-08-21 17:08:20.127714+00
+106	2025-04-14 09:24:56.954853+00	auth	2025-08-21 17:08:20.127714+00
+71	2024-11-25 09:57:30.587437+00	auth	2025-08-21 17:08:20.127714+00
+70	2024-11-25 09:57:19.081958+00	auth	2025-08-21 17:08:20.127714+00
+73	2024-11-25 09:57:50.559567+00	auth	2025-08-21 17:08:20.127714+00
+82	2025-01-13 21:11:52.435046+00	auth	2025-08-21 17:08:20.127714+00
+102	2025-04-14 09:22:31.06747+00	auth	2025-08-21 17:08:20.127714+00
+113	2025-06-23 20:40:33.517316+00	auth	2025-08-21 17:08:20.127714+00
+72	2024-11-25 09:57:37.107212+00	auth	2025-08-21 17:08:20.127714+00
+114	2025-06-24 05:52:40.563228+00	auth	2025-08-21 17:08:20.127714+00
+90	2025-01-16 18:49:01.234089+00	auth	2025-08-21 17:08:20.127714+00
+94	2025-02-03 09:24:00.408885+00	auth	2025-08-21 17:08:20.127714+00
+115	2025-06-24 07:29:29.275198+00	auth	2025-08-21 17:08:20.127714+00
+96	2025-02-17 14:25:49.83469+00	auth	2025-08-21 17:08:20.127714+00
+100	2025-03-24 21:15:51.872085+00	auth	2025-08-21 17:08:20.127714+00
+97	2025-03-08 10:10:44.600087+00	auth	2025-08-21 17:08:20.127714+00
+108	2025-06-23 10:32:06.044059+00	auth	2025-08-21 17:08:20.127714+00
+27	2024-11-10 08:06:21.353634+00	auth	2025-08-21 17:08:20.127714+00
+103	2025-04-14 09:23:37.717541+00	auth	2025-08-21 17:08:20.127714+00
+105	2025-04-14 09:24:30.895177+00	auth	2025-08-21 17:08:20.127714+00
+83	2025-01-14 09:14:34.381668+00	auth	2025-08-21 17:08:20.127714+00
+117	2025-07-10 17:35:23.359036+00	auth	2025-08-21 17:08:20.127714+00
+116	2025-07-10 14:13:03.16462+00	auth	2025-08-21 17:08:20.127714+00
+19	2024-11-09 16:30:13.960422+00	auth	2025-08-21 17:08:20.127714+00
+139	2025-08-20 19:56:48.085049+00	auth	2025-08-21 17:08:20.127714+00
+140	2025-08-20 19:57:20.806905+00	auth	2025-08-21 17:08:20.127714+00
+141	2025-08-21 13:28:06.572898+00	auth	2025-08-21 17:08:20.127714+00
+142	2025-08-21 16:55:24.598139+00	auth	2025-08-21 16:57:09.13147+00
+101	2025-03-25 09:36:12.199007+00	auth	2025-08-21 16:14:00.846498+00
+\.
+
+
+--
+-- Data for Name: settings; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.settings (id, name, value) FROM stdin;
+1	time_limit	6
+7	quiz_security_mode	cooldown
+8	quiz_cooldown_hours	0
+\.
+
+
+--
+-- Data for Name: test_questions; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.test_questions (test_id, question_id, sort_order) FROM stdin;
+25	2	0
+25	3	1
+25	4	2
+25	5	3
+21	3	0
+21	5	1
+21	12	2
+21	13	3
+21	14	4
+21	20	5
+21	21	6
+\.
+
+
+--
+-- Data for Name: tests; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.tests (id, code, name, created_by, created_at) FROM stdin;
+21	TEST01	TEstowy	19	2025-10-01 11:42:18.391717
+25	1234	test1	164	2025-10-10 13:51:36.044008
+\.
+
+
+--
+-- Data for Name: user_favorites; Type: TABLE DATA; Schema: public; Owner: quiz_user
+--
+
+COPY public.user_favorites (user_id, case_id, created_at, note, note_updated_at) FROM stdin;
+162	39	2025-10-05 09:44:12.51019+00	test2	2025-10-05 09:44:19.47737+00
+162	33	2025-10-05 09:44:11.968628+00	test5	2025-10-05 09:44:21.991657+00
+162	19	2025-10-05 09:44:11.403377+00	test9	2025-10-05 09:44:25.342745+00
+101	239	2025-10-06 14:04:31.072638+00	\N	\N
+19	105	2025-10-06 18:59:00.848671+00	\N	\N
+19	162	2025-10-06 21:06:35.97158+00	\N	\N
+164	63	2025-10-10 13:47:57.52692+00	\N	\N
+164	62	2025-10-10 13:47:58.779118+00	\N	\N
+101	390	2025-10-13 09:02:19.182789+00	\N	\N
+\.
+
+
+--
+-- Name: case_reports_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.case_reports_id_seq', 47, true);
+
+
+--
+-- Name: options_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.options_id_seq', 7, true);
+
+
+--
+-- Name: parameters_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.parameters_id_seq', 10, true);
+
+
+--
+-- Name: patient_parameters_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.patient_parameters_id_seq', 7953, true);
+
+
+--
+-- Name: patients_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.patients_id_seq', 454, true);
+
+
+--
+-- Name: question_options_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.question_options_id_seq', 1360, true);
+
+
+--
+-- Name: questions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.questions_id_seq', 453, true);
+
+
+--
+-- Name: quiz_sessions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.quiz_sessions_id_seq', 848, true);
+
+
+--
+-- Name: settings_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.settings_id_seq', 200, true);
+
+
+--
+-- Name: tests_id_seq; Type: SEQUENCE SET; Schema: public; Owner: quiz_user
+--
+
+SELECT pg_catalog.setval('public.tests_id_seq', 25, true);
+
+
+--
+-- Name: auth_users_import auth_users_import_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.auth_users_import
+    ADD CONSTRAINT auth_users_import_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: case_reports case_reports_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_reports
+    ADD CONSTRAINT case_reports_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: options options_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.options
+    ADD CONSTRAINT options_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: parameters parameters_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.parameters
+    ADD CONSTRAINT parameters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: case_parameters patient_parameters_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_parameters
+    ADD CONSTRAINT patient_parameters_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: cases patients_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.cases
+    ADD CONSTRAINT patients_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: question_difficulty_votes question_difficulty_votes_pk; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_difficulty_votes
+    ADD CONSTRAINT question_difficulty_votes_pk PRIMARY KEY (question_id, user_id);
+
+
+--
+-- Name: question_options question_options_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_options
+    ADD CONSTRAINT question_options_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: questions questions_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.questions
+    ADD CONSTRAINT questions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: quiz_sessions quiz_sessions_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.quiz_sessions
+    ADD CONSTRAINT quiz_sessions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: quiz_user_access quiz_user_access_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.quiz_user_access
+    ADD CONSTRAINT quiz_user_access_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: quiz_user_registry quiz_user_registry_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.quiz_user_registry
+    ADD CONSTRAINT quiz_user_registry_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: settings settings_name_key; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_name_key UNIQUE (name);
+
+
+--
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.settings
+    ADD CONSTRAINT settings_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: test_questions test_questions_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.test_questions
+    ADD CONSTRAINT test_questions_pkey PRIMARY KEY (test_id, question_id);
+
+
+--
+-- Name: tests tests_code_key; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.tests
+    ADD CONSTRAINT tests_code_key UNIQUE (code);
+
+
+--
+-- Name: tests tests_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.tests
+    ADD CONSTRAINT tests_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_favorites user_favorites_pkey; Type: CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.user_favorites
+    ADD CONSTRAINT user_favorites_pkey PRIMARY KEY (user_id, case_id);
+
+
+--
+-- Name: idx_case_reports_case_id; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_case_reports_case_id ON public.case_reports USING btree (case_id);
+
+
+--
+-- Name: idx_case_reports_pending_note; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_case_reports_pending_note ON public.case_reports USING btree ((((admin_note IS NULL) OR (btrim(admin_note) = ''::text))));
+
+
+--
+-- Name: idx_case_reports_user_id; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_case_reports_user_id ON public.case_reports USING btree (user_id);
+
+
+--
+-- Name: idx_quiz_sessions_test_id; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_quiz_sessions_test_id ON public.quiz_sessions USING btree (test_id);
+
+
+--
+-- Name: idx_user_favorites_case_id; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_user_favorites_case_id ON public.user_favorites USING btree (case_id);
+
+
+--
+-- Name: idx_user_favorites_user_id; Type: INDEX; Schema: public; Owner: quiz_user
+--
+
+CREATE INDEX idx_user_favorites_user_id ON public.user_favorites USING btree (user_id);
+
+
+--
+-- Name: case_reports case_reports_case_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_reports
+    ADD CONSTRAINT case_reports_case_id_fkey FOREIGN KEY (case_id) REFERENCES public.cases(id) ON DELETE CASCADE;
+
+
+--
+-- Name: case_parameters patient_parameters_parameter_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_parameters
+    ADD CONSTRAINT patient_parameters_parameter_id_fkey FOREIGN KEY (parameter_id) REFERENCES public.parameters(id);
+
+
+--
+-- Name: case_parameters patient_parameters_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.case_parameters
+    ADD CONSTRAINT patient_parameters_patient_id_fkey FOREIGN KEY (case_id) REFERENCES public.cases(id);
+
+
+--
+-- Name: question_difficulty_votes question_difficulty_votes_question_fk; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_difficulty_votes
+    ADD CONSTRAINT question_difficulty_votes_question_fk FOREIGN KEY (question_id) REFERENCES public.questions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: question_options question_options_option_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_options
+    ADD CONSTRAINT question_options_option_id_fkey FOREIGN KEY (option_id) REFERENCES public.options(id);
+
+
+--
+-- Name: question_options question_options_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.question_options
+    ADD CONSTRAINT question_options_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id);
+
+
+--
+-- Name: questions questions_patient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.questions
+    ADD CONSTRAINT questions_patient_id_fkey FOREIGN KEY (case_id) REFERENCES public.cases(id);
+
+
+--
+-- Name: quiz_sessions quiz_sessions_test_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.quiz_sessions
+    ADD CONSTRAINT quiz_sessions_test_id_fkey FOREIGN KEY (test_id) REFERENCES public.tests(id) ON DELETE SET NULL;
+
+
+--
+-- Name: test_questions test_questions_question_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.test_questions
+    ADD CONSTRAINT test_questions_question_id_fkey FOREIGN KEY (question_id) REFERENCES public.questions(id) ON DELETE CASCADE;
+
+
+--
+-- Name: test_questions test_questions_test_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.test_questions
+    ADD CONSTRAINT test_questions_test_id_fkey FOREIGN KEY (test_id) REFERENCES public.tests(id) ON DELETE CASCADE;
+
+
+--
+-- Name: user_favorites user_favorites_case_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: quiz_user
+--
+
+ALTER TABLE ONLY public.user_favorites
+    ADD CONSTRAINT user_favorites_case_id_fkey FOREIGN KEY (case_id) REFERENCES public.cases(id) ON DELETE CASCADE;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
+\unrestrict rxhr6VcC8SzLzdMURPhgQRILNOTsnj8dma1UJPz39GdjVS78gQymwc6hDGrRSTZ
+

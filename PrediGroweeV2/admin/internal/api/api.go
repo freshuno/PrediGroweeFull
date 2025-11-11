@@ -37,7 +37,7 @@ func (a *ApiServer) Run() {
 	a.registerRoutes(mux)
 
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"http://localhost:3000", "https://predigrowee.agh.edu.pl"},
+		AllowedOrigins:   []string{"http://localhost:3001", "https://predigrowee.agh.edu.pl"},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Authorization", "Content-Type"},
@@ -87,6 +87,9 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /admin/questions/{id}", middleware.VerifyAdmin(quizHandler.GetQuestion, a.authClient))
 	mux.HandleFunc("PATCH /admin/questions/{id}", middleware.VerifyAdmin(quizHandler.UpdateQuestion, a.authClient))
 
+	mux.HandleFunc("POST /admin/quiz/approve", middleware.VerifyAdmin(quizHandler.Approve, a.authClient))
+    mux.HandleFunc("POST /admin/quiz/unapprove", middleware.VerifyAdmin(quizHandler.Unapprove, a.authClient))
+
 	// parameters
 	mux.HandleFunc("GET /admin/parameters", middleware.VerifyAdmin(quizHandler.GetAllParameters, a.authClient))
 	mux.HandleFunc("POST /admin/parameters", middleware.VerifyAdmin(quizHandler.CreateParameter, a.authClient))
@@ -101,8 +104,9 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /admin/options/{id}", middleware.VerifyAdmin(quizHandler.DeleteOption, a.authClient))
 
 	// settings
-	mux.HandleFunc("GET /admin/settings", middleware.VerifyAdmin(quizHandler.GetSettings, a.authClient))
-	mux.HandleFunc("PATCH /admin/settings", middleware.VerifyAdmin(quizHandler.UpdateSettings, a.authClient))
+	mux.HandleFunc("GET /admin/quiz/settings", middleware.VerifyAdmin(quizHandler.GetSettings, a.authClient))
+    mux.HandleFunc("POST /admin/quiz/settings", middleware.VerifyAdmin(quizHandler.UpdateSettings, a.authClient))
+	mux.HandleFunc("GET /admin/quiz/reports/pendingCount", middleware.VerifyAdmin(quizHandler.GetPendingReportsCount, a.authClient))
 
 	// stats
 	statsHandler := handlers.NewAllStatsHandler(a.logger, a.statsClient)

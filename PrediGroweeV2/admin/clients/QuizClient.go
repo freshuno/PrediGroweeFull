@@ -27,8 +27,10 @@ type QuizClient interface {
 	UpdateSettings(settings []models.Settings) error
 	ApproveUser(userID int) error
 	UnapproveUser(userID int) error
+	ListApprovedUsers() ([]int, error)
 	ListActiveSessions(cutoff int) ([]ActiveSession, error)
 	ListSessionsByTestCode(code string) ([]TestSession, error)
+	GetPendingReportsCount() (map[string]int, error)
 }
 
 type QuizRestClient struct {
@@ -394,20 +396,48 @@ func (c *QuizRestClient) ApproveUser(userID int) error {
 
 func (c *QuizRestClient) UnapproveUser(userID int) error {
     body := map[string]int{"user_id": userID}
-    req, err := c.NewRequestWithAuth("POST", "/unapprove", body)
-    if err != nil {
-        return fmt.Errorf("failed to create request: %w", err)
-    }
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        return fmt.Errorf("failed to send request: %w", err)
-    }
-    defer resp.Body.Close()
-    if resp.StatusCode != http.StatusOK {
-        return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
-    }
-    return nil
+	req, err := c.NewRequestWithAuth("POST", "/unapprove", body)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	return nil
+}
+
+
+func (c *QuizRestClient) ListApprovedUsers() ([]int, error) {
+	req, err := c.NewRequestWithAuth("GET", "/approved", nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+
+	var payload struct {
+		ApprovedUserIDs []int `json:"approved_user_ids"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+
+	return payload.ApprovedUserIDs, nil
 }
 
 
@@ -456,4 +486,38 @@ func (c *QuizRestClient) ListSessionsByTestCode(code string) ([]TestSession, err
 		return nil, fmt.Errorf("failed to decode body: %w", err)
 	}
 	return out, nil
+}
+
+// ... (przed ostatnim nawiasem '}')
+
+type approvePayload struct {
+    UserID int `json:"user_id"`
+}
+
+func (c *QuizRestClient) GetPendingReportsCount() (map[string]int, error) {
+    req, err := c.NewRequestWithAuth("GET", "/quiz/reports/pendingCount", nil)
+    if err != nil {
+        return nil, fmt.Errorf("failed to create request: %w", err)
+    }
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return nil, fmt.Errorf("failed to send request: %w", err)
+    }
+    defer resp.Body.Close()
+
+    if resp.StatusCode != http.StatusOK {
+        // Jeśli quiz-1 wciąż ma stary kod, zwróci 404
+        if resp.StatusCode == http.StatusNotFound {
+             c.logger.Warn("GetPendingReportsCount returned 404, quiz service might be outdated")
+             return map[string]int{"count": 0}, nil // Zwróć 0, aby uniknąć błędu na froncie
+        }
+        return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+    }
+
+    var payload map[string]int
+    if err := json.NewDecoder(resp.Body).Decode(&payload); err != nil {
+        return nil, fmt.Errorf("failed to decode response: %w", err)
+    }
+    return payload, nil
 }

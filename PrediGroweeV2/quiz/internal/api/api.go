@@ -38,7 +38,7 @@ func (a *ApiServer) Run() {
 	mux := http.NewServeMux()
 	a.registerRoutes(mux)
 	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:3000", "https://predigrowee.agh.edu.pl",
+		AllowedOrigins: []string{"http://localhost:3001", "https://predigrowee.agh.edu.pl",
 			"https://www.predigrowee.agh.edu.pl"},
 		AllowCredentials: true,
 		AllowedMethods:   []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -85,11 +85,12 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("POST /quiz/sessions/{quizSessionId}/finish", middleware.VerifyToken(handlers.NewFinishQuizHandler(a.storage, a.logger, a.statsClient).Handle, a.authClient))
 
 	// internal api
-	apiKey := os.Getenv("INTERNAL_API_KEY")
-	mux.HandleFunc("GET /quiz/summary", middleware.InternalAuth(handlers.NewSummaryHandler(a.storage, a.logger).Handle, a.logger, apiKey))
-	mux.HandleFunc("POST /quiz/approve", middleware.InternalAuth(handlers.NewApprovalHandler(a.storage, a.logger).Approve, a.logger, apiKey))
-	mux.HandleFunc("GET /quiz/approved", middleware.InternalAuth(handlers.NewApprovalHandler(a.storage, a.logger).GetApproved, a.logger, apiKey))
-	mux.HandleFunc("POST /quiz/unapprove", middleware.InternalAuth(handlers.NewApprovalHandler(a.storage, a.logger).Unapprove, a.logger, apiKey))
+    apiKey := os.Getenv("INTERNAL_API_KEY")
+    mux.HandleFunc("GET /quiz/summary", middleware.InternalAuth(handlers.NewSummaryHandler(a.storage, a.logger).Handle, a.logger, apiKey)) // Ten jest OK, wołany przez admin-service
+    mux.HandleFunc("POST /quiz/approve", middleware.InternalAuth(handlers.NewApprovalHandler(a.storage, a.logger).Approve, a.logger, apiKey)) // Ten też jest OK (wołany przez proxy /api/admin/quiz/approve)
+    mux.HandleFunc("POST /quiz/unapprove", middleware.InternalAuth(handlers.NewApprovalHandler(a.storage, a.logger).Unapprove, a.logger, apiKey)) // Ten też jest OK (wołany przez proxy /api/admin/quiz/unapprove)
+
+    mux.HandleFunc("GET /quiz/approved", middleware.VerifyToken(handlers.NewApprovalHandler(a.storage, a.logger).GetApproved, a.authClient))
 
 	// questions
 	questionHandler := handlers.NewQuestionHandler(a.storage, a.logger)
@@ -122,17 +123,21 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("DELETE /quiz/parameters/{id}", middleware.InternalAuth(parameterHandler.DeleteParameter, a.logger, apiKey))
 	mux.HandleFunc("PUT /quiz/parameters/order", middleware.InternalAuth(parameterHandler.UpdateOrder, a.logger, apiKey))
 	mux.HandleFunc("POST /quiz/settings", middleware.InternalAuth(handlers.NewSettingsHandler(a.storage, a.logger).UpdateSettings, a.logger, apiKey))
-	mux.HandleFunc("GET /quiz/settings", middleware.InternalAuth(handlers.NewSettingsHandler(a.storage, a.logger).GetSettings, a.logger, apiKey))
+    mux.HandleFunc("GET /quiz/settings", middleware.InternalAuth(handlers.NewSettingsHandler(a.storage, a.logger).GetSettings, a.logger, apiKey))
 
 	// BUG REPORTS
-	reportHandler := handlers.NewCaseReportHandler(a.storage, a.logger, a.authClient)
-	mux.HandleFunc("POST /quiz/cases/{caseId}/report", middleware.VerifyToken(reportHandler.Report, a.authClient))          // user
-	mux.HandleFunc("GET /quiz/reports", middleware.InternalAuth(reportHandler.List, a.logger, apiKey))                     // admin
-	mux.HandleFunc("DELETE /quiz/reports/{id}", middleware.InternalAuth(reportHandler.Delete, a.logger, apiKey))           // admin
-	mux.HandleFunc("PUT /quiz/reports/{id}/note",
-    middleware.InternalAuth(reportHandler.SetNote, a.logger, apiKey))
+    reportHandler := handlers.NewCaseReportHandler(a.storage, a.logger, a.authClient)
+    mux.HandleFunc("POST /quiz/cases/{caseId}/report", middleware.VerifyToken(reportHandler.Report, a.authClient))          // user
+
+
+    mux.HandleFunc("GET /quiz/reports", middleware.VerifyToken(reportHandler.List, a.authClient))                     // admin
+    mux.HandleFunc("DELETE /quiz/reports/{id}", middleware.VerifyToken(reportHandler.Delete, a.authClient))           // admin
+    mux.HandleFunc("PUT /quiz/reports/{id}/note",
+    middleware.VerifyToken(reportHandler.SetNote, a.authClient))
     mux.HandleFunc("GET /quiz/reports/pendingCount",
-    middleware.InternalAuth(reportHandler.PendingCount, a.logger, apiKey))
+    middleware.VerifyToken(reportHandler.PendingCount, a.authClient))
+
+
 	caseHandler := handlers.NewCaseHandler(a.storage, a.logger)
 	mux.HandleFunc("GET /quiz/cases/{id}/parameters/v3", middleware.VerifyToken(caseHandler.GetCaseParametersV3, a.authClient))
 
