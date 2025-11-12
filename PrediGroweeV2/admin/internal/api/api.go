@@ -106,7 +106,6 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	// settings
 	mux.HandleFunc("GET /admin/quiz/settings", middleware.VerifyAdmin(quizHandler.GetSettings, a.authClient))
     mux.HandleFunc("POST /admin/quiz/settings", middleware.VerifyAdmin(quizHandler.UpdateSettings, a.authClient))
-	mux.HandleFunc("GET /admin/quiz/reports/pendingCount", middleware.VerifyAdmin(quizHandler.GetPendingReportsCount, a.authClient))
 
 	// stats
 	statsHandler := handlers.NewAllStatsHandler(a.logger, a.statsClient)
@@ -125,5 +124,11 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("GET /admin/live/sessions/active", middleware.VerifyAdmin(quizHandler.ListActiveSessions, a.authClient))
 
 	mux.HandleFunc("GET /admin/tests/{code}/progress", middleware.VerifyAdmin(handlers.NewTestsProgressHandler(a.quizClient, a.statsClient, a.logger).Get,a.authClient,))
+
+	// Bug Reports
+    mux.HandleFunc("GET /admin/quiz/reports", middleware.VerifyAdmin(quizHandler.GetReports, a.authClient))
+    mux.HandleFunc("DELETE /admin/quiz/reports/{id}", middleware.VerifyAdmin(quizHandler.DeleteReport, a.authClient))
+    mux.HandleFunc("PUT /admin/quiz/reports/{id}/note", middleware.VerifyAdmin(quizHandler.SetReportNote, a.authClient))
+    mux.HandleFunc("GET /admin/quiz/reports/pendingCount", middleware.VerifyAdmin(quizHandler.GetPendingReportsCount, a.authClient))
 
 }

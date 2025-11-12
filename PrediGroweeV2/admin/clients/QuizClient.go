@@ -31,6 +31,9 @@ type QuizClient interface {
 	ListActiveSessions(cutoff int) ([]ActiveSession, error)
 	ListSessionsByTestCode(code string) ([]TestSession, error)
 	GetPendingReportsCount() (map[string]int, error)
+	GetReports() ([]models.CaseReport, error)
+	DeleteReport(id string) error
+	SetReportNote(id string, note string) error
 }
 
 type QuizRestClient struct {
@@ -495,7 +498,7 @@ type approvePayload struct {
 }
 
 func (c *QuizRestClient) GetPendingReportsCount() (map[string]int, error) {
-    req, err := c.NewRequestWithAuth("GET", "/quiz/reports/pendingCount", nil)
+    req, err := c.NewRequestWithAuth("GET", "/reports/pendingCount", nil)
     if err != nil {
         return nil, fmt.Errorf("failed to create request: %w", err)
     }
@@ -520,4 +523,63 @@ func (c *QuizRestClient) GetPendingReportsCount() (map[string]int, error) {
         return nil, fmt.Errorf("failed to decode response: %w", err)
     }
     return payload, nil
+}
+
+// ... (po funkcji GetPendingReportsCount)
+
+func (c *QuizRestClient) GetReports() ([]models.CaseReport, error) {
+	req, err := c.NewRequestWithAuth("GET", "/reports", nil) // Używamy ścieżki /quiz, bo to klient QUIZ
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	var reports []models.CaseReport
+	if err := json.NewDecoder(resp.Body).Decode(&reports); err != nil {
+		return nil, fmt.Errorf("failed to decode response: %w", err)
+	}
+	return reports, nil
+}
+
+func (c *QuizRestClient) DeleteReport(id string) error {
+	req, err := c.NewRequestWithAuth("DELETE", fmt.Sprintf("/reports/%s", id), nil)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	return nil
+}
+
+func (c *QuizRestClient) SetReportNote(id string, note string) error {
+	body := map[string]string{"note": note}
+	req, err := c.NewRequestWithAuth("PUT", fmt.Sprintf("/reports/%s/note", id), body)
+	if err != nil {
+		return fmt.Errorf("failed to create request: %w", err)
+	}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusNoContent {
+		return fmt.Errorf("unexpected status code: %d", resp.StatusCode)
+	}
+	return nil
 }

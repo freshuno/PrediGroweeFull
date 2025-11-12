@@ -384,3 +384,45 @@ func (h *QuizHandler) GetPendingReportsCount(w http.ResponseWriter, r *http.Requ
     }
 }
 
+// Plik: admin/internal/handlers/QuizHandler.go
+// (Upewnij się, że masz "encoding/json" w importach)
+
+func (h *QuizHandler) GetReports(w http.ResponseWriter, r *http.Request) {
+    reports, err := h.quizClient.GetReports()
+    if err != nil {
+        h.logger.Error("Failed to get reports from quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    if err := json.NewEncoder(w).Encode(reports); err != nil {
+        h.logger.Error("Failed to encode reports", zap.Error(err))
+    }
+}
+
+func (h *QuizHandler) DeleteReport(w http.ResponseWriter, r *http.Request) {
+    reportId := r.PathValue("id")
+    if err := h.quizClient.DeleteReport(reportId); err != nil {
+        h.logger.Error("Failed to delete report via quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.WriteHeader(http.StatusNoContent)
+}
+
+func (h *QuizHandler) SetReportNote(w http.ResponseWriter, r *http.Request) {
+    reportId := r.PathValue("id")
+    var payload struct { Note string `json:"note"` }
+    if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
+        h.logger.Error("Failed to decode note body", zap.Error(err))
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+    if err := h.quizClient.SetReportNote(reportId, payload.Note); err != nil {
+        h.logger.Error("Failed to set report note via quiz client", zap.Error(err))
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
+    w.WriteHeader(http.StatusOK)
+}
+

@@ -31,17 +31,18 @@ import ButtonTooltipWrapper from '@/components/ui/ButtonTooltipWrapper';
 import AdminClient from '@/Clients/AdminClient';
 import { ADMIN_SERVICE_URL } from '@/Envs';
 
+// POPRAWKA TYPU: Używamy camelCase
 type CaseReport = {
   id: number;
-  case_id: number;
-  case_code: string;
-  user_id: number;
+  caseId: number; // Zamiast case_id
+  caseCode: string; // Zamiast case_code
+  userId: number; // Zamiast user_id
   description: string;
-  created_at: string;
+  createdAt: string; // Zamiast created_at
 
-  admin_note?: string | null;
-  admin_note_updated_at?: string | null;
-  admin_note_updated_by?: number | null;
+  adminNote?: string | null; // Zamiast admin_note
+  adminNoteUpdatedAt?: string | null; // Zamiast admin_note_updated_at
+  adminNoteUpdatedBy?: number | null; // Zamiast admin_note_updated_by
 };
 
 const ReportsPage = () => {
@@ -62,18 +63,18 @@ const ReportsPage = () => {
   
 
   const load = React.useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const resp = await adminClient.getReports();
-      setRows(resp);
-    } catch (e) {
-      console.error(e);
-      setError('Failed to load reports');
-    } finally {
-      setLoading(false);
-    }
-  }, [adminClient]);
+    setLoading(true);
+    setError(null);
+    try {
+      const resp = await adminClient.getReports();
+      setRows(resp); // `resp` już jest w camelCase
+    } catch (e) {
+      console.error(e);
+      setError('Failed to load reports');
+    } finally {
+      setLoading(false);
+    }
+  }, [adminClient]);
 
   React.useEffect(() => {
     load();
@@ -91,7 +92,8 @@ const ReportsPage = () => {
 
   const openEditNote = (r: CaseReport) => {
     setNoteTargetId(r.id);
-    setNoteDraft(r.admin_note ?? '');
+    // POPRAWKA: Używamy adminNote
+    setNoteDraft(r.adminNote ?? '');
     setNoteModalOpen(true);
   };
 
@@ -105,8 +107,9 @@ const ReportsPage = () => {
           r.id === noteTargetId
             ? {
                 ...r,
-                admin_note: noteDraft.trim(),
-                admin_note_updated_at: new Date().toISOString(),
+                // POPRAWKA: Używamy camelCase do aktualizacji stanu
+                adminNote: noteDraft.trim(),
+                adminNoteUpdatedAt: new Date().toISOString(),
               }
             : r
         )
@@ -168,11 +171,14 @@ const ReportsPage = () => {
                 <TableBody>
                   {rows.map((r) => (
                     <TableRow key={r.id}>
-                      <TableCell>{new Date(r.created_at).toLocaleString()}</TableCell>
+                      {/* POPRAWKA: createdAt */}
+                      <TableCell>{new Date(r.createdAt).toLocaleString()}</TableCell>
                       <TableCell>
-                        {r.case_code} (#{r.case_id})
+                        {/* POPRAWKA: caseCode i caseId */}
+                        {r.caseCode} (#{r.caseId})
                       </TableCell>
-                      <TableCell>{r.user_id}</TableCell>
+                      {/* POPRAWKA: userId */}
+                      <TableCell>{r.userId}</TableCell>
                       <TableCell style={{ whiteSpace: 'pre-wrap' }}>{r.description}</TableCell>
                       <TableCell sx={{ whiteSpace: 'pre-wrap' }}>
                         <Box
@@ -181,9 +187,10 @@ const ReportsPage = () => {
                           justifyContent="space-between"
                           gap={1}
                         >
-                          <Typography variant="body2" sx={{ opacity: r.admin_note ? 1 : 0.6 }}>
-                            {r.admin_note && r.admin_note.trim() !== ''
-                              ? r.admin_note
+                          {/* POPRAWKA: adminNote */}
+                          <Typography variant="body2" sx={{ opacity: r.adminNote ? 1 : 0.6 }}>
+                            {r.adminNote && r.adminNote.trim() !== ''
+                              ? r.adminNote
                               : '— no note —'}
                           </Typography>
                           <ButtonTooltipWrapper
@@ -197,7 +204,8 @@ const ReportsPage = () => {
                                 onClick={() => openEditNote(r)}
                                 disabled={!canEdit}
                               >
-                                {r.admin_note && r.admin_note.trim() !== '' ? 'Edit' : 'Add'}
+                                {/* POPRAWKA: adminNote */}
+                                {r.adminNote && r.adminNote.trim() !== '' ? 'Edit' : 'Add'}
                               </Button>
                             </span>
                           </ButtonTooltipWrapper>
@@ -256,7 +264,8 @@ const ReportsPage = () => {
           maxWidth="sm"
         >
           <DialogTitle>
-            {(rows.find((r) => r.id === noteTargetId)?.admin_note ? 'Edit' : 'Add') + ' note'}
+            {/* POPRAWKA: adminNote */}
+            {(rows.find((r) => r.id === noteTargetId)?.adminNote ? 'Edit' : 'Add') + ' note'}
           </DialogTitle>
           <DialogContent>
             <TextField

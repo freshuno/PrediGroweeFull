@@ -337,6 +337,22 @@ class AdminClient extends BaseClient {
     return res.data;
   }
 
+  // DODAJ TE METODY
+  async getReports(): Promise<any[]> {
+    // Ścieżka '/quiz/reports' jest poprawna, 
+    // ponieważ BaseClient doda prefix /api/admin
+    const res = await this.axiosInstance.get('/quiz/reports');
+    return res.data;
+  }
+
+  async deleteReport(id: number | string): Promise<void> {
+    await this.axiosInstance.delete(`/quiz/reports/${id}`);
+  }
+
+  async setReportNote(id: number | string, note: string): Promise<void> {
+    await this.axiosInstance.put(`/quiz/reports/${id}/note`, { note });
+  }
+
 
 }
 

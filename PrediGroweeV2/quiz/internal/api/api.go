@@ -130,12 +130,16 @@ func (a *ApiServer) registerRoutes(mux *http.ServeMux) {
     mux.HandleFunc("POST /quiz/cases/{caseId}/report", middleware.VerifyToken(reportHandler.Report, a.authClient))          // user
 
 
-    mux.HandleFunc("GET /quiz/reports", middleware.VerifyToken(reportHandler.List, a.authClient))                     // admin
-    mux.HandleFunc("DELETE /quiz/reports/{id}", middleware.VerifyToken(reportHandler.Delete, a.authClient))           // admin
+    // Plik: quiz/internal/api/api.go
+
+// BUG REPORTS
+    mux.HandleFunc("GET /quiz/reports", middleware.InternalAuth(reportHandler.List, a.logger, apiKey))
+    mux.HandleFunc("DELETE /quiz/reports/{id}", middleware.InternalAuth(reportHandler.Delete, a.logger, apiKey))
     mux.HandleFunc("PUT /quiz/reports/{id}/note",
-    middleware.VerifyToken(reportHandler.SetNote, a.authClient))
+    middleware.InternalAuth(reportHandler.SetNote, a.logger, apiKey))
+ 
     mux.HandleFunc("GET /quiz/reports/pendingCount",
-    middleware.VerifyToken(reportHandler.PendingCount, a.authClient))
+    middleware.InternalAuth(reportHandler.PendingCount, a.logger, apiKey))
 
 
 	caseHandler := handlers.NewCaseHandler(a.storage, a.logger)
